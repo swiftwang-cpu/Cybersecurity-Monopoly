@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>別點那個連結！辦公室資安大富翁</title>
+  <title>別點那個連結！辦公室資安大富翁 v3.0 (10x10 旗艦版)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
@@ -15,17 +15,17 @@
     }
     .board-grid {
       display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      grid-template-rows: repeat(6, minmax(0, 1fr));
-      gap: 6px;
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      grid-template-rows: repeat(10, minmax(0, 1fr));
+      gap: 4px;
       aspect-ratio: 1 / 1;
-      max-width: 760px;
+      max-width: 920px;
       margin: 0 auto;
     }
     .tile {
       position: relative;
-      border-radius: 10px;
-      padding: 6px;
+      border-radius: 8px;
+      padding: 4px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -34,17 +34,18 @@
       overflow: hidden;
     }
     .tile:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.45);
-      z-index: 10;
+      transform: scale(1.06);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.65);
+      z-index: 20;
     }
     .tile-active {
-      box-shadow: 0 0 0 3px #38bdf8, 0 0 18px rgba(56, 189, 248, 0.65);
+      box-shadow: 0 0 0 2.5px #38bdf8, 0 0 16px rgba(56, 189, 248, 0.75);
+      z-index: 15;
     }
     .center-hub {
-      grid-column: 2 / 6;
-      grid-row: 2 / 6;
-      background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%);
+      grid-column: 2 / 10;
+      grid-row: 2 / 10;
+      background: radial-gradient(circle at top, #1e293b 0%, #0b1120 100%);
       border: 1px solid rgba(56, 189, 248, 0.25);
       border-radius: 16px;
       padding: 16px;
@@ -77,7 +78,7 @@
 
   <!-- 頂部導覽列 -->
   <header class="bg-slate-900/90 border-b border-slate-800 px-4 py-3 sticky top-0 z-30 backdrop-blur">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+    <div class="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-xl">
           🛡️
@@ -87,9 +88,10 @@
             <h1 class="text-lg md:text-xl font-black tracking-wide text-sky-300">
               別點那個連結！辦公室資安大富翁
             </h1>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-bold">10×10 擴充版</span>
             <span id="mode-pill" class="hidden text-[11px] px-2 py-0.5 rounded-full font-bold"></span>
           </div>
-          <p id="header-subtitle" class="text-xs text-slate-400">職場防駭生存模擬戰｜守住公司營運與客戶信任，別讓駭客把主機鎖起來！</p>
+          <p id="header-subtitle" class="text-xs text-slate-400">職場防駭生存模擬戰｜36 格完整攻防地圖・多階段稽核與突發事件考驗！</p>
         </div>
       </div>
 
@@ -108,14 +110,30 @@
   <div id="start-screen" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
     <div class="max-w-4xl w-full bg-slate-900 border border-slate-700/80 rounded-2xl p-6 md:p-8 shadow-2xl my-auto">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/15 border border-sky-400/30 text-sky-300 text-xs font-bold mb-4">
-        <span>🚨 辦公室資安日常模擬器 v2.0</span>
+        <span>🚨 辦公室資安日常模擬器 v3.0｜10×10 旗艦耐久版</span>
       </div>
       <h2 class="text-2xl md:text-3xl font-black text-white mb-2">
         別點那個連結！辦公室資安大富翁
       </h2>
-      <p class="text-slate-300 text-sm md:text-base leading-relaxed mb-6">
-        每天都有人亂點釣魚信、把密碼貼在螢幕上、或是隨便插來路不明的隨身碟！請選擇你要扮演的角色視角：親自掌管企業防線，或是體驗「苦口婆心給建議、但客戶做不做全看天意」的資安顧問日常！
+      <p class="text-slate-300 text-sm md:text-base leading-relaxed mb-5">
+        全新 <strong>10×10（36 格）大型環狀地圖</strong>！涵蓋 <strong>24 項 ISO/IEC 27001:2022 核心控制措施</strong>、8 大職場資安突發災難、預算／人天擴編與 <strong>24 回合（兩年期完整驗證循環）</strong>，考驗長線防禦規劃與危機應變！
       </p>
+
+      <!-- 難度與局數設定 -->
+      <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div class="text-xs text-slate-300 font-bold">⏱️ 選擇遊戲長度與資源規模：</div>
+        <div class="flex flex-wrap gap-2" id="length-selector">
+          <button type="button" onclick="selectLength(18)" data-rounds="18" class="len-btn px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-700 bg-slate-800 text-slate-300 hover:border-sky-400 transition">
+            標準局（18 回合）
+          </button>
+          <button type="button" onclick="selectLength(24)" data-rounds="24" class="len-btn px-3 py-1.5 rounded-lg text-xs font-bold border border-sky-400 bg-sky-500/20 text-sky-300 transition">
+            耐玩長局（24 回合・推薦）
+          </button>
+          <button type="button" onclick="selectLength(32)" data-rounds="32" class="len-btn px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-700 bg-slate-800 text-slate-300 hover:border-sky-400 transition">
+            史詩馬拉松（32 回合）
+          </button>
+        </div>
+      </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <!-- 模式 1：單人企業版 -->
@@ -127,7 +145,7 @@
             </div>
             <div class="font-bold text-lg text-white group-hover:text-sky-300 transition">單人職涯挑戰</div>
             <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">
-              身為企業資安負責人，你有預算決定權！在 12 回合內建置防線、阻擋駭客並通過外部驗證稽核。
+              初始預算提升至 <strong>$2,200萬</strong>！在 36 格地圖中統籌 24 項控制措施，抵禦勒索、供應鏈與零日攻擊。
             </p>
           </div>
           <div class="mt-4 pt-2 border-t border-slate-700/60 text-[11px] text-sky-300 font-medium">
@@ -144,7 +162,7 @@
             </div>
             <div class="font-bold text-lg text-white group-hover:text-amber-300 transition">資安負責人 vs IT 主管</div>
             <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">
-              輪流擲骰搶占控制領域、建置防禦措施，看看誰能撐過危機並累積最高企業資安評分！
+              雙方各持 <strong>$2,000萬</strong> 預算！輪流搶占 24 項控制領域、收取維運分攤費，比拚最終治理評分！
             </p>
           </div>
           <div class="mt-4 pt-2 border-t border-slate-700/60 text-[11px] text-amber-300 font-medium">
@@ -164,7 +182,7 @@
             </div>
             <div class="font-bold text-lg text-white group-hover:text-emerald-300 transition">資安顧問生存戰</div>
             <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
-              你只能寫建議書、交四階文件、開會勸說！<strong>客戶要不要花錢買設備全看執行意願</strong>，出事了還得幫客戶擦屁股！
+              初始顧問工時提升至 <strong>42 人天</strong>、合約金額 <strong>$150萬</strong>！面對 24 項控制措施與難搞客戶，考驗說服與自保功力！
             </p>
           </div>
           <div class="mt-4 pt-2 border-t border-slate-700/60 text-[11px] text-emerald-300 font-medium">
@@ -174,17 +192,18 @@
       </div>
 
       <div class="bg-slate-950/70 rounded-xl p-4 border border-slate-800 text-xs text-slate-400 space-y-1.5">
-        <div class="font-bold text-slate-200">📌 模式差異提醒：</div>
-        <div>• <span class="text-sky-300 font-bold">企業內部版</span>：花自己的預算直接買設備、建制度，考驗資源配置。</div>
-        <div>• <span class="text-emerald-300 font-bold">資安顧問版</span>：不幫客戶出錢，而是消耗你的<strong>顧問工時 (人天)</strong> 提出改善建議；客戶會根據<strong>「配合意願度」</strong>決定「完全採納」、「只寫紙本制度交差」或「已讀不回」！若你已白紙黑字留存建議紀錄，客戶出事時還能出示<strong>「免責證據」</strong>保住顧問口碑！</div>
+        <div class="font-bold text-slate-200">📌 10×10 擴充版新增亮點：</div>
+        <div>• <span class="text-sky-300 font-bold">控制項倍增（12 → 24 項）</span>：完整納入資產盤點、特權帳號 PAM、日誌監控 SIEM、安全開發 SSDLC、雲端資安、情資威脅、人員背景查核與設備報廢等實務條款。</div>
+        <div>• <span class="text-rose-300 font-bold">災難與事件倍增（4 → 8 大事件）</span>：新增「CEO 變臉詐騙 BEC」、「影子 IT 與雲端權限誤開」、「機房跳電冷氣故障」、「離職員工竊密」等職場真實危機。</div>
+        <div>• <span class="text-emerald-300 font-bold">長線資源成長</span>：預算與顧問人天大幅提升，每繞行一圈可獲得更多年度預算／階段人天補給，適合慢慢布局全領域防線！</div>
       </div>
     </div>
   </div>
 
   <!-- 主遊戲區 -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-3 md:p-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+  <main class="flex-1 max-w-[1440px] w-full mx-auto p-3 md:p-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
     
-    <!-- 左側：棋盤區 -->
+    <!-- 左側：10x10 棋盤區 -->
     <div class="lg:col-span-8 w-full">
       <div id="board" class="board-grid"></div>
     </div>
@@ -209,7 +228,7 @@
           <h3 id="log-title" class="text-sm font-bold text-slate-200">📜 辦公室戰情室紀錄</h3>
           <span class="text-[11px] text-slate-500">即時日誌</span>
         </div>
-        <div id="game-log" class="h-56 overflow-y-auto scrollbar-thin space-y-2 text-xs pr-1"></div>
+        <div id="game-log" class="h-64 overflow-y-auto scrollbar-thin space-y-2 text-xs pr-1"></div>
       </div>
     </div>
   </main>
@@ -226,10 +245,10 @@
 
   <!-- 適用性聲明書 (SoA) 清單彈窗 -->
   <div id="soa-modal" class="fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="max-w-3xl w-full bg-slate-900 border border-slate-700 rounded-2xl p-6 shadow-2xl max-h-[85vh] flex flex-col">
+    <div class="max-w-4xl w-full bg-slate-900 border border-slate-700 rounded-2xl p-6 shadow-2xl max-h-[85vh] flex flex-col">
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
         <div>
-          <h3 id="soa-modal-title" class="text-lg font-black text-sky-300">📋 適用性聲明書 (SoA) 控制項總覽</h3>
+          <h3 id="soa-modal-title" class="text-lg font-black text-sky-300">📋 適用性聲明書 (SoA) 控制項總覽（共 24 項）</h3>
           <p id="soa-modal-sub" class="text-xs text-slate-400">查看各控制措施目前部署等級與可抵禦的資安威脅</p>
         </div>
         <button onclick="closeSoAModal()" class="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm">關閉</button>
@@ -239,11 +258,16 @@
   </div>
 
   <script>
+    // 10x10 外圈共 36 格座標（順時針環繞）
     const BOARD_COORDS = [
-      [1,1],[1,2],[1,3],[1,4],[1,5],[1,6],
-      [2,6],[3,6],[4,6],[5,6],
-      [6,6],[6,5],[6,4],[6,3],[6,2],[6,1],
-      [5,1],[4,1],[3,1],[2,1]
+      // Top row: (1,1) -> (1,10) [10 tiles: 0..9]
+      [1,1],[1,2],[1,3],[1,4],[1,5],[1,6],[1,7],[1,8],[1,9],[1,10],
+      // Right col: (2,10) -> (9,10) [8 tiles: 10..17]
+      [2,10],[3,10],[4,10],[5,10],[6,10],[7,10],[8,10],[9,10],
+      // Bottom row: (10,10) -> (10,1) [10 tiles: 18..27]
+      [10,10],[10,9],[10,8],[10,7],[10,6],[10,5],[10,4],[10,3],[10,2],[10,1],
+      // Left col: (9,1) -> (2,1) [8 tiles: 28..35]
+      [9,1],[8,1],[7,1],[6,1],[5,1],[4,1],[3,1],[2,1]
     ];
 
     const DOMAINS = {
@@ -257,80 +281,139 @@
       {
         name: '傳統製造業・傳產大廠',
         desc: '老闆重視拿到證書交差，但對花錢買新系統極度猶豫，IT 只有 1.5 人兼任。',
-        baseWill: 42
+        baseWill: 44
       },
       {
         name: '上市電子業・供應鏈要角',
         desc: '受國外大客戶稽核壓力大，高層口頭支持，但各部門主管常抱怨資安影響產線效率。',
-        baseWill: 55
+        baseWill: 56
       },
       {
         name: '新創軟體公司・雲端原生',
         desc: '工程師技術能力強、接受度高，但討厭寫繁瑣的四階程序書，覺得文件都是形式主義。',
         baseWill: 60
+      },
+      {
+        name: '區域醫療與生技實驗室',
+        desc: '受主管機關防護基準要求高，醫護與研發人員極度忙碌，常以救人／實驗優先要求豁免。',
+        baseWill: 50
       }
     ];
 
+    // 36 格完整地圖：
+    // 四角特殊格：0 (起點), 9 (右上：管理審查), 18 (右下：SOC 隔離/救火), 27 (左下：外部驗證稽核)
+    // 中間特殊格：4 (內部稽核), 13 (預算/合約加碼), 22 (內部稽核), 31 (突發事件)
+    // 其餘 24 格為 ISO/IEC 27001:2022 控制項（A.5 x6, A.6 x5, A.7 x5, A.8 x8 = 24 項）+ 8 格突發災難
     const TILES = [
-      { id: 0,  type: 'start',      icon: '🚀', name: '年度資安啟動日', cName: '專案啟動會議 (Kick-off)', sub: '經過領預算/收期款', desc: '新年度預算核撥，並檢視資安政策目標。', cDesc: '進入新一季顧問輔導週期，請款入帳並盤點客戶專案進度。' },
-      { id: 1,  type: 'control',    icon: '📜', code: 'A.5.1',  domain: 'org',  name: '資安政策與規範',       cost: 120, days: 2, difficulty: 0,  counters: '合規稽核缺失、權責不清', desc: '建立高階主管核准的資訊安全政策，明確分工。', clientExcuse: '「這個簡單，你幫我們套範本改公司名字，我請總經理簽名就好。」' },
-      { id: 2,  type: 'incident',   icon: '🎣', name: '突發：釣魚郵件風暴',   desc: '業務部收到偽裝成「薪資調整通知」的釣魚信，多人差點點擊連結！', cDesc: '客戶業務部全體中招點了釣魚信，老闆氣急敗壞打電話問顧問：「我們不是有做 ISO 嗎？怎麼還會這樣！」' },
-      { id: 3,  type: 'control',    icon: '🎓', code: 'A.6.3',  domain: 'peop', name: '資安意識與社交演練', cost: 130, days: 2, difficulty: -5, counters: '釣魚郵件風暴、誤點惡意連結', desc: '定期舉辦全體員工資安教育訓練與釣魚郵件演練。', clientExcuse: '「大家最近趕出貨很忙，教育訓練可以發簡報給他們自己看、簽名就好嗎？」' },
-      { id: 4,  type: 'control',    icon: '🤝', code: 'A.5.19', domain: 'org',  name: '供應商資安管理',     cost: 140, days: 2, difficulty: -5, counters: '委外廠商資料外洩', desc: '要求雲端與委外廠商簽署資安協議並定期評估。', clientExcuse: '「那家 ERP 廠商配合十幾年了，叫人家簽保密跟資安條款很傷感情啦。」' },
-      { id: 5,  type: 'governance', icon: '📊', name: '管理審查會議',         cName: '高階管理審查會議', desc: '召開高階主管管理審查會議，檢討稽核結果與資源需求。', cDesc: '向客戶總經理簡報輔導現況！這是扭轉客戶配合意願、爭取資源的關鍵時刻。' },
-      { id: 6,  type: 'control',    icon: '🪪', code: 'A.7.2',  domain: 'phys', name: '門禁刷卡與訪客登記', cost: 130, days: 2, difficulty: 0,  counters: '尾隨闖入機房、設備遭竊', desc: '落實辦公區門禁管控、訪客陪同與識別證配戴。', clientExcuse: '「櫃台總機常常不在位置上，訪客登記簿有放著，大家有空再寫。」' },
-      { id: 7,  type: 'incident',   icon: '🔌', name: '突發：來路不明隨身碟', desc: '有同仁在茶水間撿到 USB 隨身碟並直接插上辦公電腦！', cDesc: '客戶產線人員拿私人隨身碟插進機台電腦傳檔案，結果把蠕蟲病毒帶進內網！' },
-      { id: 8,  type: 'control',    icon: '📹', code: 'A.7.4',  domain: 'phys', name: '機房環境與監視監控', cost: 150, days: 3, difficulty: -10,counters: '機房過熱跳電、實體入侵', desc: '部署機房溫濕度感測、UPS 不斷電系統與 24H 錄影。', clientExcuse: '「機房冷氣吹了十幾年都沒事，換環控跟 UPS 報價十幾萬，明年再編預算吧。」' },
-      { id: 9,  type: 'control',    icon: '🧹', code: 'A.7.7',  domain: 'phys', name: '桌面淨空與螢幕鎖定', cost: 110, days: 1, difficulty: 5,  counters: '機密文件外流、帳號遭冒用', desc: '離開座位自動鎖定螢幕，機敏紙本不上桌過夜。', clientExcuse: '「工程師嫌螢幕 5 分鐘自動鎖定很煩，我們先設成 30 分鐘可以嗎？」' },
-      { id: 10, type: 'quarantine', icon: '☣️', name: 'SOC 資安事件隔離區', cName: '緊急救火支援現場', desc: '偵測到異常外連行為，系統自動隔離主機並進行根因分析 (RCA)。', cDesc: '客戶半夜發現異常外連，緊急 Call 顧問進場協助寫事件調查報告與矯正單！' },
-      { id: 11, type: 'control',    icon: '🛡️', code: 'A.8.7',  domain: 'tech', name: 'EDR 端點防護與防毒', cost: 180, days: 3, difficulty: -15,counters: '勒索軟體攻擊、來路不明隨身碟', desc: '部署端點偵測與回應系統，即時攔截惡意程式。', clientExcuse: '「我們不是有裝免費防毒了嗎？EDR 一台一年要好幾千塊，老闆肯定不會簽。」' },
-      { id: 12, type: 'incident',   icon: '💀', name: '突發：勒索軟體加密',   desc: '駭客利用未修補漏洞發動勒索病毒攻擊，檔案伺服器面臨加密危機！', cDesc: '客戶共用磁碟機凌晨被勒索病毒整台加密！老闆急問：「我們下個月要驗證稽核了怎麼辦？」' },
-      { id: 13, type: 'control',    icon: '💾', code: 'A.8.13', domain: 'tech', name: '異地備份與還原演練', cost: 160, days: 3, difficulty: -10,counters: '勒索軟體加密、資料庫毀損', desc: '落實 3-2-1 備份原則與不可竄改備份，定期測試還原。', clientExcuse: '「每天都有備份到 NAS 啦，還原演練要停機測試太麻煩，寫個演練紀錄表就好。」' },
-      { id: 14, type: 'control',    icon: '🔐', code: 'A.8.5',  domain: 'tech', name: 'MFA 多因子驗證',     cost: 150, days: 2, difficulty: -10,counters: 'VPN 帳密撞庫外洩', desc: 'VPN 與重要系統全面啟用雙因子驗證，杜絕帳密外洩風險。', clientExcuse: '「業務主管出差收不到簡訊驗證碼會罵人，VPN 可以先不要開 MFA 嗎？」' },
-      { id: 15, type: 'audit',      icon: '🔍', name: '內部稽核與矯正 (CAR)', cName: '預評與內部稽核 (CAR)', desc: '稽核員發現部分系統未落實權限盤點，開立矯正措施單。', cDesc: '正式驗證前的內部稽核！那些客戶當初「只做表面功夫」的項目，現在全被抓出來了。' },
-      { id: 16, type: 'control',    icon: '🩹', code: 'A.8.8',  domain: 'tech', name: '弱點掃描與修補管理', cost: 170, days: 3, difficulty: -12,counters: '零日漏洞攻擊、網站遭竄改', desc: '定期執行弱點掃描並於期限內完成高風險修補。', clientExcuse: '「掃出一堆高風險漏洞，但舊系統廠商倒閉了不敢亂更新，可不可以風險接受？」' },
-      { id: 17, type: 'incident',   icon: '📦', name: '突發：委外廠商資料外洩', desc: '合作的行銷系統商遭駭客入侵，連帶波及本公司客戶名單！', cDesc: '客戶的委外網站維護商把資料庫密碼寫死在程式裡導致外洩，新聞記者已經打來問了！' },
-      { id: 18, type: 'control',    icon: '🚨', code: 'A.5.30', domain: 'org',  name: '營運持續計畫 (BCP)', cost: 180, days: 3, difficulty: -8, counters: '勒索軟體加密、機房過熱跳電', desc: '建立災難復原計畫 (DRP) 並每年舉辦實兵演練。', clientExcuse: '「BCP 計畫書寫厚厚一本給稽核員看就好，真的斷線我們直接手動抄紙本啦。」' },
-      { id: 19, type: 'cert_audit', icon: '🏆', name: '外部驗證稽核日',     cName: '第三方驗證稽核日', desc: '第三方驗證機構到場進行年度追查與換證稽核！', cDesc: '驗證機構主導稽核員 (LA) 正式進場！客戶平時有沒有聽顧問的話，今天一翻兩瞪眼！' }
+      // 0: Top-Left Corner
+      { id: 0,  type: 'start',      icon: '🚀', name: '年度資安啟動日', cName: '專案啟動會議 (Kick-off)', desc: '新年度預算核撥，並檢視資安政策目標。', cDesc: '進入新一季顧問輔導週期，請款入帳並盤點客戶專案進度。' },
+      // 1..8 (Top edge)
+      { id: 1,  type: 'control',    icon: '📜', code: 'A.5.1',  domain: 'org',  name: '資安政策與規範',       cost: 120, days: 2, difficulty: 0,   counters: '合規稽核缺失、權責不清', desc: '建立高階主管核准的資訊安全政策，明確分工。', clientExcuse: '「這個簡單，你幫我們套範本改公司名字，我請總經理簽名就好。」' },
+      { id: 2,  type: 'control',    icon: '📦', code: 'A.5.9',  domain: 'org',  name: '資訊資產盤點與分級',   cost: 130, days: 2, difficulty: -3,  counters: '影子 IT、未知主機遭駭', desc: '建立完整軟硬體與資料資產清冊，並指定資產擁有者。', clientExcuse: '「資產清冊會計那邊有財產目錄啦，系統跟雲端帳號我們沒空逐一盤點。」' },
+      { id: 3,  type: 'incident',   icon: '🎣', name: '突發：釣魚郵件風暴',   desc: '業務部收到偽裝成「薪資調整通知」的釣魚信，多人差點點擊連結！', cDesc: '客戶業務部全體中招點了釣魚信，老闆氣急敗壞打電話問顧問：「我們不是有做 ISO 嗎？怎麼還會這樣！」' },
+      { id: 4,  type: 'control',    icon: '🔍', code: 'A.5.7',  domain: 'org',  name: '威脅情資收集與應變',   cost: 140, days: 2, difficulty: -5,  counters: '零日漏洞攻擊、釣魚郵件風暴', desc: '訂閱 TWCERT/CC 等資安情資並建立預警通報機制。', clientExcuse: '「每天收那麼多情資通報信也看不完，IT 只有兩個人哪有時間分析。」' },
+      { id: 5,  type: 'control',    icon: '🤝', code: 'A.5.19', domain: 'org',  name: '供應商資安管理',       cost: 150, days: 2, difficulty: -5,  counters: '委外廠商資料外洩', desc: '要求雲端與委外廠商簽署資安協議並定期評估。', clientExcuse: '「那家 ERP 廠商配合十幾年了，叫人家簽保密跟資安條款很傷感情啦。」' },
+      { id: 6,  type: 'incident',   icon: '🎭', name: '突發：CEO 變臉詐騙',   desc: '駭客偽造總經理信箱要求財務部緊急匯款 300 萬至海外帳戶！', cDesc: '客戶財務主管差點把貨款匯給詐騙集團，幸好銀行行員機警攔截，全公司嚇出一身冷汗！' },
+      { id: 7,  type: 'control',    icon: '☁️', code: 'A.5.23', domain: 'org',  name: '雲端服務資安治理',     cost: 160, days: 3, difficulty: -8,  counters: '雲端權限誤開外洩', desc: '界定雲端共同責任模型，管控 AWS/Azure/M365 組態。', clientExcuse: '「雲端主機是外包商幫我們開的，帳號密碼都在他們那邊，應該很安全吧？」' },
+      { id: 8,  type: 'control',    icon: '🚨', code: 'A.5.30', domain: 'org',  name: '營運持續計畫 (BCP)',   cost: 190, days: 3, difficulty: -10, counters: '勒索軟體加密、機房過熱跳電', desc: '建立災難復原計畫 (DRP) 並每年舉辦實兵演練。', clientExcuse: '「BCP 計畫書寫厚厚一本給稽核員看就好，真的斷線我們直接手動抄紙本啦。」' },
+      // 9: Top-Right Corner
+      { id: 9,  type: 'governance', icon: '📊', name: '管理審查會議',         cName: '高階管理審查會議', desc: '召開高階主管管理審查會議，檢討稽核結果與資源需求。', cDesc: '向客戶總經理簡報輔導現況！這是扭轉客戶配合意願、爭取資源的關鍵時刻。' },
+
+      // 10..17 (Right edge)
+      { id: 10, type: 'control',    icon: '🕵️', code: 'A.6.1',  domain: 'peop', name: '人員任用安全審查',     cost: 110, days: 2, difficulty: 0,   counters: '內部人員竊密、權限濫用', desc: '針對關鍵職務新進人員執行背景與資歷查核。', clientExcuse: '「現在缺工嚴重，人肯來報到就不錯了，哪敢再查人家前公司評價。」' },
+      { id: 11, type: 'control',    icon: '📝', code: 'A.6.2',  domain: 'peop', name: '聘僱條款與保密協議',   cost: 115, days: 2, difficulty: 5,   counters: '離職員工帶走營業秘密', desc: '全員簽署保密協議 (NDA) 與資安責任切結書。', clientExcuse: '「舊員工都做十幾年了，現在補簽 NDA 他們會不會以為公司要裁員？」' },
+      { id: 12, type: 'incident',   icon: '🏃', name: '突發：離職工程師竊密', desc: '研發部資深工程師離職前夕，深夜大量下載核心原始碼至私人雲端！', cDesc: '客戶研發主管離職跳槽競爭對手，結果帳號過了一個月還沒停用，機密資料全被打包帶走！' },
+      { id: 13, type: 'control',    icon: '🎓', code: 'A.6.3',  domain: 'peop', name: '資安意識與社交演練',   cost: 140, days: 2, difficulty: -5,  counters: '釣魚郵件風暴、CEO 變臉詐騙', desc: '定期舉辦全體員工資安教育訓練與釣魚郵件演練。', clientExcuse: '「大家最近趕出貨很忙，教育訓練可以發簡報給他們自己看、簽名就好嗎？」' },
+      { id: 14, type: 'audit',      icon: '🔍', name: '期中內部稽核 (CAR)',   cName: '期中預評與內稽 (CAR)', desc: '內部稽核員抽查各部門執行紀錄，檢視制度落實度。', cDesc: '期中內部稽核登場！客戶當初「只寫文件沒執行」的項目，現在全被稽核員揪出來了。' },
+      { id: 15, type: 'control',    icon: '🚪', code: 'A.6.5',  domain: 'peop', name: '離職與調職權限回收',   cost: 125, days: 2, difficulty: -3,  counters: '離職工程師竊密、幽靈帳號', desc: '建立 HR 與 IT 連動機制，離職當日立即停用所有帳號。', clientExcuse: '「有時候人資忘了通知 IT，帳號就先留著方便交接給代理人使用。」' },
+      { id: 16, type: 'control',    icon: '🏠', code: 'A.6.7',  domain: 'peop', name: '遠距辦公安全規範',     cost: 135, days: 2, difficulty: -5,  counters: '家用網路遭駭入侵內網', desc: '規範居家與出差連回公司內網之 VPN 與設備安全要求。', clientExcuse: '「業務在外面用咖啡廳免費 Wi-Fi 連公司系統很正常啊，幹嘛限制這麼多？」' },
+      { id: 17, type: 'incident',   icon: '🔌', name: '突發：來路不明隨身碟', desc: '有同仁在茶水間撿到 USB 隨身碟並直接插上辦公電腦！', cDesc: '客戶產線人員拿私人隨身碟插進機台電腦傳檔案，結果把蠕蟲病毒帶進內網！' },
+
+      // 18: Bottom-Right Corner
+      { id: 18, type: 'quarantine', icon: '☣️', name: 'SOC 資安事件隔離區', cName: '緊急救火支援現場', desc: '偵測到異常外連行為，系統自動隔離主機並進行根因分析 (RCA)。', cDesc: '客戶半夜發現異常外連，緊急 Call 顧問進場協助寫事件調查報告與矯正單！' },
+
+      // 19..26 (Bottom edge: right to left)
+      { id: 19, type: 'control',    icon: '🪪', code: 'A.7.2',  domain: 'phys', name: '門禁刷卡與訪客登記',   cost: 130, days: 2, difficulty: 0,   counters: '尾隨闖入機房、設備遭竊', desc: '落實辦公區門禁管控、訪客陪同與識別證配戴。', clientExcuse: '「櫃台總機常常不在位置上，訪客登記簿有放著，大家有空再寫。」' },
+      { id: 20, type: 'control',    icon: '📹', code: 'A.7.4',  domain: 'phys', name: '機房環境與監視監控',   cost: 160, days: 3, difficulty: -10, counters: '機房過熱跳電、實體入侵', desc: '部署機房溫濕度感測、UPS 不斷電系統與 24H 錄影。', clientExcuse: '「機房冷氣吹了十幾年都沒事，換環控跟 UPS 報價十幾萬，明年再編預算吧。」' },
+      { id: 21, type: 'incident',   icon: '🔥', name: '突發：機房冷氣故障跳電', desc: '週末假日機房空調故障導致溫度飆破 45°C，多台核心伺服器熱當機！', cDesc: '客戶機房冷氣半夜漏水停機，又沒有環境告警，週一早上全公司 ERP 全部開不起來！' },
+      { id: 22, type: 'control',    icon: '🧹', code: 'A.7.7',  domain: 'phys', name: '桌面淨空與螢幕鎖定',   cost: 110, days: 1, difficulty: 5,   counters: '機密文件外流、帳號遭冒用', desc: '離開座位自動鎖定螢幕，機敏紙本不上桌過夜。', clientExcuse: '「工程師嫌螢幕 5 分鐘自動鎖定很煩，我們先設成 30 分鐘可以嗎？」' },
+      { id: 23, type: 'grant',      icon: '💎', name: '資安強化專案補助',     cName: '二期擴充合約簽署', desc: '申請通過政府／集團資安強化專案補助，資源大幅挹注！', cDesc: '客戶高層肯定階段成果，主動追加第二階段資安治理與演練輔導合約！' },
+      { id: 24, type: 'control',    icon: '🔌', code: 'A.7.10', domain: 'phys', name: '儲存媒體與 USB 管控',  cost: 150, days: 2, difficulty: -8,  counters: '來路不明隨身碟、離職工程師竊密', desc: '封閉非授權 USB 連接埠並管制外接式硬碟使用。', clientExcuse: '「研發跟業務每天都要用隨身碟傳大檔案，把 USB 鎖起來他們會造反！」' },
+      { id: 25, type: 'control',    icon: '♻️', code: 'A.7.14', domain: 'phys', name: '設備報廢與硬碟銷毀',   cost: 120, days: 2, difficulty: 0,   counters: '報廢硬碟資料外洩', desc: '汰換電腦與硬碟前執行消磁或實體銷毀並留存紀錄。', clientExcuse: '「舊電腦硬碟我們都有按右鍵格式化了，直接交給資源回收商載走就好。」' },
+      { id: 26, type: 'incident',   icon: '📦', name: '突發：委外廠商資料外洩', desc: '合作的行銷系統商遭駭客入侵，連帶波及本公司客戶名單！', cDesc: '客戶的委外網站維護商把資料庫密碼寫死在程式裡導致外洩，新聞記者已經打來問了！' },
+
+      // 27: Bottom-Left Corner
+      { id: 27, type: 'cert_audit', icon: '🏆', name: '外部驗證稽核日',     cName: '第三方驗證稽核日', desc: '第三方驗證機構到場進行年度追查與換證稽核！', cDesc: '驗證機構主導稽核員 (LA) 正式進場！客戶平時有沒有聽顧問的話，今天一翻兩瞪眼！' },
+
+      // 28..35 (Left edge: bottom to top)
+      { id: 28, type: 'control',    icon: '👑', code: 'A.8.2',  domain: 'tech', name: '特權帳號管控 (PAM)',   cost: 185, days: 3, difficulty: -12, counters: '勒索軟體橫向擴散、離職工程師竊密', desc: '納管系統管理員最高權限帳號，落實權限最小化與側錄。', clientExcuse: '「所有 IT 都共用同一組 Administrator 密碼比較方便救援啦，幹嘛分開？」' },
+      { id: 29, type: 'control',    icon: '🔐', code: 'A.8.5',  domain: 'tech', name: 'MFA 多因子驗證',       cost: 155, days: 2, difficulty: -10, counters: 'CEO 變臉詐騙、遠距辦公遭駭', desc: 'VPN 與重要系統全面啟用雙因子驗證，杜絕帳密外洩風險。', clientExcuse: '「業務主管出差收不到簡訊驗證碼會罵人，VPN 可以先不要開 MFA 嗎？」' },
+      { id: 30, type: 'incident',   icon: '💀', name: '突發：勒索軟體加密',   desc: '駭客利用未修補漏洞發動勒索病毒攻擊，檔案伺服器面臨加密危機！', cDesc: '客戶共用磁碟機凌晨被勒索病毒整台加密！老闆急問：「我們下個月要驗證稽核了怎麼辦？」' },
+      { id: 31, type: 'control',    icon: '🛡️', code: 'A.8.7',  domain: 'tech', name: 'EDR 端點防護與防毒',   cost: 190, days: 3, difficulty: -15, counters: '勒索軟體加密、來路不明隨身碟', desc: '部署端點偵測與回應系統，即時攔截惡意程式。', clientExcuse: '「我們不是有裝免費防毒了嗎？EDR 一台一年要好幾千塊，老闆肯定不會簽。」' },
+      { id: 32, type: 'control',    icon: '🩹', code: 'A.8.8',  domain: 'tech', name: '弱點掃描與修補管理',   cost: 175, days: 3, difficulty: -12, counters: '零日漏洞攻擊、勒索軟體加密', desc: '定期執行弱點掃描並於期限內完成高風險修補。', clientExcuse: '「掃出一堆高風險漏洞，但舊系統廠商倒閉了不敢亂更新，可不可以風險接受？」' },
+      { id: 33, type: 'control',    icon: '💾', code: 'A.8.13', domain: 'tech', name: '異地備份與還原演練',   cost: 170, days: 3, difficulty: -10, counters: '勒索軟體加密、機房冷氣故障跳電', desc: '落實 3-2-1 備份原則與不可竄改備份，定期測試還原。', clientExcuse: '「每天都有備份到 NAS 啦，還原演練要停機測試太麻煩，寫個演練紀錄表就好。」' },
+      { id: 34, type: 'incident',   icon: '☁️', name: '突發：雲端儲存桶公開外洩', desc: '工程師測試時將雲端物件儲存設為 Public Read，客戶個資遭爬蟲掃走！', cDesc: '客戶工程師把測試機的 S3 Bucket 權限開成公開，被國外資安研究員通報個資外洩！' },
+      { id: 35, type: 'control',    icon: '📡', code: 'A.8.16', domain: 'tech', name: 'SIEM 日誌監控與告警', cost: 195, days: 3, difficulty: -14, counters: '所有網路入侵與異常潛伏攻擊', desc: '集中收集防火牆、伺服器與 AD 日誌並設定即時異常告警。', clientExcuse: '「Log 都有存在各台主機裡面了，買 SIEM 集中分析平台太貴，出事再人工翻就好。」' }
     ];
+
+    const TOTAL_CONTROLS = TILES.filter(t => t.type === 'control').length; // 24 項
+
+    let selectedMaxRounds = 24;
 
     let state = {
       mode: 1, // 1: 單人企業版, 2: 雙人企業版, 3: 資安顧問版
-      maxRounds: 12,
+      maxRounds: 24,
       round: 1,
       currentPlayer: 0,
       players: [],
       controls: {},
-      // 顧問版專屬狀態
       consultant: {
-        fee: 80,           // 顧問專案收益 (萬)
-        hours: 24,         // 可用顧問人天 (天)
-        reputation: 85,    // 顧問專業口碑 (0~100)
+        fee: 150,            // 顧問專案收益 (萬) - 提升
+        hours: 42,           // 可用顧問人天 (天) - 提升
+        reputation: 85,      // 顧問專業口碑 (0~100)
         clientName: '',
-        clientWill: 50,    // 客戶配合意願 (0~100)
+        clientDesc: '',
+        clientWill: 52,      // 客戶配合意願 (0~100)
         clientStability: 100 // 客戶營運穩定度 (0~100)
       },
       busy: false,
       gameOver: false
     };
 
+    function selectLength(rounds) {
+      selectedMaxRounds = rounds;
+      document.querySelectorAll('.len-btn').forEach(btn => {
+        const r = Number(btn.getAttribute('data-rounds'));
+        if (r === rounds) {
+          btn.className = 'len-btn px-3 py-1.5 rounded-lg text-xs font-bold border border-sky-400 bg-sky-500/20 text-sky-300 transition';
+        } else {
+          btn.className = 'len-btn px-3 py-1.5 rounded-lg text-xs font-bold border border-slate-700 bg-slate-800 text-slate-300 hover:border-sky-400 transition';
+        }
+      });
+    }
+
     function startGame(mode) {
       state.mode = mode;
+      state.maxRounds = selectedMaxRounds;
       state.round = 1;
       state.currentPlayer = 0;
       state.controls = {};
       state.busy = false;
       state.gameOver = false;
 
+      // 依選擇的局數比例微調初始資源，確保長局更有策略深度
+      const scale = selectedMaxRounds / 24;
+
       const modePill = document.getElementById('mode-pill');
       modePill.classList.remove('hidden');
 
       if (mode === 3) {
-        // 資安顧問模式初始化
         const profile = CLIENT_PROFILES[Math.floor(Math.random() * CLIENT_PROFILES.length)];
+        const initHours = Math.round(42 * scale);
+        const initFee = Math.round(150 * scale);
         state.consultant = {
-          fee: 80,
-          hours: 24,
+          fee: initFee,
+          hours: initHours,
           reputation: 85,
           clientName: profile.name,
           clientDesc: profile.desc,
@@ -350,21 +433,21 @@
         ];
 
         modePill.className = 'text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
-        modePill.textContent = '💼 資安顧問版';
-        document.getElementById('header-subtitle').textContent = `輔導客戶：【${profile.name}】｜建議你可以寫，但客戶做不做全看造化！`;
+        modePill.textContent = `💼 資安顧問版 (${state.maxRounds}回合)`;
+        document.getElementById('header-subtitle').textContent = `輔導客戶：【${profile.name}】｜10×10 完整專案地圖・建議你可以寫，但客戶做不做全看造化！`;
         document.getElementById('maturity-title').textContent = '📊 客戶實際落地成熟度（vs 紙上建議）';
         document.getElementById('log-title').textContent = '📜 顧問輔導工作日誌';
-        document.getElementById('soa-modal-title').textContent = '📋 顧問建議追蹤表 (Gap Analysis & SoA)';
+        document.getElementById('soa-modal-title').textContent = `📋 顧問建議追蹤表 (Gap Analysis & SoA｜共 ${TOTAL_CONTROLS} 項)`;
         document.getElementById('soa-modal-sub').textContent = '檢視哪些項目「客戶已落實」、哪些「只交紙本文件」或「被客戶已讀不回」';
       } else {
-        // 企業內部版初始化
+        const initBudget = Math.round((mode === 1 ? 2200 : 2000) * scale);
         state.players = [
           {
             id: 0,
             name: mode === 1 ? '資安負責人 (你)' : '玩家 1：資安負責人',
             role: 'CISO / 資安主管',
             pos: 0,
-            budget: 1200,
+            budget: initBudget,
             stability: 100,
             skipTurns: 0,
             colorClass: 'token-p1',
@@ -378,7 +461,7 @@
             name: '玩家 2：IT 維運主管',
             role: 'IT Manager',
             pos: 0,
-            budget: 1200,
+            budget: initBudget,
             stability: 100,
             skipTurns: 0,
             colorClass: 'token-p2',
@@ -387,11 +470,11 @@
         }
 
         modePill.className = 'text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-sky-500/20 text-sky-300 border border-sky-500/40';
-        modePill.textContent = mode === 1 ? '🧑‍💼 單人企業版' : '⚔️ 雙人企業對決';
-        document.getElementById('header-subtitle').textContent = '職場防駭生存模擬戰｜守住公司營運與客戶信任，別讓駭客把主機鎖起來！';
+        modePill.textContent = mode === 1 ? `🧑‍💼 單人企業版 (${state.maxRounds}回合)` : `⚔️ 雙人企業對決 (${state.maxRounds}回合)`;
+        document.getElementById('header-subtitle').textContent = '職場防駭生存模擬戰｜10×10 完整防禦地圖・守住公司營運與客戶信任！';
         document.getElementById('maturity-title').textContent = '📊 企業防禦成熟度總覽';
         document.getElementById('log-title').textContent = '📜 辦公室戰情室紀錄';
-        document.getElementById('soa-modal-title').textContent = '📋 適用性聲明書 (SoA) 控制項總覽';
+        document.getElementById('soa-modal-title').textContent = `📋 適用性聲明書 (SoA) 控制項總覽（共 ${TOTAL_CONTROLS} 項）`;
         document.getElementById('soa-modal-sub').textContent = '查看各控制措施目前部署等級與可抵禦的資安威脅';
       }
 
@@ -400,9 +483,9 @@
 
       if (mode === 3) {
         const c = state.consultant;
-        addLog(`💼 接案啟動！本案客戶為【<strong>${c.clientName}</strong>】（初始配合意願 ${c.clientWill}%）。${c.clientDesc}`, 'info');
+        addLog(`💼 接案啟動（${state.maxRounds} 回合制，初始工時 ${c.hours} 人天）！本案客戶為【<strong>${c.clientName}</strong>】（初始配合意願 ${c.clientWill}%）。${c.clientDesc}`, 'info');
       } else {
-        addLog('🎬 遊戲開始！請妥善分配資安預算，建置防線並保護公司營運穩定度。', 'info');
+        addLog(`🎬 遊戲開始（${state.maxRounds} 回合制，初始預算 $${state.players[0].budget}萬）！請在 36 格完整地圖中妥善部署 24 項控制防線。`, 'info');
       }
 
       renderAll();
@@ -424,7 +507,7 @@
       };
       const item = document.createElement('div');
       item.className = `p-2 rounded-lg border ${colors[type] || colors.normal} leading-snug`;
-      item.innerHTML = `<span class="text-[10px] opacity-60 mr-1">[R${state.round}]</span>${msg}`;
+      item.innerHTML = `<span class="text-[10px] opacity-60 mr-1">[R${state.round}/${state.maxRounds}]</span>${msg}`;
       logBox.prepend(item);
     }
 
@@ -454,53 +537,53 @@
             phys: 'bg-amber-500',
             tech: 'bg-purple-500'
           };
-          topBar = `<div class="h-1.5 w-full ${barColors[tile.domain]} rounded-full mb-1"></div>`;
+          topBar = `<div class="h-1 w-full ${barColors[tile.domain]} rounded-full mb-0.5"></div>`;
           if (ctrl) {
             if (state.mode === 3) {
-              // 顧問模式：區分「客戶已落實」vs「僅留存建議書/紙本交差」
               if (ctrl.adopted) {
-                bgClass = 'bg-emerald-950/60 border-emerald-500/50';
+                bgClass = 'bg-emerald-950/70 border-emerald-500/60';
               } else {
-                bgClass = 'bg-amber-950/40 border-amber-500/40 border-dashed';
+                bgClass = 'bg-amber-950/45 border-amber-500/45 border-dashed';
               }
             } else {
-              bgClass = ctrl.owner === 0 ? 'bg-sky-950/60 border-sky-500/50' : 'bg-amber-950/50 border-amber-500/50';
+              bgClass = ctrl.owner === 0 ? 'bg-sky-950/70 border-sky-500/60' : 'bg-amber-950/60 border-amber-500/60';
             }
           }
         } else if (tile.type === 'incident') {
-          bgClass = 'bg-rose-950/40 border-rose-500/30';
-        } else if (tile.type === 'start' || tile.type === 'cert_audit') {
-          bgClass = 'bg-emerald-950/40 border-emerald-500/30';
+          bgClass = 'bg-rose-950/45 border-rose-500/35';
+        } else if (tile.type === 'start' || tile.type === 'cert_audit' || tile.type === 'grant') {
+          bgClass = 'bg-emerald-950/45 border-emerald-500/35';
         } else {
-          bgClass = 'bg-slate-800/80 border-slate-600/40';
+          bgClass = 'bg-slate-800/85 border-slate-600/40';
         }
 
         const el = document.createElement('div');
         el.className = `tile ${bgClass} ${isCurrentPos ? 'tile-active' : ''}`;
         el.style.gridRow = r;
         el.style.gridColumn = c;
+        el.title = `${tile.code ? tile.code + ' ' : ''}${tile.name}：${tile.desc}`;
 
-        let levelStars = '';
+        let badgeTag = '';
         if (state.mode === 3) {
           if (ctrl) {
             if (ctrl.adopted) {
-              levelStars = `<span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30">落實 Lv.${ctrl.level}</span>`;
+              badgeTag = `<span class="text-[8px] font-bold px-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40">Lv.${ctrl.level}</span>`;
             } else {
-              levelStars = `<span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-500/30">僅建議書</span>`;
+              badgeTag = `<span class="text-[8px] font-bold px-1 rounded bg-amber-950 text-amber-300 border border-amber-500/40">紙本</span>`;
             }
           } else if (tile.type === 'control') {
-            levelStars = `<span class="text-[10px] text-slate-400">${tile.days}人天</span>`;
+            badgeTag = `<span class="text-[8px] text-slate-400">${tile.days}天</span>`;
           }
         } else {
           if (ctrl) {
-            levelStars = `<span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-950/80 ${ctrl.owner === 0 ? 'text-sky-300' : 'text-amber-300'}">Lv.${ctrl.level}</span>`;
+            badgeTag = `<span class="text-[8px] font-bold px-1 rounded bg-slate-950/80 ${ctrl.owner === 0 ? 'text-sky-300' : 'text-amber-300'}">Lv.${ctrl.level}</span>`;
           } else if (tile.type === 'control') {
-            levelStars = `<span class="text-[10px] text-slate-400">$${tile.cost}萬</span>`;
+            badgeTag = `<span class="text-[8px] text-slate-400">$${tile.cost}</span>`;
           }
         }
 
         const tokensHtml = playersHere.map(p =>
-          `<span class="w-4 h-4 rounded-full ${p.colorClass} border border-white inline-flex items-center justify-center text-[9px] font-black text-white">${state.mode === 3 ? '顧' : p.id + 1}</span>`
+          `<span class="w-3.5 h-3.5 rounded-full ${p.colorClass} border border-white inline-flex items-center justify-center text-[8px] font-black text-white">${state.mode === 3 ? '顧' : p.id + 1}</span>`
         ).join('');
 
         const displayName = (state.mode === 3 && tile.cName) ? tile.cName : tile.name;
@@ -508,61 +591,81 @@
         el.innerHTML = `
           <div>
             ${topBar}
-            <div class="flex items-center justify-between gap-1">
-              <span class="text-sm md:text-base leading-none">${tile.icon}</span>
-              ${levelStars}
+            <div class="flex items-center justify-between gap-0.5">
+              <span class="text-xs md:text-sm leading-none">${tile.icon}</span>
+              ${badgeTag}
             </div>
-            <div class="text-[10px] md:text-[11px] font-bold text-slate-100 leading-tight mt-1 line-clamp-2">
+            <div class="text-[9px] md:text-[10px] font-bold text-slate-100 leading-tight mt-0.5 line-clamp-2">
               ${tile.code ? `<span class="text-slate-400 font-normal">${tile.code}</span> ` : ''}${displayName}
             </div>
           </div>
-          <div class="flex items-center justify-between mt-1">
-            <span class="text-[9px] text-slate-400 truncate">${tile.type === 'control' ? DOMAINS[tile.domain].name.split(' ')[1] : ''}</span>
-            <div class="flex gap-1">${tokensHtml}</div>
+          <div class="flex items-center justify-between mt-0.5">
+            <span class="text-[8px] text-slate-400 truncate">${tile.type === 'control' ? DOMAINS[tile.domain].name.split(' ')[1] : ''}</span>
+            <div class="flex gap-0.5">${tokensHtml}</div>
           </div>
         `;
         board.appendChild(el);
       });
 
-      // 中央儀表板
+      // 中央 8x8 儀表板
       const p = state.players[state.currentPlayer];
       const hub = document.createElement('div');
       hub.className = 'center-hub text-center';
 
+      const adoptedCount = Object.values(state.controls).filter(c => c.adopted).length;
+      const paperCount = Object.values(state.controls).filter(c => !c.adopted && c.advised).length;
+      const deployedCount = Object.keys(state.controls).length;
+
       const statusHeader = state.mode === 3
         ? `<span>輔導週期：<strong class="text-white">第 ${state.round} / ${state.maxRounds} 回合</strong></span>
-           <span>客戶已落實：<strong class="text-emerald-400">${Object.values(state.controls).filter(c => c.adopted).length} / 12</strong></span>`
+           <span>已落實：<strong class="text-emerald-400">${adoptedCount}</strong> / 紙本：<strong class="text-amber-300">${paperCount}</strong>（共 ${TOTAL_CONTROLS} 項）</span>`
         : `<span>稽核週期進度：<strong class="text-white">第 ${state.round} / ${state.maxRounds} 回合</strong></span>
-           <span>已部署控制項：<strong class="text-sky-400">${Object.keys(state.controls).length} / 12</strong></span>`;
+           <span>已部署控制項：<strong class="text-sky-400">${deployedCount} / ${TOTAL_CONTROLS}</strong></span>`;
 
       const rollLabel = p.skipTurns > 0
         ? (state.mode === 3 ? '⏳ 幫客戶寫事件報告中（暫停一次）' : '⏳ 系統隔離中（跳過本回合）')
-        : (state.mode === 3 ? '🎲 擲骰子推進顧問行程' : '🎲 擲骰子推進工作');
+        : (state.mode === 3 ? '🎲 擲骰子推進顧問行程 (1~6步)' : '🎲 擲骰子推進工作 (1~6步)');
+
+      // 中央戰情小提示
+      const roundPct = Math.round((state.round / state.maxRounds) * 100);
+      const stageLabel = roundPct <= 35 ? '第一階段：盤點與制度建立期'
+                       : roundPct <= 70 ? '第二階段：技術縱深與演練強化期'
+                       : '第三階段：高壓稽核與驗證衝刺期';
 
       hub.innerHTML = `
-        <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800 pb-2">
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs md:text-sm text-slate-400 border-b border-slate-800 pb-3">
           ${statusHeader}
         </div>
 
-        <div class="my-auto py-2 flex flex-col items-center justify-center">
-          <div class="text-xs text-slate-400 mb-1">${state.mode === 3 ? '輔導專案進行中' : '目前行動輪次'}</div>
-          <div class="text-lg md:text-xl font-black ${p.badgeColor} mb-3">${p.name}</div>
+        <div class="my-auto py-4 flex flex-col items-center justify-center">
+          <span class="text-[11px] px-3 py-1 rounded-full bg-slate-800/90 border border-slate-700 text-slate-300 mb-3">
+            📅 ${stageLabel}
+          </span>
 
-          <div id="dice-display" class="w-16 h-16 rounded-2xl bg-slate-800 border-2 ${state.mode === 3 ? 'border-emerald-400/50' : 'border-sky-400/50'} flex items-center justify-center text-3xl font-black text-white shadow-inner mb-4">
-            🎲
+          <div class="text-xs text-slate-400 mb-1">${state.mode === 3 ? '輔導專案進行中' : '目前行動輪次'}</div>
+          <div class="text-xl md:text-2xl font-black ${p.badgeColor} mb-4">${p.name}</div>
+
+          <div class="flex items-center gap-4 mb-5">
+            <div id="dice-display" class="w-20 h-20 rounded-2xl bg-slate-800 border-2 ${state.mode === 3 ? 'border-emerald-400/60' : 'border-sky-400/60'} flex items-center justify-center text-4xl font-black text-white shadow-inner">
+              🎲
+            </div>
           </div>
 
           <button id="roll-btn" onclick="handleRoll()" ${state.busy || state.gameOver ? 'disabled' : ''}
-            class="px-6 py-3 rounded-xl bg-gradient-to-r ${state.mode === 3 ? 'from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 shadow-emerald-500/25' : 'from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 shadow-sky-500/25'} disabled:opacity-40 disabled:cursor-not-allowed font-black text-white shadow-lg transition transform active:scale-95 text-sm md:text-base">
+            class="px-8 py-3.5 rounded-xl bg-gradient-to-r ${state.mode === 3 ? 'from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 shadow-emerald-500/25' : 'from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 shadow-sky-500/25'} disabled:opacity-40 disabled:cursor-not-allowed font-black text-white shadow-lg transition transform active:scale-95 text-sm md:text-base">
             ${rollLabel}
           </button>
+
+          <p class="text-[11px] text-slate-400 mt-4 max-w-md">
+            💡 提示：滑鼠移至外圈任一格子可預覽該控制項或突發事件說明；繞行完整一圈（36 格）可獲得年度資源補給！
+          </p>
         </div>
 
-        <div class="grid grid-cols-4 gap-1.5 text-[10px] text-slate-400 pt-2 border-t border-slate-800">
-          <div class="flex items-center justify-center gap-1"><span class="w-2 h-2 rounded-full bg-sky-500"></span>組織</div>
-          <div class="flex items-center justify-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>人員</div>
-          <div class="flex items-center justify-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500"></span>實體</div>
-          <div class="flex items-center justify-center gap-1"><span class="w-2 h-2 rounded-full bg-purple-500"></span>技術</div>
+        <div class="grid grid-cols-4 gap-2 text-xs text-slate-300 pt-3 border-t border-slate-800">
+          <div class="flex items-center justify-center gap-1.5 bg-slate-900/70 py-1.5 rounded-lg"><span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span>A.5 組織 (6)</div>
+          <div class="flex items-center justify-center gap-1.5 bg-slate-900/70 py-1.5 rounded-lg"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>A.6 人員 (5)</div>
+          <div class="flex items-center justify-center gap-1.5 bg-slate-900/70 py-1.5 rounded-lg"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>A.7 實體 (5)</div>
+          <div class="flex items-center justify-center gap-1.5 bg-slate-900/70 py-1.5 rounded-lg"><span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>A.8 技術 (8)</div>
         </div>
       `;
       board.appendChild(hub);
@@ -575,7 +678,7 @@
         const c = state.consultant;
         const adoptedLevels = Object.values(state.controls).filter(x => x.adopted).reduce((s, x) => s + x.level, 0);
         const advisedCount = Object.keys(state.controls).length;
-        const score = (c.reputation * 15) + (c.fee * 5) + (c.clientStability * 8) + (adoptedLevels * 120);
+        const score = (c.reputation * 15) + (c.fee * 5) + (c.clientStability * 8) + (adoptedLevels * 100);
 
         container.innerHTML = `
           <!-- 顧問自身狀態 -->
@@ -603,7 +706,7 @@
             </div>
           </div>
 
-          <!-- 客戶公司狀態（不可直接控制） -->
+          <!-- 客戶公司狀態 -->
           <div class="bg-slate-900 border border-slate-700/80 rounded-xl p-4">
             <div class="flex items-center justify-between mb-1.5">
               <span class="text-xs font-bold text-slate-300">🏢 輔導客戶：${c.clientName}</span>
@@ -620,7 +723,7 @@
               </div>
               <div>
                 <div class="text-[10px] text-slate-400">建議已出具</div>
-                <div class="text-sm font-black text-slate-200">${advisedCount} 項</div>
+                <div class="text-sm font-black text-slate-200">${advisedCount} / ${TOTAL_CONTROLS}</div>
               </div>
             </div>
           </div>
@@ -633,7 +736,7 @@
         const active = idx === state.currentPlayer;
         const ownedCount = Object.values(state.controls).filter(c => c.owner === p.id).length;
         const totalLevels = Object.values(state.controls).filter(c => c.owner === p.id).reduce((s, c) => s + c.level, 0);
-        const score = p.budget + (p.stability * 10) + (totalLevels * 150);
+        const score = p.budget + (p.stability * 12) + (totalLevels * 140);
 
         return `
           <div class="bg-slate-900 border ${active ? 'border-sky-400/70 shadow-lg shadow-sky-950/50' : 'border-slate-800'} rounded-xl p-4 transition">
@@ -655,7 +758,7 @@
               </div>
               <div>
                 <div class="text-[10px] text-slate-400">負責控制項</div>
-                <div class="text-sm font-black text-amber-300">${ownedCount} 項</div>
+                <div class="text-sm font-black text-amber-300">${ownedCount} 項 (Lv.${totalLevels})</div>
               </div>
             </div>
           </div>
@@ -673,13 +776,13 @@
         tech: 'bg-purple-500'
       };
 
-      let totalMax = 12 * 3;
+      let totalMax = TOTAL_CONTROLS * 3;
       let currentSum = Object.values(state.controls).reduce((acc, c) => {
         if (state.mode === 3) return acc + (c.adopted ? c.level : 0);
         return acc + c.level;
       }, 0);
 
-      document.getElementById('overall-maturity').textContent = `${Math.round((currentSum / totalMax) * 100)}%`;
+      document.getElementById('overall-maturity').textContent = `${Math.round((currentSum / totalMax) * 100)}% (${currentSum}/${totalMax}級)`;
 
       bars.innerHTML = keys.map(k => {
         const domainTiles = TILES.filter(t => t.type === 'control' && t.domain === k);
@@ -740,12 +843,12 @@
 
       if (oldPos + steps >= TILES.length) {
         if (state.mode === 3) {
-          state.consultant.hours += 8;
-          state.consultant.fee += 25;
-          addLog(`💰 跨越階段里程碑！補充顧問工時 <strong>+8 人天</strong>，並順利請領階段顧問費 <strong>+$25萬</strong>！`, 'good');
+          state.consultant.hours += 14;
+          state.consultant.fee += 45;
+          addLog(`💰 跨越完整 36 格年度循環！補充顧問工時 <strong>+14 人天</strong>，並順利請領階段顧問費 <strong>+$45萬</strong>！`, 'good');
         } else {
-          player.budget += 250;
-          addLog(`💰 <strong>${player.name}</strong> 跨越年度循環，獲得新年度資安預算 <strong>+$250萬</strong>！`, 'good');
+          player.budget += 450;
+          addLog(`💰 <strong>${player.name}</strong> 跨越完整 36 格年度循環，獲得新年度資安預算 <strong>+$450萬</strong>！`, 'good');
         }
       }
 
@@ -765,11 +868,11 @@
       }
 
       if (tile.type === 'start') {
-        player.stability = Math.min(100, player.stability + 5);
+        player.stability = Math.min(100, player.stability + 6);
         showModal(
           'bg-emerald-500/20 text-emerald-300',
           '🚀 年度資安啟動日',
-          `<p>${tile.desc}</p><p class="text-emerald-300 font-bold">額外獎勵：營運穩定度 +5 點！</p>`,
+          `<p>${tile.desc}</p><p class="text-emerald-300 font-bold">額外獎勵：營運穩定度 +6 點！</p>`,
           [{ label: '確認並結束回合', primary: true, action: () => { closeModal(); endTurn(); } }]
         );
       } else if (tile.type === 'control') {
@@ -778,16 +881,30 @@
         handleIncidentTile(player, tile);
       } else if (tile.type === 'governance') {
         handleGovernanceTile(player);
+      } else if (tile.type === 'grant') {
+        player.budget += 320;
+        player.stability = Math.min(100, player.stability + 5);
+        addLog(`💎 <strong>${player.name}</strong> 申請通過資安強化專案補助，獲得預算 <strong>+$320萬</strong>、穩定度 +5！`, 'good');
+        showModal(
+          'bg-emerald-500/20 text-emerald-300',
+          '💎 資安強化專案補助入帳',
+          `<p>${tile.desc}</p>
+           <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-1">
+             <div>• 專案補助款：<span class="text-emerald-400 font-bold">+$320萬</span></div>
+             <div>• 治理信心加成：<span class="text-sky-300 font-bold">營運穩定度 +5 點</span></div>
+           </div>`,
+          [{ label: '收下補助並繼續', primary: true, action: () => { closeModal(); endTurn(); } }]
+        );
       } else if (tile.type === 'quarantine') {
         player.skipTurns = 1;
-        player.budget = Math.max(0, player.budget - 80);
-        addLog(`☣️ <strong>${player.name}</strong> 進入 SOC 隔離區，支付鑑識與加班費 $80萬，下回合暫停一次。`, 'bad');
+        player.budget = Math.max(0, player.budget - 100);
+        addLog(`☣️ <strong>${player.name}</strong> 進入 SOC 隔離區，支付鑑識與加班費 $100萬，下回合暫停一次。`, 'bad');
         showModal(
           'bg-amber-500/20 text-amber-300',
           '☣️ SOC 資安事件隔離區',
           `<p>偵測到可疑外連封包，必須立刻切斷網路並進行根因分析 (RCA)。</p>
            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-1">
-             <div>• 應變鑑識支出：<span class="text-rose-400 font-bold">-$80萬</span></div>
+             <div>• 應變鑑識支出：<span class="text-rose-400 font-bold">-$100萬</span></div>
              <div>• 處置狀態：<span class="text-amber-300 font-bold">下回合暫停移動 1 次</span></div>
            </div>`,
           [{ label: '接受隔離處置', primary: true, action: () => { closeModal(); endTurn(); } }]
@@ -799,19 +916,31 @@
       }
     }
 
+    // 8 大突發事件的聯防控制項對照表
+    const INCIDENT_DEFENSE_MAP = {
+      3:  [13, 4, 1],     // 釣魚郵件風暴 -> 意識演練(13), 威脅情資(4), 政策(1)
+      6:  [13, 29, 1],    // CEO 變臉詐騙 -> 意識演練(13), MFA(29), 政策(1)
+      12: [15, 28, 11],   // 離職工程師竊密 -> 離職權限回收(15), PAM(28), NDA(11)
+      17: [24, 31, 13],   // 來路不明隨身碟 -> USB管控(24), EDR(31), 意識演練(13)
+      21: [20, 33, 8],    // 機房冷氣故障跳電 -> 機房環控(20), 異地備份(33), BCP(8)
+      26: [5, 7, 1],      // 委外廠商資料外洩 -> 供應商管理(5), 雲端治理(7), 政策(1)
+      30: [31, 33, 32, 8],// 勒索軟體加密 -> EDR(31), 異地備份(33), 弱點修補(32), BCP(8)
+      34: [7, 2, 35]      // 雲端儲存桶公開外洩 -> 雲端治理(7), 資產盤點(2), SIEM(35)
+    };
+
     // ==================== 資安顧問版邏輯 ====================
     function resolveConsultantTile(player, tile) {
       const c = state.consultant;
 
       if (tile.type === 'start') {
-        c.hours += 3;
+        c.hours += 5;
         c.clientWill = Math.min(100, c.clientWill + 5);
         showModal(
           'bg-emerald-500/20 text-emerald-300',
           '🚀 專案啟動與進度檢討會議',
           `<p>${tile.cDesc}</p>
            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-1">
-             <div>• 專案資源補充：<span class="text-sky-300 font-bold">+3 顧問人天</span></div>
+             <div>• 專案資源補充：<span class="text-sky-300 font-bold">+5 顧問人天</span></div>
              <div>• 客戶窗口態度：<span class="text-emerald-300 font-bold">配合意願 +5%</span></div>
            </div>`,
           [{ label: '確認並推進專案', primary: true, action: () => { closeModal(); endTurn(); } }]
@@ -822,6 +951,21 @@
         handleConsultantIncidentTile(tile);
       } else if (tile.type === 'governance') {
         handleConsultantGovernanceTile();
+      } else if (tile.type === 'grant') {
+        c.fee += 60;
+        c.hours += 6;
+        c.reputation = Math.min(100, c.reputation + 4);
+        addLog(`💎 客戶主動加購第二階段資安演練與持續輔導合約！顧問費 <strong>+$60萬</strong>、工時 <strong>+6 人天</strong>、口碑 +4！`, 'good');
+        showModal(
+          'bg-emerald-500/20 text-emerald-300',
+          '💎 二期擴充合約順利簽署',
+          `<p>${tile.cDesc}</p>
+           <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-1">
+             <div>• 新增合約收益：<span class="text-amber-300 font-bold">+$60萬</span></div>
+             <div>• 增派顧問資源：<span class="text-sky-300 font-bold">+6 顧問人天</span>｜口碑 +4</div>
+           </div>`,
+          [{ label: '收下合約並繼續輔導', primary: true, action: () => { closeModal(); endTurn(); } }]
+        );
       } else if (tile.type === 'quarantine') {
         player.skipTurns = 1;
         c.hours = Math.max(0, c.hours - 2);
@@ -848,10 +992,8 @@
       const existing = state.controls[tile.id];
       const dom = DOMAINS[tile.domain];
 
-      // 計算客戶實際採納機率
-      const adoptProb = Math.max(15, Math.min(92, c.clientWill + (tile.difficulty || 0)));
+      const adoptProb = Math.max(18, Math.min(92, c.clientWill + (tile.difficulty || 0)));
 
-      // 狀況 A：尚未建議過，或之前「只交建議書（未落實）」可以再次催促客戶落實
       if (!existing || !existing.adopted) {
         const isFollowUp = existing && !existing.adopted;
         const neededDays = isFollowUp ? 1 : tile.days;
@@ -859,22 +1001,20 @@
         const actions = [];
 
         if (canDo) {
-          // 選項 1：全力說服（成本高、採納率 +20%）
           const deepDays = neededDays + 1;
           if (c.hours >= deepDays) {
             actions.push({
               label: `🎯 撰寫 ROI 風險分析＋向老闆簡報說服（耗時 ${deepDays} 人天｜採納率提升至 ${Math.min(95, adoptProb + 20)}%）`,
               primary: true,
-              action: () => executeConsultantProposal(tile, deepDays, Math.min(95, adoptProb + 20), true)
+              action: () => executeConsultantProposal(tile, deepDays, Math.min(95, adoptProb + 20))
             });
           }
-          // 選項 2：標準建議書
           actions.push({
             label: isFollowUp
               ? `📩 寄發稽核缺失預警信催促落實（耗時 1 人天｜採納率 ${adoptProb}%）`
               : `📝 出具四階程序書與改善建議書（耗時 ${neededDays} 人天｜採納率 ${adoptProb}%）`,
             primary: c.hours < deepDays,
-            action: () => executeConsultantProposal(tile, neededDays, adoptProb, false)
+            action: () => executeConsultantProposal(tile, neededDays, adoptProb)
           });
         }
 
@@ -894,6 +1034,7 @@
           `${statusNote}
            <p>${tile.desc}</p>
            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-1.5">
+             <div>• 可防禦事件：<span class="text-sky-300">${tile.counters}</span></div>
              <div>• 客戶目前配合意願：<span class="text-amber-300 font-bold">${c.clientWill}%</span>（預估本項實際落實機率：<span class="text-sky-300 font-bold">${adoptProb}%</span>）</div>
              <div>• 客戶常見推託：<span class="text-slate-400 italic">${tile.clientExcuse}</span></div>
              <div>• 你的剩餘工時：<span class="text-emerald-400 font-bold">${c.hours} 人天</span></div>
@@ -903,10 +1044,9 @@
         return;
       }
 
-      // 狀況 B：客戶之前已經「真正落實」了，嘗試推動進階強化 (Lv.2 / Lv.3)
       if (existing.level < 3) {
         const upDays = 2;
-        const upProb = Math.max(15, adoptProb - 10);
+        const upProb = Math.max(18, adoptProb - 8);
         const actions = [];
         if (c.hours >= upDays) {
           actions.push({
@@ -957,31 +1097,29 @@
       }
     }
 
-    function executeConsultantProposal(tile, daysUsed, prob, isPersuasive) {
+    function executeConsultantProposal(tile, daysUsed, prob) {
       const c = state.consultant;
       c.hours -= daysUsed;
 
       const roll = Math.random() * 100;
       if (roll <= prob) {
-        // 客戶採納並真正落實！
         state.controls[tile.id] = { owner: 0, level: 1, adopted: true, advised: true };
-        c.reputation = Math.min(100, c.reputation + 6);
-        c.clientStability = Math.min(100, c.clientStability + 8);
-        c.clientWill = Math.min(100, c.clientWill + 4);
+        c.reputation = Math.min(100, c.reputation + 5);
+        c.clientStability = Math.min(100, c.clientStability + 6);
+        c.clientWill = Math.min(100, c.clientWill + 3);
 
-        addLog(`✅ <strong>成功推動！</strong> 客戶採納顧問建議並實際落實 <strong>${tile.code} ${tile.name} (Lv.1)</strong>！（口碑 +6、配合意願 +4%）`, 'good');
+        addLog(`✅ <strong>成功推動！</strong> 客戶採納顧問建議並實際落實 <strong>${tile.code} ${tile.name} (Lv.1)</strong>！（口碑 +5、配合意願 +3%）`, 'good');
         showModal(
           'bg-emerald-500/20 text-emerald-300',
           '🎉 客戶拍板採納並實際落實！',
           `<p>在你的專業引導下，客戶點頭核准資源，<strong>${tile.code} ${tile.name}</strong> 正式落地運作！</p>
            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs space-y-1">
-             <div>• 客戶實際防禦：<span class="text-emerald-400 font-bold">已落實 Lv.1（穩定度 +8）</span></div>
-             <div>• 你的專業口碑：<span class="text-sky-300 font-bold">+6 點</span></div>
+             <div>• 客戶實際防禦：<span class="text-emerald-400 font-bold">已落實 Lv.1（穩定度 +6）</span></div>
+             <div>• 你的專業口碑：<span class="text-sky-300 font-bold">+5 點</span></div>
            </div>`,
           [{ label: '漂亮！繼續下一站', primary: true, action: () => { closeModal(); endTurn(); } }]
         );
       } else {
-        // 客戶不想花錢/嫌麻煩 -> 只交紙本交差（未真正落實，但顧問有留存建議證據）
         state.controls[tile.id] = { owner: 0, level: 0, adopted: false, advised: true };
         c.reputation = Math.min(100, c.reputation + 1);
 
@@ -1001,14 +1139,7 @@
 
     function handleConsultantIncidentTile(tile) {
       const c = state.consultant;
-      const defenseMap = {
-        2:  [3, 1],
-        7:  [11, 3],
-        12: [11, 13, 18],
-        17: [4, 1]
-      };
-
-      const relatedIds = defenseMap[tile.id] || [];
+      const relatedIds = INCIDENT_DEFENSE_MAP[tile.id] || [];
       let adoptedScore = 0;
       let advisedCount = 0;
       const adoptedList = [];
@@ -1027,45 +1158,44 @@
       });
 
       const reductionRate = Math.min(1, adoptedScore * 0.25);
-      const clientLoss = Math.round(24 * (1 - reductionRate));
+      const clientLoss = Math.round(20 * (1 - reductionRate));
       c.clientStability = Math.max(0, c.clientStability - clientLoss);
 
       let repDelta = 0;
       let outcomeHtml = '';
 
       if (reductionRate >= 1) {
-        repDelta = +10;
+        repDelta = +8;
         c.reputation = Math.min(100, c.reputation + repDelta);
-        c.clientWill = Math.min(100, c.clientWill + 12);
-        addLog(`🛡️ <strong>神機妙算！</strong>客戶當初聽顧問的話落實防線，成功阻斷【${tile.name}】！顧問口碑 <strong>+10</strong>，客戶對你佩服得五體投地（配合意願 +12%）！`, 'good');
+        c.clientWill = Math.min(100, c.clientWill + 10);
+        addLog(`🛡️ <strong>神機妙算！</strong>客戶當初聽顧問的話落實防線（${adoptedList.join('、')}），成功阻斷【${tile.name}】！顧問口碑 <strong>+8</strong>，配合意願 +10%！`, 'good');
         outcomeHtml = `<div class="p-3 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-200 text-xs space-y-1">
           <div class="font-bold">🎉 危機變轉機！客戶完全信服顧問專業！</div>
+          <div>• 發揮作用的防線：<span class="text-sky-300">${adoptedList.join('、')}</span></div>
           <div>• 客戶營運穩定度：<span class="text-emerald-300 font-bold">零損失</span></div>
-          <div>• 顧問口碑：<span class="text-sky-300 font-bold">+10 點</span>｜客戶配合意願：<span class="text-emerald-300 font-bold">+12%</span></div>
+          <div>• 顧問口碑：<span class="text-sky-300 font-bold">+8 點</span>｜客戶配合意願：<span class="text-emerald-300 font-bold">+10%</span></div>
         </div>`;
       } else if (advisedCount > 0) {
-        // 客戶出事了，但顧問之前白紙黑字建議過（甩鍋防禦成功！）
         repDelta = -2;
         c.reputation = Math.max(0, c.reputation + repDelta);
-        c.clientWill = Math.min(100, c.clientWill + 15); // 痛過才知道怕，意願大增！
-        addLog(`📑 客戶遭遇【${tile.name}】（穩定度 -${clientLoss}），企圖怪罪顧問，但你拿出<strong>「白紙黑字建議書與會議紀錄」</strong>成功自保（口碑僅 -2），客戶痛定思痛配合意願大增 <strong>+15%</strong>！`, 'warn');
+        c.clientWill = Math.min(100, c.clientWill + 12);
+        addLog(`📑 客戶遭遇【${tile.name}】（穩定度 -${clientLoss}），你拿出<strong>「白紙黑字建議書與會議紀錄」</strong>成功自保（口碑僅 -2），客戶痛定思痛配合意願大增 <strong>+12%</strong>！`, 'warn');
         outcomeHtml = `<div class="p-3 rounded-xl bg-amber-950/50 border border-amber-500/40 text-xs space-y-1.5">
           <div class="font-bold text-amber-300">📑 「我早就提醒過你們了！」——出示會議紀錄自保成功</div>
           <div>• 客戶當初未採納：<span class="text-rose-300">${ignoredList.join('、')}</span></div>
           <div>• 客戶營運衝擊：<span class="text-rose-400 font-bold">-${clientLoss} 點</span></div>
           <div>• 顧問口碑變化：<span class="text-amber-300 font-bold">-2 點</span>（有留存書面證據免於背黑鍋）</div>
-          <div>• 危機教育效果：<span class="text-emerald-300 font-bold">客戶終於知道怕了，配合意願 +15%！</span></div>
+          <div>• 危機教育效果：<span class="text-emerald-300 font-bold">客戶終於知道怕了，配合意願 +12%！</span></div>
         </div>`;
       } else {
-        // 顧問連建議都還沒提過，客戶就先出事了 -> 口碑重傷
-        repDelta = -14;
+        repDelta = -10;
         c.reputation = Math.max(0, c.reputation + repDelta);
         c.clientWill = Math.min(100, c.clientWill + 5);
-        addLog(`💥 客戶遭遇【${tile.name}】（穩定度 -${clientLoss}），且顧問尚未針對此風險出具過正式提醒，客戶質疑顧問失職，口碑重挫 <strong>-14</strong>！`, 'bad');
+        addLog(`💥 客戶遭遇【${tile.name}】（穩定度 -${clientLoss}），且顧問尚未針對此風險出具過正式提醒，口碑受損 <strong>-10</strong>！`, 'bad');
         outcomeHtml = `<div class="p-3 rounded-xl bg-rose-950/50 border border-rose-500/40 text-xs space-y-1">
           <div class="font-bold text-rose-300">💥 顧問未及時預警，慘遭客戶質疑！</div>
           <div>• 客戶營運衝擊：<span class="text-rose-400 font-bold">-${clientLoss} 點</span></div>
-          <div>• 顧問口碑重挫：<span class="text-rose-400 font-bold">-14 點</span>（未留存相關風險提醒紀錄）</div>
+          <div>• 顧問口碑受損：<span class="text-rose-400 font-bold">-10 點</span>（未留存相關風險提醒紀錄）</div>
         </div>`;
       }
 
@@ -1085,23 +1215,23 @@
         `<p>你站在客戶總經理與一級主管面前進行簡報，請選擇本次簡報的策略主軸：</p>`,
         [
           {
-            label: '🔥 展示同業遭駭案例與法規罰則（客戶配合意願 +18%）',
+            label: '🔥 展示同業遭駭案例與法規罰則（客戶配合意願 +16%、口碑 +4）',
             primary: true,
             action: () => {
-              c.clientWill = Math.min(100, c.clientWill + 18);
+              c.clientWill = Math.min(100, c.clientWill + 16);
               c.reputation = Math.min(100, c.reputation + 4);
-              addLog(`📊 顧問用真實同業勒索案例震撼教育高層，客戶配合意願大幅提升 <strong>+18%</strong>！`, 'good');
+              addLog(`📊 顧問用真實同業勒索案例震撼教育高層，客戶配合意願大幅提升 <strong>+16%</strong>！`, 'good');
               closeModal();
               endTurn();
             }
           },
           {
-            label: '💼 提出第二階段專案擴充與維護合約（顧問費 +$40萬、人天 +3）',
+            label: '💼 提出第二階段專案擴充與維護合約（顧問費 +$50萬、人天 +5）',
             primary: false,
             action: () => {
-              c.fee += 40;
-              c.hours += 3;
-              addLog(`💰 顧問在管理審查會議成功簽下後續維運支援合約，顧問費 <strong>+$40萬</strong>、工時 <strong>+3 人天</strong>！`, 'good');
+              c.fee += 50;
+              c.hours += 5;
+              addLog(`💰 顧問在管理審查會議成功簽下後續維運支援合約，顧問費 <strong>+$50萬</strong>、工時 <strong>+5 人天</strong>！`, 'good');
               closeModal();
               endTurn();
             }
@@ -1114,26 +1244,27 @@
       const c = state.consultant;
       const adoptedCount = Object.values(state.controls).filter(x => x.adopted).length;
       const paperOnlyCount = Object.values(state.controls).filter(x => !x.adopted && x.advised).length;
+      const targetAdopted = Math.max(4, Math.min(10, Math.floor(state.round / 2) + 2));
 
-      if (adoptedCount >= 4) {
+      if (adoptedCount >= targetAdopted) {
         c.reputation = Math.min(100, c.reputation + 8);
         c.clientWill = Math.min(100, c.clientWill + 8);
-        addLog(`🔍 內部稽核結果亮眼！客戶實際落實 ${adoptedCount} 項防線，顧問口碑 <strong>+8</strong>！`, 'good');
+        addLog(`🔍 內部稽核結果亮眼！客戶實際落實 ${adoptedCount} 項防線（達標門檻 ${targetAdopted} 項），顧問口碑 <strong>+8</strong>！`, 'good');
         showModal(
           'bg-emerald-500/20 text-emerald-300',
-          '🔍 預評與內部稽核順利',
-          `<p>客戶實際落實了 <strong>${adoptedCount} 項</strong>控制措施，稽核發現皆在可控範圍內！</p>
+          '🔍 期中預評與內部稽核順利',
+          `<p>客戶實際落實了 <strong>${adoptedCount} 項</strong>控制措施（超越現階段預期門檻 ${targetAdopted} 項），稽核發現皆在可控範圍內！</p>
            <p class="text-emerald-300 font-bold">顧問口碑 +8 點、客戶配合意願 +8%。</p>`,
           [{ label: '完成內稽報告', primary: true, action: () => { closeModal(); endTurn(); } }]
         );
       } else {
         c.clientWill = Math.min(100, c.clientWill + 12);
         c.hours = Math.max(0, c.hours - 1);
-        addLog(`🔍 內部稽核開出 ${paperOnlyCount} 項「紙上談兵」缺失！客戶終於緊張起來（配合意願 +12%），耗費 1 人天協助規劃矯正。`, 'warn');
+        addLog(`🔍 內部稽核開出 ${paperOnlyCount} 項「紙上談兵」缺失（目前僅落實 ${adoptedCount}/${targetAdopted} 項）！客戶配合意願 +12%，耗費 1 人天協助規劃矯正。`, 'warn');
         showModal(
           'bg-amber-500/20 text-amber-300',
           '🔍 內部稽核抓出「只做表面功夫」！',
-          `<p>稽核發現客戶實際落實僅 <strong>${adoptedCount} 項</strong>，另有 <strong>${paperOnlyCount} 項</strong>只有文件沒有執行，被開立主要矯正單 (CAR)！</p>
+          `<p>稽核發現客戶實際落實僅 <strong>${adoptedCount} 項</strong>（現階段應達 ${targetAdopted} 項），另有 <strong>${paperOnlyCount} 項</strong>只有文件沒有執行，被開立主要矯正單 (CAR)！</p>
            <p class="text-emerald-300 font-bold mt-2">正面效果：客戶見識到稽核威力，配合意願 +12%（協助開立矯正計畫耗時 -1 人天）。</p>`,
           [{ label: '協助開立矯正計畫', primary: true, action: () => { closeModal(); endTurn(); } }]
         );
@@ -1143,17 +1274,18 @@
     function handleConsultantCertAudit() {
       const c = state.consultant;
       const adoptedLevels = Object.values(state.controls).filter(x => x.adopted).reduce((s, x) => s + x.level, 0);
+      const targetLevels = Math.max(10, Math.min(24, Math.floor(state.round * 0.8) + 6));
 
-      if (adoptedLevels >= 7) {
+      if (adoptedLevels >= targetLevels) {
         c.reputation = Math.min(100, c.reputation + 15);
-        c.fee += 50;
+        c.fee += 80;
         c.clientStability = Math.min(100, c.clientStability + 10);
-        addLog(`🏆 <strong>客戶順利取得 ISO 27001 證書！</strong> 專案完美結案，尾款入帳 +$50萬，顧問口碑 <strong>+15</strong>！`, 'good');
+        addLog(`🏆 <strong>客戶順利通過第三方驗證稽核！</strong> 尾款入帳 +$80萬，顧問口碑 <strong>+15</strong>！`, 'good');
         showModal(
           'bg-emerald-500/20 text-emerald-300',
           '🏆 第三方驗證稽核順利通過！',
-          `<p>在你的專業輔導下，客戶累計落實等級達 <strong>${adoptedLevels} 級</strong>，零主要缺失順利通過驗證！</p>
-           <p class="text-emerald-300 font-bold">獎勵：專案尾款 +$50萬、顧問口碑 +15 點！</p>`,
+          `<p>在你的專業輔導下，客戶累計落實等級達 <strong>${adoptedLevels} 級</strong>（超越門檻 ${targetLevels} 級），零主要缺失順利通過驗證！</p>
+           <p class="text-emerald-300 font-bold">獎勵：專案尾款 +$80萬、顧問口碑 +15 點！</p>`,
           [{ label: '舉杯慶祝拿證書', primary: true, action: () => { closeModal(); endTurn(); } }]
         );
       } else {
@@ -1163,7 +1295,7 @@
         showModal(
           'bg-rose-500/20 text-rose-300',
           '⚠️ 外部驗證稽核被開立主要缺失！',
-          `<p>由於客戶平時配合度不足（實際落實僅 ${adoptedLevels} 級，未達 7 級門檻），驗證機構開立主要缺失要求複查！</p>
+          `<p>由於客戶平時配合度不足（實際落實僅 ${adoptedLevels} 級，未達 ${targetLevels} 級門檻），驗證機構開立主要缺失要求複查！</p>
            <p class="text-rose-300 font-bold">顧問口碑 -8 點｜客戶配合意願 +15%。</p>`,
           [{ label: '準備陪同複查', primary: true, action: () => { closeModal(); endTurn(); } }]
         );
@@ -1180,11 +1312,11 @@
         const actions = [];
         if (canAfford) {
           actions.push({
-            label: `✅ 核准預算建置 Lv.1（花費 $${tile.cost}萬，穩定度 +6）`,
+            label: `✅ 核准預算建置 Lv.1（花費 $${tile.cost}萬，穩定度 +5）`,
             primary: true,
             action: () => {
               player.budget -= tile.cost;
-              player.stability = Math.min(100, player.stability + 6);
+              player.stability = Math.min(100, player.stability + 5);
               state.controls[tile.id] = { owner: player.id, level: 1, adopted: true };
               addLog(`🛡️ <strong>${player.name}</strong> 建置了 <strong>${tile.code} ${tile.name} (Lv.1)</strong>！`, 'good');
               closeModal();
@@ -1220,11 +1352,11 @@
           const actions = [];
           if (canAfford) {
             actions.push({
-              label: `⬆️ 升級至 ${nextLvName}（花費 $${upCost}萬，穩定度 +8）`,
+              label: `⬆️ 升級至 ${nextLvName}（花費 $${upCost}萬，穩定度 +7）`,
               primary: true,
               action: () => {
                 player.budget -= upCost;
-                player.stability = Math.min(100, player.stability + 8);
+                player.stability = Math.min(100, player.stability + 7);
                 existing.level++;
                 addLog(`⬆️ <strong>${player.name}</strong> 將 <strong>${tile.code} ${tile.name}</strong> 升級至 <strong>Lv.${existing.level}</strong>！`, 'good');
                 closeModal();
@@ -1249,11 +1381,11 @@
             actions
           );
         } else {
-          player.stability = Math.min(100, player.stability + 5);
+          player.stability = Math.min(100, player.stability + 4);
           showModal(
             dom.badge,
             `${tile.icon} ${tile.code} ${tile.name}（已達最高 Lv.3）`,
-            `<p>此防線已具備 AI 自動化偵測與回應能力，運作非常穩健！</p><p class="text-emerald-300 font-bold">營運穩定度 +5 點。</p>`,
+            `<p>此防線已具備 AI 自動化偵測與回應能力，運作非常穩健！</p><p class="text-emerald-300 font-bold">營運穩定度 +4 點。</p>`,
             [{ label: '繼續前進', primary: true, action: () => { closeModal(); endTurn(); } }]
           );
         }
@@ -1261,7 +1393,7 @@
       }
 
       const ownerPlayer = state.players[existing.owner];
-      const fee = 50 * existing.level;
+      const fee = 60 * existing.level;
       player.budget = Math.max(0, player.budget - fee);
       ownerPlayer.budget += fee;
       addLog(`💸 <strong>${player.name}</strong> 使用了 <strong>${ownerPlayer.name}</strong> 建置的 ${tile.code} 資源，分攤維運費 <strong>$${fee}萬</strong>。`, 'warn');
@@ -1275,14 +1407,7 @@
     }
 
     function handleIncidentTile(player, tile) {
-      const defenseMap = {
-        2:  [3, 1],
-        7:  [11, 3],
-        12: [11, 13, 18],
-        17: [4, 1]
-      };
-
-      const relatedIds = defenseMap[tile.id] || [];
+      const relatedIds = INCIDENT_DEFENSE_MAP[tile.id] || [];
       let defenseScore = 0;
       const activeDefenses = [];
 
@@ -1294,8 +1419,8 @@
         }
       });
 
-      const baseBudgetLoss = 220;
-      const baseStabilityLoss = 24;
+      const baseBudgetLoss = 240;
+      const baseStabilityLoss = 20;
       const reductionRate = Math.min(1, defenseScore * 0.25);
 
       const finalBudgetLoss = Math.round(baseBudgetLoss * (1 - reductionRate));
@@ -1338,11 +1463,11 @@
         `<p>你向總經理與各部門主管簡報近期資安風險與稽核指標，請選擇本次會議的重點提案：</p>`,
         [
           {
-            label: '💰 爭取追加資安預算（預算 +$180萬）',
+            label: '💰 爭取追加資安預算（預算 +$260萬）',
             primary: true,
             action: () => {
-              player.budget += 180;
-              addLog(`📊 <strong>${player.name}</strong> 在管理審查會議成功爭取追加預算 <strong>+$180萬</strong>！`, 'good');
+              player.budget += 260;
+              addLog(`📊 <strong>${player.name}</strong> 在管理審查會議成功爭取追加預算 <strong>+$260萬</strong>！`, 'good');
               closeModal();
               endTurn();
             }
@@ -1363,26 +1488,28 @@
 
     function handleInternalAuditTile(player) {
       const count = Object.keys(state.controls).length;
-      if (count >= 4) {
-        player.budget += 100;
+      const targetCount = Math.max(4, Math.min(12, Math.floor(state.round / 2) + 2));
+
+      if (count >= targetCount) {
+        player.budget += 160;
         player.stability = Math.min(100, player.stability + 8);
-        addLog(`🔍 <strong>${player.name}</strong> 內部稽核表現優異，僅有輕微觀察事項，獲得績效獎勵 +$100萬！`, 'good');
+        addLog(`🔍 <strong>${player.name}</strong> 內部稽核表現優異（已建置 ${count}/${targetCount} 項），獲得績效獎勵 +$160萬！`, 'good');
         showModal(
           'bg-emerald-500/20 text-emerald-300',
-          '🔍 內部稽核與矯正 (CAR)',
-          `<p>稽核團隊檢視目前已有 <strong>${count} 項</strong>控制措施運作中，整體制度落實度良好！</p>
-           <p class="text-emerald-300 font-bold">獎勵：預算 +$100萬、營運穩定度 +8 點。</p>`,
+          '🔍 期中內部稽核與矯正 (CAR)',
+          `<p>稽核團隊檢視目前已有 <strong>${count} 項</strong>控制措施運作中（超越現階段門檻 ${targetCount} 項），整體制度落實度良好！</p>
+           <p class="text-emerald-300 font-bold">獎勵：預算 +$160萬、營運穩定度 +8 點。</p>`,
           [{ label: '完成內稽紀錄', primary: true, action: () => { closeModal(); endTurn(); } }]
         );
       } else {
-        player.budget = Math.max(0, player.budget - 90);
+        player.budget = Math.max(0, player.budget - 110);
         player.stability = Math.max(0, player.stability - 8);
-        addLog(`🔍 <strong>${player.name}</strong> 因控制項建置不足，內稽開立主要缺失，矯正花費 $90萬。`, 'bad');
+        addLog(`🔍 <strong>${player.name}</strong> 因控制項建置不足（僅 ${count}/${targetCount} 項），內稽開立主要缺失，矯正花費 $110萬。`, 'bad');
         showModal(
           'bg-amber-500/20 text-amber-300',
           '🔍 內部稽核開立矯正措施單 (CAR)',
-          `<p>目前僅建置 <strong>${count} 項</strong>控制措施，稽核員開立多項不符合事項，需立即投入資源改善。</p>
-           <p class="text-rose-400 font-bold">矯正成本：預算 -$90萬、營運穩定度 -8 點。</p>`,
+          `<p>目前僅建置 <strong>${count} 項</strong>控制措施（現階段建議達 ${targetCount} 項），稽核員開立多項不符合事項，需立即投入資源改善。</p>
+           <p class="text-rose-400 font-bold">矯正成本：預算 -$110萬、營運穩定度 -8 點。</p>`,
           [{ label: '簽收 CAR 並改善', primary: true, action: () => { closeModal(); endTurn(); } }]
         );
       }
@@ -1390,25 +1517,27 @@
 
     function handleCertAuditTile(player) {
       const totalLevels = Object.values(state.controls).reduce((s, c) => s + c.level, 0);
-      if (totalLevels >= 8) {
-        player.budget += 220;
+      const targetLevels = Math.max(10, Math.min(28, Math.floor(state.round * 0.9) + 6));
+
+      if (totalLevels >= targetLevels) {
+        player.budget += 320;
         player.stability = Math.min(100, player.stability + 15);
-        addLog(`🏆 <strong>${player.name}</strong> 順利通過外部驗證稽核！客戶信任度大增，獲得獎勵 +$220萬！`, 'good');
+        addLog(`🏆 <strong>${player.name}</strong> 順利通過外部驗證稽核！客戶信任度大增，獲得獎勵 +$320萬！`, 'good');
         showModal(
           'bg-emerald-500/20 text-emerald-300',
           '🏆 外部驗證稽核順利通過！',
-          `<p>外部稽核員高度肯定公司的資安治理成熟度（累計控制等級達 <strong>${totalLevels} 級</strong>），零主要缺失通過驗證！</p>
-           <p class="text-emerald-300 font-bold">獎勵：預算 +$220萬、營運穩定度 +15 點。</p>`,
+          `<p>外部稽核員高度肯定公司的資安治理成熟度（累計控制等級達 <strong>${totalLevels} 級</strong>，超越門檻 ${targetLevels} 級），零主要缺失通過驗證！</p>
+           <p class="text-emerald-300 font-bold">獎勵：預算 +$320萬、營運穩定度 +15 點。</p>`,
           [{ label: '領取證書並繼續', primary: true, action: () => { closeModal(); endTurn(); } }]
         );
       } else {
-        player.stability = Math.max(0, player.stability - 15);
-        addLog(`⚠️ <strong>${player.name}</strong> 外部稽核被開立缺失，限期 3 個月內複查，穩定度 -15 點。`, 'bad');
+        player.stability = Math.max(0, player.stability - 14);
+        addLog(`⚠️ <strong>${player.name}</strong> 外部稽核被開立缺失（目前 ${totalLevels}/${targetLevels} 級），限期複查，穩定度 -14 點。`, 'bad');
         showModal(
           'bg-rose-500/20 text-rose-300',
           '⚠️ 外部驗證稽核限期改善',
-          `<p>目前整體控制措施成熟度不足（累計 ${totalLevels} 級，建議至少達 8 級以上），稽核員要求限期提出矯正計畫。</p>
-           <p class="text-rose-400 font-bold">衝擊：營運穩定度 -15 點。</p>`,
+          `<p>目前整體控制措施成熟度不足（累計 ${totalLevels} 級，現階段需達 ${targetLevels} 級以上），稽核員要求限期提出矯正計畫。</p>
+           <p class="text-rose-400 font-bold">衝擊：營運穩定度 -14 點。</p>`,
           [{ label: '全力準備複查', primary: true, action: () => { closeModal(); endTurn(); } }]
         );
       }
@@ -1449,8 +1578,8 @@
       if (state.round > state.maxRounds) {
         state.gameOver = true;
         const msg = state.mode === 3
-          ? '🎉 12 回合年度顧問輔導契約期滿！來看看你的顧問職涯與客戶成果結算：'
-          : '🎉 12 回合年度資安稽核週期圓滿結束！來看看最終企業防禦成績單：';
+          ? `🎉 ${state.maxRounds} 回合年度顧問輔導契約圓滿期滿！來看看你的顧問職涯與客戶成果結算：`
+          : `🎉 ${state.maxRounds} 回合年度資安稽核週期圓滿結束！來看看最終企業防禦成績單：`;
         showEndGameModal(msg);
         return;
       }
@@ -1464,11 +1593,11 @@
         const adoptedCount = Object.values(state.controls).filter(x => x.adopted).length;
         const adoptedLevels = Object.values(state.controls).filter(x => x.adopted).reduce((s, x) => s + x.level, 0);
         const paperOnlyCount = Object.values(state.controls).filter(x => !x.adopted && x.advised).length;
-        const score = (c.reputation * 15) + (c.fee * 5) + (c.clientStability * 8) + (adoptedLevels * 120);
+        const score = (c.reputation * 15) + (c.fee * 5) + (c.clientStability * 8) + (adoptedLevels * 100);
 
         let titleEval = '穩健務實的資安顧問';
-        if (c.reputation >= 90 && adoptedCount >= 6) titleEval = '業界傳奇・金牌資安導師';
-        else if (c.reputation >= 75 && adoptedCount < 4) titleEval = '明哲保身・文件自保大師';
+        if (c.reputation >= 90 && adoptedCount >= 12) titleEval = '業界傳奇・金牌資安導師';
+        else if (c.reputation >= 80 && adoptedCount < 8) titleEval = '明哲保身・文件自保大師';
         else if (c.reputation < 50) titleEval = '身心俱疲・背鍋救火隊';
 
         const summaryHtml = `
@@ -1479,7 +1608,7 @@
             </div>
             <div class="text-xs text-slate-300 space-y-1 pt-2 border-t border-slate-800">
               <div>• 輔導客戶：【${c.clientName}】（最終穩定度 ${c.clientStability} / 100）</div>
-              <div>• 客戶真正落實：<strong class="text-emerald-300">${adoptedCount} 項</strong>（累計 ${adoptedLevels} 級）｜僅紙本交差：<strong class="text-amber-300">${paperOnlyCount} 項</strong></div>
+              <div>• 客戶真正落實：<strong class="text-emerald-300">${adoptedCount} / ${TOTAL_CONTROLS} 項</strong>（累計 ${adoptedLevels} 級）｜僅紙本交差：<strong class="text-amber-300">${paperOnlyCount} 項</strong></div>
               <div>• 顧問專業口碑：<strong class="text-sky-300">${c.reputation} / 100</strong>｜累計顧問費：<strong class="text-amber-300">$${c.fee}萬</strong></div>
             </div>
           </div>
@@ -1496,7 +1625,7 @@
 
       const summaryHtml = state.players.map(p => {
         const totalLevels = Object.values(state.controls).filter(c => c.owner === p.id).reduce((s, c) => s + c.level, 0);
-        const score = p.budget + (p.stability * 10) + (totalLevels * 150);
+        const score = p.budget + (p.stability * 12) + (totalLevels * 140);
         return `
           <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
             <div>
