@@ -1,1839 +1,375 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>治理與稽核大富翁 v7.5 | 五大標準旗艦版（支援點擊查詢控制項）</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
-
-    * {
-      box-sizing: border-box;
-      font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-
-    body {
-      background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%);
-      color: #f8fafc;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* 7x7 大富翁外圈棋盤 */
-    .board-grid {
-      display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      grid-template-rows: repeat(7, minmax(96px, 1fr));
-      gap: 6px;
-      width: 100%;
-      max-width: 1080px;
-      aspect-ratio: 1 / 1;
-      margin: 0 auto;
-    }
-
-    .tile {
-      position: relative;
-      background: #1e293b;
-      border: 1.5px solid #334155;
-      border-radius: 10px;
-      padding: 6px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: all 0.2s ease;
-      overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
-      cursor: pointer;
-    }
-
-    .tile:hover {
-      transform: translateY(-2px);
-      border-color: #38bdf8;
-      box-shadow: 0 6px 16px rgba(56, 189, 248, 0.25);
-    }
-
-    .tile.active-tile {
-      border: 2.5px solid #facc15;
-      box-shadow: 0 0 18px rgba(250, 204, 21, 0.55);
-      z-index: 10;
-    }
-
-    .tile-header-bar {
-      height: 7px;
-      width: 100%;
-      border-radius: 4px;
-      margin-bottom: 4px;
-    }
-
-    .center-hub {
-      grid-column: 2 / 7;
-      grid-row: 2 / 7;
-      background: linear-gradient(145deg, rgba(15, 23, 42, 0.94), rgba(30, 41, 59, 0.92));
-      border: 1px solid #334155;
-      border-radius: 18px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.45);
-    }
-
-    .player-token {
-      width: 22px;
-      height: 22px;
-      border-radius: 9999px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 900;
-      border: 2px solid #ffffff;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
-      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    @keyframes diceRoll {
-      0% { transform: rotate(0deg) scale(1); }
-      25% { transform: rotate(90deg) scale(1.15); }
-      50% { transform: rotate(180deg) scale(0.95); }
-      75% { transform: rotate(270deg) scale(1.15); }
-      100% { transform: rotate(360deg) scale(1); }
-    }
-
-    .rolling {
-      animation: diceRoll 0.45s ease-in-out;
-    }
-
-    /* 自訂捲軸 */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #0f172a;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #475569;
-      border-radius: 3px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #64748b;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>治理與稽核大富翁 v7.6 | 五大標準精簡版（含外部顧問版）</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+*{box-sizing:border-box;font-family:'Noto Sans TC',-apple-system,BlinkMacSystemFont,sans-serif}
+body{background:radial-gradient(circle at top,#1e293b 0%,#0f172a 100%);color:#f8fafc;min-height:100vh;overflow-x:hidden}
+.board-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-template-rows:repeat(7,minmax(96px,1fr));gap:6px;width:100%;max-width:1080px;aspect-ratio:1/1;margin:0 auto}
+.tile{position:relative;background:#1e293b;border:1.5px solid #334155;border-radius:10px;padding:6px;display:flex;flex-direction:column;justify-content:space-between;transition:all .2s ease;overflow:hidden;box-shadow:0 4px 10px rgba(0,0,0,.35);cursor:pointer}
+.tile:hover{transform:translateY(-2px);border-color:#38bdf8;box-shadow:0 6px 16px rgba(56,189,248,.25)}
+.tile.active-tile{border:2.5px solid #facc15;box-shadow:0 0 18px rgba(250,204,21,.55);z-index:10}
+.tile-bar{height:7px;width:100%;border-radius:4px;margin-bottom:4px}
+.center-hub{grid-column:2/7;grid-row:2/7;background:linear-gradient(145deg,rgba(15,23,42,.94),rgba(30,41,59,.92));border:1px solid #334155;border-radius:18px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:inset 0 0 30px rgba(0,0,0,.45)}
+.token{min-width:22px;height:22px;padding:0 4px;border-radius:9999px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.6)}
+@keyframes diceRoll{0%{transform:rotate(0) scale(1)}25%{transform:rotate(90deg) scale(1.15)}50%{transform:rotate(180deg) scale(.95)}75%{transform:rotate(270deg) scale(1.15)}100%{transform:rotate(360deg) scale(1)}}
+.rolling{animation:diceRoll .45s ease-in-out}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:#0f172a}::-webkit-scrollbar-thumb{background:#475569;border-radius:3px}::-webkit-scrollbar-thumb:hover{background:#64748b}
+</style>
 </head>
 <body class="p-3 md:p-5">
-
-  <!-- 頂部控制列 -->
-  <header class="max-w-7xl mx-auto mb-4 bg-slate-900/90 border border-slate-700/80 rounded-2xl p-3.5 shadow-xl flex flex-wrap items-center justify-between gap-3">
-    <div class="flex items-center gap-3">
-      <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center text-2xl shadow-lg">
-        🛡️
+<header class="max-w-7xl mx-auto mb-4 bg-slate-900/90 border border-slate-700/80 rounded-2xl p-3.5 shadow-xl flex flex-wrap items-center justify-between gap-3">
+  <div class="flex items-center gap-3">
+    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center text-2xl shadow-lg">🛡️</div>
+    <div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <h1 class="text-lg md:text-xl font-black tracking-tight text-white">治理與稽核大富翁</h1>
+        <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">v7.6 五大標準精簡版</span>
+        <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/40">💡 點擊棋盤格子可直接查詢控制項</span>
       </div>
+      <p class="text-xs text-slate-400">ISO 27001:2022 • ISO 27701:2025 • ISO 22301:2019 • ISO 20000-1:2018 • ISO 42001:2023</p>
+    </div>
+  </div>
+  <div class="flex flex-wrap items-center gap-2">
+    <select id="standardSelect" onchange="changeStandard(this.value)" class="bg-slate-800 border border-slate-600 text-slate-100 text-xs md:text-sm font-bold rounded-xl px-3 py-2 focus:outline-none focus:border-sky-400">
+      <option value="27001">🔒 ISO/IEC 27001:2022 (資訊安全)</option>
+      <option value="27701">🕵️ ISO/IEC 27701:2025 (隱私資訊 PIMS)</option>
+      <option value="22301">🔄 ISO 22301:2019 (營運持續 BCMS)</option>
+      <option value="20000">⚙️ ISO/IEC 20000-1:2018 (IT服務 SMS)</option>
+      <option value="42001">🤖 ISO/IEC 42001:2023 (人工智慧 AIMS)</option>
+    </select>
+    <select id="modeSelect" onchange="changeMode(this.value)" class="bg-slate-800 border border-slate-600 text-slate-100 text-xs md:text-sm font-bold rounded-xl px-3 py-2 focus:outline-none focus:border-sky-400">
+      <option value="solo">👤 單人治理闖關 (企業內部版)</option>
+      <option value="consultant">💼 外部顧問版 (輔導／稽核簡報)</option>
+    </select>
+    <button onclick="openCatalogModal()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-sky-300 text-xs md:text-sm font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5"><span>📚</span><span>控制項清單 (24項)</span></button>
+    <button onclick="resetGame()" class="bg-rose-600/90 hover:bg-rose-500 text-white text-xs md:text-sm font-bold px-3 py-2 rounded-xl transition shadow">🔄 重新開局</button>
+  </div>
+</header>
+<main class="max-w-7xl mx-auto grid grid-cols-1 xl:grid-cols-12 gap-4 items-start">
+  <section class="xl:col-span-9"><div id="boardContainer" class="board-grid"></div></section>
+  <aside class="xl:col-span-3 space-y-4">
+    <div class="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 shadow-xl space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-black text-slate-200 tracking-wide">📊 組織治理儀表板</h2>
+        <span id="turnBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">第 1 回合</span>
+      </div>
+      <div id="playerCard"></div>
+    </div>
+    <div class="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 shadow-xl space-y-2.5">
+      <h2 class="text-sm font-black text-slate-200 tracking-wide">🧩 控制領域建置進度</h2>
+      <div id="domainStats" class="space-y-2 text-xs"></div>
+    </div>
+    <div class="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 shadow-xl flex flex-col h-72">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-sm font-black text-slate-200 tracking-wide">📝 稽核與治理日誌</h2>
+        <button onclick="clearLogs()" class="text-[11px] text-slate-400 hover:text-slate-200">清除</button>
+      </div>
+      <div id="gameLog" class="flex-1 overflow-y-auto space-y-1.5 text-xs pr-1"></div>
+    </div>
+  </aside>
+</main>
+<div id="eventModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+  <div class="bg-slate-900 border-2 border-slate-700 rounded-2xl max-w-2xl w-full p-5 md:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-start justify-between gap-3 border-b border-slate-800 pb-3">
       <div>
-        <div class="flex items-center gap-2 flex-wrap">
-          <h1 class="text-lg md:text-xl font-black tracking-tight text-white">治理與稽核大富翁</h1>
-          <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">v7.5 五大標準旗艦版</span>
-          <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/40">💡 可直接點擊棋盤格子查詢控制項</span>
+        <div class="flex items-center gap-2 flex-wrap mb-1">
+          <span id="mClause" class="text-xs font-black px-2.5 py-0.5 rounded-md"></span>
+          <span id="mDomain" class="text-xs font-bold px-2.5 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700"></span>
+          <span id="mCode" class="text-xs font-mono font-bold text-sky-400"></span>
         </div>
-        <p class="text-xs text-slate-400">ISO 27001:2022 • ISO 27701:2025 • ISO 22301:2019 • ISO 20000-1:2018 • ISO 42001:2023</p>
+        <h3 id="mTitle" class="text-lg md:text-xl font-black text-white"></h3>
+      </div>
+      <div id="mIcon" class="text-3xl">🛡️</div>
+    </div>
+    <div class="space-y-3">
+      <div class="bg-slate-800/85 border border-sky-500/30 rounded-xl p-3.5">
+        <div class="text-xs font-black text-sky-300 mb-1">📌 條文／控制項核心目的</div>
+        <p id="mPurpose" class="text-xs md:text-sm text-slate-200 leading-relaxed"></p>
+      </div>
+      <div class="bg-rose-950/40 border border-rose-500/35 rounded-xl p-3.5">
+        <div class="text-xs font-black text-rose-300 mb-1">🚨 未遵守之真實資安／隱私／營運事故案例</div>
+        <p id="mIncident" class="text-xs md:text-sm text-rose-100/90 leading-relaxed"></p>
       </div>
     </div>
-
-    <div class="flex flex-wrap items-center gap-2">
-      <!-- 標準切換器 -->
-      <select id="standardSelect" onchange="changeStandard(this.value)" class="bg-slate-800 border border-slate-600 text-slate-100 text-xs md:text-sm font-bold rounded-xl px-3 py-2 focus:outline-none focus:border-sky-400">
-        <option value="27001">🔒 ISO/IEC 27001:2022 (資訊安全)</option>
-        <option value="27701">🕵️ ISO/IEC 27701:2025 (隱私資訊 PIMS)</option>
-        <option value="22301">🔄 ISO 22301:2019 (營運持續 BCMS)</option>
-        <option value="20000">⚙️ ISO/IEC 20000-1:2018 (IT服務 SMS)</option>
-        <option value="42001">🤖 ISO/IEC 42001:2023 (人工智慧 AIMS)</option>
-      </select>
-
-      <!-- 遊玩模式切換 -->
-      <select id="modeSelect" onchange="changeMode(this.value)" class="bg-slate-800 border border-slate-600 text-slate-100 text-xs md:text-sm font-bold rounded-xl px-3 py-2 focus:outline-none focus:border-sky-400">
-        <option value="solo">👤 單人治理闖關</option>
-        <option value="ai">🤖 雙人對決 (玩家 vs AI稽核長)</option>
-        <option value="pvp">👥 雙人同機對戰 (P1 vs P2)</option>
-      </select>
-
-      <button onclick="openCatalogModal()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-sky-300 text-xs md:text-sm font-bold px-3 py-2 rounded-xl transition flex items-center gap-1.5">
-        <span>📚</span><span>控制項清單 (24項)</span>
-      </button>
-
-      <button onclick="resetGame()" class="bg-rose-600/90 hover:bg-rose-500 text-white text-xs md:text-sm font-bold px-3 py-2 rounded-xl transition shadow">
-        🔄 重新開局
-      </button>
+    <div id="mCtx" class="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 text-xs md:text-sm text-slate-300 space-y-2"></div>
+    <div id="mAct" class="flex flex-wrap justify-end gap-2.5 pt-2 border-t border-slate-800"></div>
+  </div>
+</div>
+<div id="inspectModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4 z-50" onclick="if(event.target===this)toggleModal('inspectModal',0)">
+  <div class="bg-slate-900 border-2 border-sky-500/60 rounded-2xl max-w-2xl w-full p-5 md:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-start justify-between gap-3 border-b border-slate-800 pb-3">
+      <div>
+        <div class="flex items-center gap-2 flex-wrap mb-1.5">
+          <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/40">🔍 控制項查詢模式</span>
+          <span id="iClause" class="text-xs font-black px-2.5 py-0.5 rounded-md"></span>
+          <span id="iDomain" class="text-xs font-bold px-2.5 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700"></span>
+          <span id="iCode" class="text-xs font-mono font-bold text-sky-400"></span>
+        </div>
+        <h3 id="iTitle" class="text-lg md:text-xl font-black text-white"></h3>
+      </div>
+      <button onclick="toggleModal('inspectModal',0)" class="text-slate-400 hover:text-white text-xl font-bold px-2 py-1 rounded-lg hover:bg-slate-800 transition">✕</button>
     </div>
-  </header>
-
-  <!-- 主遊戲區 -->
-  <main class="max-w-7xl mx-auto grid grid-cols-1 xl:grid-cols-12 gap-4 items-start">
-
-    <!-- 左側/中央：24格大富翁棋盤 -->
-    <section class="xl:col-span-9">
-      <div id="boardContainer" class="board-grid">
-        <!-- 棋盤格由 JS 動態渲染 -->
+    <div class="space-y-3">
+      <div class="bg-slate-800/90 border border-sky-500/35 rounded-xl p-4">
+        <div class="text-xs font-black text-sky-300 mb-1.5">📌 條文／控制項核心目的</div>
+        <p id="iPurpose" class="text-xs md:text-sm text-slate-100 leading-relaxed"></p>
       </div>
-    </section>
-
-    <!-- 右側：玩家狀態儀表板與稽核日誌 -->
-    <aside class="xl:col-span-3 space-y-4">
-      <!-- 玩家資訊卡 -->
-      <div class="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 shadow-xl space-y-3">
-        <div class="flex items-center justify-between">
-          <h2 class="text-sm font-black text-slate-200 tracking-wide">📊 組織治理儀表板</h2>
-          <span id="turnBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">第 1 回合</span>
-        </div>
-        <div id="playerCards" class="space-y-2.5">
-          <!-- 玩家狀態卡由 JS 動態渲染 -->
-        </div>
+      <div class="bg-rose-950/45 border border-rose-500/40 rounded-xl p-4">
+        <div class="text-xs font-black text-rose-300 mb-1.5">🚨 未遵守之真實資安／隱私／營運事故案例</div>
+        <p id="iIncident" class="text-xs md:text-sm text-rose-100/95 leading-relaxed"></p>
       </div>
-
-      <!-- 領域成熟度分布 -->
-      <div class="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 shadow-xl space-y-2.5">
-        <h2 class="text-sm font-black text-slate-200 tracking-wide">🧩 控制領域建置進度</h2>
-        <div id="domainStats" class="space-y-2 text-xs">
-          <!-- 領域統計由 JS 動態渲染 -->
-        </div>
-      </div>
-
-      <!-- 稽核與事件日誌 -->
-      <div class="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4 shadow-xl flex flex-col h-72">
-        <div class="flex items-center justify-between mb-2">
-          <h2 class="text-sm font-black text-slate-200 tracking-wide">📝 稽核與治理日誌</h2>
-          <button onclick="clearLogs()" class="text-[11px] text-slate-400 hover:text-slate-200">清除</button>
-        </div>
-        <div id="gameLog" class="flex-1 overflow-y-auto space-y-1.5 text-xs pr-1">
-          <!-- 日誌訊息 -->
-        </div>
-      </div>
-    </aside>
-  </main>
-
-  <!-- 互動決策彈窗（擲骰子落地觸發，含遊戲數據與決策選項） -->
-  <div id="eventModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-slate-900 border-2 border-slate-700 rounded-2xl max-w-2xl w-full p-5 md:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex items-start justify-between gap-3 border-b border-slate-800 pb-3">
-        <div>
-          <div class="flex items-center gap-2 flex-wrap mb-1">
-            <span id="modalClauseTypeBadge" class="text-xs font-black px-2.5 py-0.5 rounded-md">本文</span>
-            <span id="modalDomainBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">領域名稱</span>
-            <span id="modalCodeBadge" class="text-xs font-mono font-bold text-sky-400">A.5.1</span>
-          </div>
-          <h3 id="modalTitle" class="text-lg md:text-xl font-black text-white">控制項標題</h3>
-        </div>
-        <div id="modalIcon" class="text-3xl">🛡️</div>
-      </div>
-
-      <!-- 目的與真實事件區塊 -->
-      <div class="space-y-3">
-        <div class="bg-slate-800/85 border border-sky-500/30 rounded-xl p-3.5">
-          <div class="text-xs font-black text-sky-300 mb-1 flex items-center gap-1.5">
-            <span>📌 條文／控制項核心目的</span>
-          </div>
-          <p id="modalPurpose" class="text-xs md:text-sm text-slate-200 leading-relaxed"></p>
-        </div>
-
-        <div class="bg-rose-950/40 border border-rose-500/35 rounded-xl p-3.5">
-          <div class="text-xs font-black text-rose-300 mb-1 flex items-center gap-1.5">
-            <span>🚨 未遵守之真實資安／隱私／營運事故案例</span>
-          </div>
-          <p id="modalIncident" class="text-xs md:text-sm text-rose-100/90 leading-relaxed"></p>
-        </div>
-      </div>
-
-      <!-- 遊戲情境與數值提示 -->
-      <div id="modalGameContext" class="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 text-xs md:text-sm text-slate-300 space-y-2">
-      </div>
-
-      <!-- 決策按鈕區 -->
-      <div id="modalActions" class="flex flex-wrap justify-end gap-2.5 pt-2 border-t border-slate-800">
-      </div>
+    </div>
+    <div class="flex justify-end pt-2 border-t border-slate-800">
+      <button onclick="toggleModal('inspectModal',0)" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 text-xs md:text-sm font-bold px-4 py-2 rounded-xl transition">關閉查詢</button>
     </div>
   </div>
-
-  <!-- 滑鼠點擊格子純查詢彈窗（不顯示遊戲數據與按鈕） -->
-  <div id="inspectModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4 z-50" onclick="if(event.target===this) closeInspectModal()">
-    <div class="bg-slate-900 border-2 border-sky-500/60 rounded-2xl max-w-2xl w-full p-5 md:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-      <div class="flex items-start justify-between gap-3 border-b border-slate-800 pb-3">
-        <div>
-          <div class="flex items-center gap-2 flex-wrap mb-1.5">
-            <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/40">🔍 控制項查詢模式</span>
-            <span id="inspectClauseTypeBadge" class="text-xs font-black px-2.5 py-0.5 rounded-md">本文</span>
-            <span id="inspectDomainBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">領域名稱</span>
-            <span id="inspectCodeBadge" class="text-xs font-mono font-bold text-sky-400">A.5.1</span>
-          </div>
-          <h3 id="inspectTitle" class="text-lg md:text-xl font-black text-white">控制項標題</h3>
-        </div>
-        <button onclick="closeInspectModal()" class="text-slate-400 hover:text-white text-xl font-bold px-2 py-1 rounded-lg hover:bg-slate-800 transition">✕</button>
+</div>
+<div id="catalogModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50" onclick="if(event.target===this)toggleModal('catalogModal',0)">
+  <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-5xl w-full p-5 md:p-6 shadow-2xl flex flex-col max-h-[90vh]">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+      <div>
+        <h3 id="catalogTitle" class="text-lg md:text-xl font-black text-white"></h3>
+        <p class="text-xs text-slate-400">完整區分「本文」與「附錄 A」，並收錄各條文核心目的與未遵守之真實事件案例</p>
       </div>
-
-      <div class="space-y-3">
-        <div class="bg-slate-800/90 border border-sky-500/35 rounded-xl p-4">
-          <div class="text-xs font-black text-sky-300 mb-1.5 flex items-center gap-1.5">
-            <span>📌 條文／控制項核心目的</span>
-          </div>
-          <p id="inspectPurpose" class="text-xs md:text-sm text-slate-100 leading-relaxed"></p>
-        </div>
-
-        <div class="bg-rose-950/45 border border-rose-500/40 rounded-xl p-4">
-          <div class="text-xs font-black text-rose-300 mb-1.5 flex items-center gap-1.5">
-            <span>🚨 未遵守之真實資安／隱私／營運事故案例</span>
-          </div>
-          <p id="inspectIncident" class="text-xs md:text-sm text-rose-100/95 leading-relaxed"></p>
-        </div>
-      </div>
-
-      <div class="flex justify-end pt-2 border-t border-slate-800">
-        <button onclick="closeInspectModal()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 text-xs md:text-sm font-bold px-4 py-2 rounded-xl transition">
-          關閉查詢
-        </button>
-      </div>
+      <button onclick="toggleModal('catalogModal',0)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-sm font-bold">✕ 關閉</button>
     </div>
+    <div id="catalogBody" class="overflow-y-auto space-y-3 pr-1"></div>
   </div>
+</div>
+<script>
+const COORDS=[[1,1],[1,2],[1,3],[1,4],[1,5],[1,6],[1,7],[2,7],[3,7],[4,7],[5,7],[6,7],[7,7],[7,6],[7,5],[7,4],[7,3],[7,2],[7,1],[6,1],[5,1],[4,1],[3,1],[2,1]];
+const DB={"L":["本文 第4章 組織全景","本文 第6章 規劃","附錄 A.5 組織控制","本文 第9章 績效評估","附錄 A.6 人員控制","附錄 A.7 實體控制","附錄 A.8 技術控制","本文 第10章 持續改善","本文 第5章 領導統御","附錄 A.1 PII 控制者","附錄 A.3 通用控制項","附錄 A.2 PII 處理者","本文 第7章 支援","本文 第8章 營運","附錄 A.2 AI 政策","附錄 A.3 內部組織","附錄 A.4 AI 系統資源","附錄 A.6 系統生命週期","附錄 A.5 系統衝擊評估","附錄 A.7 AI 系統資料","附錄 A.8 利害關係人資訊","附錄 A.9 AI 系統使用","附錄 A.10 第三方與客戶"],"S":{"27001":["ISO/IEC 27001:2022","資訊安全管理系統 (ISMS)","#0ea5e9",[["本文條文 (4~10章)","#3b82f6"],["附錄 A.5 組織控制","#8b5cf6"],["附錄 A.6 人員控制","#10b981"],["附錄 A.7 實體控制","#f59e0b"],["附錄 A.8 技術控制","#ef4444"]],[[1,"本文 4.1/4.2",0,0,"ISMS 範圍與利害關係人",0,"界定組織內外部議題、利害關係人（主管機關、客戶、供應商）需求及 ISMS 驗證邊界，確保資安治理涵蓋所有關鍵業務與雲端服務。","2020 年 SolarWinds 供應鏈攻擊中，攻擊者透過未納入嚴格邊界監控的建置伺服器植入惡意程式，波及美國財政部與超過 18,000 家企業。"],[0,"本文 6.1.2",0,1,"資訊安全風險評鑑",220,"建立系統化的風險準則，定期識別資產威脅與弱點並評估衝擊，確保有限資安資源優先投入高風險項目。","2017 年 Equifax 因未評估 Apache Struts 重大漏洞對核心信用資料庫的風險並及時修補，導致 1.47 億筆個資外洩，賠償逾 7 億美元。"],[0,"附錄 A.5.1",1,2,"資訊安全政策",200,"由高階管理層核定並發布資安總綱政策與主題特定政策，提供組織全員遵循的明確管理方向與承諾。","多家跨國企業因缺乏明確的「影子 IT 與未授權雲端儲存管理政策」，員工將機密設計圖上傳至個人雲端硬碟並設為公開，遭競爭對手直接下載。"],[2,"本文 9.2",0,3,"ISMS 內部稽核抽查",0,"透過獨立且客觀的內部稽核，驗證 ISMS 是否符合組織自訂規範與 ISO 27001 標準要求，並有效實施與維持。","某金融機構長期將內部稽核流於書面勾選，未實際抽測特權帳號清冊，直到外部金檢才發現離職員工 VPN 帳號仍可登入核心主機。"],[0,"附錄 A.5.7",1,2,"威脅情資收集與分析",260,"主動收集與分析與組織相關的網路威脅情資（攻擊手法、IOC、零時差漏洞），轉化為防禦規則與應變行動。","2021 年 Microsoft Exchange ProxyLogon 漏洞爆發時，未訂閱威脅情資的企業延遲數週才察覺，導致 WebShell 早已被大量植入內網。"],[0,"附錄 A.5.15",1,2,"存取控制與權限管理",280,"依據業務需要（Need-to-Know）與最小權限原則（Least Privilege），嚴格管制實體與邏輯資訊資產的存取權限。","2020 年 Twitter 內部管理介面遭社交工程突破，由於過多員工擁有重設高知名度帳號權限，導致歐巴馬、馬斯克等帳號遭集體挾持發送詐騙推文。"],[3,"附錄 A.5.24",1,2,"資安事件應變演練",0,"建立資安事件通報、分類、圍堵、根除與復原程序，並明確指派應變角色與職責，縮短事件處理時間。","2021 年 Colonial Pipeline 遭 DarkSide 勒索軟體攻擊，因缺乏明確的 IT/OT 隔離應變劇本，被迫緊急關閉全美東岸輸油管線長達 6 天。"],[0,"附錄 A.5.23",1,2,"雲端服務之資訊安全",300,"確立雲端服務採購、使用、管理與退場的安全要求，釐清組織與雲端服務供應商（CSP）之間的共同責任模型。","2019 年 Capital One 因雲端 WAF 反向代理組態錯誤，攻擊者利用 SSRF 取得 AWS IAM 角色憑證，竊取超過 1 億名客戶申請資料。"],[0,"附錄 A.5.30",1,2,"營運持續之 ICT 整備度",320,"依據營運持續目標（RTO/RPO），規劃、建置並定期驗證資通訊系統的備援架構與災難復原能力。","2021 年 OVHcloud 法國史特拉斯堡資料中心大火，許多客戶雖有備份卻未驗證異地備援整備度（備份與主機同機房），導致網站資料永久滅失。"],[0,"附錄 A.6.3",2,4,"資安認知、教育與訓練",240,"定期對全體員工與相關人員進行資安意識培訓與社交工程演練，強化人員辨識釣魚郵件與通報異常的能力。","2022 年 Uber 員工遭攻擊者透過 MFA 疲勞轟炸（MFA Fatigue）與 WhatsApp 冒充 IT 人員誘騙按下核准，使駭客長驅直入內部網路。"],[0,"附錄 A.6.5",2,4,"終止或變更僱用後之責任",240,"定義員工、約聘人員離職或職務調動後仍須履行的保密義務與資產歸還規範，並即時撤銷所有存取權限。","2020 年 Ubiquiti 前任雲端主管利用離職前暗中保留的 AWS 最高權限金鑰，下載機密原始碼並冒充駭客勒索公司 50 個比特幣。"],[0,"附錄 A.7.1",3,5,"實體安全周界與門禁",260,"建立實體安全邊界（圍牆、門禁刷卡、警衛）保護機房與敏感辦公區域，防止未經授權人員實體闖入。","某歐洲銀行分行遭偽裝成空調維修技師的犯罪集團尾隨進入機房，直接於核心交換器植入硬體側錄裝置並遠端轉帳盜領。"],[2,"本文 9.3",0,3,"管理階層審查會議",0,"最高管理階層定期審查 ISMS 運作績效、稽核結果、風險變化與資源需求，確保管理系統持續適切、充分與有效。","多家企業在發生重大資安罰鍰後遭主管機關調查，發現高階主管連續兩年未召開資安管理審查會議，被認定治理失職加重裁罰。"],[0,"附錄 A.7.4",3,5,"實體安全監控",260,"透過閉路電視（CCTV）、入侵偵測警報與環境感測器持續監控機房與敏感設施，即時偵測異常實體活動。","某半導體委外倉儲因機房監視器故障未修且無異常告警，遭內部人員多次潛入拔取存有製程參數的伺服器硬碟變賣。"],[0,"附錄 A.8.1",4,6,"使用者端點裝置防護",300,"針對筆電、桌機與行動裝置實施組態強化、磁碟加密、EDR 防護與遠端抹除，降低端點遺失或遭惡意程式感染風險。","某醫療機構醫師遺失未啟用磁碟加密的公務筆電，導致內含超過 3 萬名病患病歷與身分證號的檔案外洩，遭主管機關重罰。"],[0,"附錄 A.8.5",4,6,"安全身分驗證 (MFA)",340,"依據存取風險強度實施多因子驗證（MFA）與強密碼政策，防止單一密碼外洩或撞庫攻擊導致帳號淪陷。","2024 年 Snowflake 雲端資料倉儲客戶遭駭事件中，攻擊者利用竊取的帳號密碼登入未強制啟用 MFA 的企業租戶，竊走 Ticketmaster 與 AT&T 大量資料。"],[0,"附錄 A.8.8",4,6,"技術弱點管理",340,"定期進行弱點掃描與滲透測試，建立修補優先順序與 SLA 時限，及時修補作業系統與應用程式已知漏洞。","2023 年 MOVEit Transfer 零時差 SQL 注入漏洞公布後，未於第一時間套用修補程式的企業遭 Cl0p 勒索集團自動化掃描攻破，全球逾 2,700 家組織受害。"],[0,"附錄 A.8.9",4,6,"組態管理 (Configuration)",320,"建立系統、網路設備與雲端服務的安全基準組態（Hardening Baseline），並監控未經授權的組態變更。","2023 年微軟因工程師除錯後遺留的崩潰傾印組態錯誤，導致消費者簽章金鑰外洩，使駭客得以偽造令牌存取美國國務院等政府機構信箱。"],[3,"附錄 A.8.13",4,6,"資訊備份與不可變儲存",0,"依據備份政策定期執行資料備份並進行還原測試，採用離線或不可變（Immutable）儲存防止備份遭勒索軟體加密。","多家遭受 LockBit 勒索軟體攻擊的製造業，因網路備份磁碟直接掛載於網域主機且無離線隔離，駭客先刪除所有備份再加密產線，迫使企業停工數週。"],[0,"附錄 A.8.16",4,6,"監控活動與異常偵測",360,"透過 SIEM/SOC 持續監控網路流量、系統日誌與使用者異常行為，及早發現橫向移動與資料外傳跡象。","2013 年 Target 百貨遭駭客透過空調承包商憑證潛入 POS 系統長達兩週，期間雖有安全設備發出警報卻無人監控處置，導致 4,000 萬張信用卡外洩。"],[0,"附錄 A.8.20",4,6,"網路安全與網段隔離",360,"實施網路分段（Segmentation）、防火牆策略與零信任存取控制，限制威脅在企業內網與 OT 環境間橫向擴散。","2017 年 NotPetya 惡意程式爆發時，航運巨頭 Maersk 因辦公網段與全球港口營運網路缺乏有效隔離，癱瘓全球 76 座港口碼頭，損失高達 3 億美元。"],[0,"附錄 A.8.24",4,6,"密碼學之使用與金鑰管理",380,"規範傳輸中與靜態敏感資料的加密演算法強度，並嚴格控管加密金鑰的產生、儲存、輪替與銷毀生命週期。","2022 年 LastPass 遭駭客竊取客戶密碼庫備份，部分仍使用舊版弱迭代次數（PBKDF2）加密金鑰的用戶面臨主密碼被離線暴力破解的高度風險。"],[0,"附錄 A.8.25",4,6,"安全系統開發生命週期",380,"在系統分析、設計、編碼、測試與部署各階段融入安全要求（SSDLC / DevSecOps），從源頭消除程式碼漏洞。","2021 年 Log4j (Log4Shell) 重大漏洞暴露出眾多企業在開發流程中缺乏軟體物料清單（SBOM）與元件安全審查，耗費數月才清查完畢。"],[0,"本文 10.2",0,7,"不符合事項與矯正措施",400,"針對稽核缺失或資安事件進行根本原因分析（RCA），採取系統性矯正措施防止問題再次發生，並驗證有效性。","某大型電商在首次發生 API 越權漏洞後僅局部修補單一端點、未從架構面根除權限驗證缺陷，半年後再度因相同設計缺陷遭竊取百萬筆會員資料。"]]],"27701":["ISO/IEC 27701:2025","隱私資訊管理系統 (獨立 PIMS 架構)","#8b5cf6",[["本文條文 (4~10章)","#6366f1"],["附錄 A.1 PII 控制者","#ec4899"],["附錄 A.2 PII 處理者","#f59e0b"],["附錄 A.3 通用控制項","#10b981"]],[[1,"本文 4.1/4.2",0,0,"PIMS 範圍與 PII 角色界定",0,"ISO/IEC 27701:2025 已獨立為無須綁定 27001 即可驗證的 PIMS 標準。組織須於本文第 4 章明確界定自身身為 PII 控制者（Controller）或 PII 處理者（Processor）之角色與法規適用範圍。","多家中小型 SaaS 業者誤以為自身僅為技術代管商而未界定 PII 處理者責任，在發生客戶個資外洩時因無法釐清跨國隱私法規義務遭連帶裁罰。"],[0,"本文 5.2",0,8,"隱私政策與高階承諾",220,"最高管理階層須建立並公布隱私政策，宣示對個資保護法令遵循、資料最小化與當事人權利保障的治理承諾。","某大型連鎖零售集團因內部缺乏統一隱私治理政策，各行銷部門自行蒐集並交叉比對消費者消費紀錄，遭歐盟主管機關依 GDPR 裁罰數千萬歐元。"],[0,"本文 6.1.2",0,1,"隱私風險評鑑與處理",260,"識別個人識別資訊（PII）在蒐集、處理、傳輸與銷毀過程中的隱私侵害風險，並制定對應的隱私風險處理計畫。","2023 年遺傳基因檢測公司 23andMe 未充分評估撞庫攻擊對家族遺傳資料的連動隱私風險，導致近 690 萬名用戶的敏感血統與健康相關資料遭竊。"],[2,"本文 9.2",0,3,"PIMS 內部隱私稽核",0,"定期執行 PIMS 內部稽核，驗證隱私控制措施是否落實於業務流程、資訊系統與委外處理作業中。","某線上教育平台在系統改版後，稽核未檢視第三方分析 SDK 權限，導致未成年學童的裝置識別碼與學習軌跡被持續回傳至廣告聯播網。"],[0,"附錄 A.1.2.1",1,9,"識別合法處理基礎與目的",280,"PII 控制者必須在蒐集個資前明確界定特定、合法之處理目的，並確認具備合法基礎（如契約履行、法定義務或明確同意）。","2023 年 Meta 因未取得用戶自由且明確的同意，即以「契約必要性」為由強制將用戶個資用於行為精準廣告，遭愛爾蘭資料保護委員會重罰 3.9 億歐元。"],[0,"附錄 A.1.2.4",1,9,"隱私衝擊評估 (PIA)",300,"在導入新技術、大規模處理敏感個資或進行自動化剖析（Profiling）前，執行隱私衝擊評估（PIA/DPIA）以降低對當事人權益之風險。","多國警政與零售機構在未執行隱私衝擊評估（PIA）的情況下直接導入即時人臉辨識監控系統，遭個資保護主管機關勒令下架並銷毀生物特徵資料庫。"],[3,"附錄 A.3.3.2",3,10,"PII 外洩通報與應變",0,"當發生個資外洩事故時，建立影響評估機制，於法定時限（如 GDPR 72 小時或台灣個資法規範）內通報主管機關並通知當事人。","2016 年 Uber 發生 5,700 萬名乘客與司機個資外洩後，選擇私下支付駭客 10 萬美元封口費並隱匿長達一年未通報，最終遭重罰 1.48 億美元且安全長遭刑事起訴。"],[0,"附錄 A.1.3.1",1,9,"告知義務與隱私權聲明",260,"以清晰、易懂且易於取得的方式，向 PII 當事人完整揭露蒐集者身分、處理目的、保存期限、跨境傳輸與權利行使管道。","2021 年 WhatsApp 因隱私權政策更新條款過於晦澀且缺乏透明度，未清楚說明與母公司 Meta 共享資料的具體範圍，遭愛爾蘭當局裁罰 2.25 億歐元。"],[0,"附錄 A.1.3.4",1,9,"當事人權利行使機制 (DSAR)",300,"建立標準化流程與驗證機制，保障 PII 當事人行使查詢、閱覽、更正、刪除（被遺忘權）、限制處理與資料可攜權。","多家歐洲電信與航空業者因缺乏自動化當事人權利（DSAR）處理流程，多次逾期未回應客戶的個資刪除與調閱請求，遭主管機關連續開罰。"],[0,"附錄 A.1.4.1",1,9,"蒐集與處理最小化原則",280,"確保所蒐集與處理的 PII 僅限於達成既定合法目的所直接且必要之最小範圍，禁止無關或過度蒐集。","2023 年 TikTok 因預設將 13 至 17 歲青少年帳號設為公開、並過度蒐集與驗證年齡無關的兒童個資，遭歐盟重罰 3.45 億歐元。"],[0,"附錄 A.1.4.4",1,9,"PII 保存期限與安全銷毀",280,"依據法規與業務需求訂定明確的個資保存期限，期滿或目的消失後應安全刪除或徹底去識別化，避免永久留存風險。","2023 年法國住房平台 Doctolib 與多家電商因未設定資料自動清除機制，長期留存已註銷帳戶用戶的身分證影本，遭外洩後面臨加倍裁罰。"],[0,"附錄 A.2.2.1",2,11,"依據客戶書面指示處理 PII",300,"PII 處理者僅得在客戶（PII 控制者）的書面契約與合法指示範圍內處理個資，嚴禁擅自將客戶資料用於自身行銷或模型訓練。","某雲端客服軟體供應商未經企業客戶書面同意，擅自將客戶服務對話紀錄用於訓練自家商業推薦模型，遭多家企業集體求償並終止合約。"],[2,"本文 9.3",0,3,"PIMS 管理階層審查",0,"高階主管定期審查隱私投訴趨勢、跨境傳輸合規性、PIA 結果與法令變更，確保 PIMS 資源充足與持續有效。","某跨國旅遊平台在歐盟新隱私判例生效後，管理層未召開審查會議調整資料傳輸架構，導致持續違法傳輸歐洲用戶個資而受罰。"],[0,"附錄 A.2.5.1",2,11,"複委託處理者 (Sub-processor) 管理",320,"PII 處理者若需將處理作業轉包予複委託處理者，須事前取得客戶授權並簽訂同等隱私保護義務之契約。","2020 年 Blackbaud 雲端服務商遭勒索攻擊時，多家大學與非營利組織才驚覺其個資被轉包儲存於未經事前揭露的第三方備份節點。"],[0,"附錄 A.1.5.1",1,9,"跨境傳輸合規與保護機制",340,"向境外傳輸 PII 前，須評估目的地國家個資保護水準並採用標準契約條款（SCC）或拘束性企業規則（BCR）等合法機制。","2023 年 Meta 因將歐盟用戶個資持續傳輸至美國伺服器且缺乏充分補充保護措施，創下 GDPR 史上最高 12 億歐元天價罰款紀錄。"],[0,"附錄 A.3.1.1",3,10,"PII 清冊與資料流向圖",320,"建立完整的處理活動紀錄（RoPA）與 PII 資料流向圖，掌握所有個人資料的儲存位置、用途、存取角色與傳輸路徑。","多家銀行在進行個資盤點時因缺乏資料流向圖，未發現測試環境長期直接複製生產環境的真實客戶信用卡與身分證資料，遭駭客從測試機竊取。"],[0,"附錄 A.3.2.1",3,10,"設計與預設隱私 (Privacy by Design)",340,"於系統架構設計與產品開發初期即內建隱私保護機制，並將系統預設選項設為最高隱私保護等級。","2022 年 Sephora 因網站預設自動啟用第三方追蹤器且未提供一鍵拒絕選項，違反加州消費者隱私法（CCPA），遭裁罰 120 萬美元。"],[0,"附錄 A.3.2.4",3,10,"去識別化、假名化與加密",360,"對儲存與傳輸中的 PII 實施強加密、假名化或統計去識別化技術，確保即使資料遭攔截亦無法直接辨識特定個人。","2018 年萬豪國際集團（Marriott）喜達屋訂房資料庫遭駭，約 3.83 億筆旅客護照號碼與個資因未落實加密儲存而全數明文外洩，遭罰 1,840 萬英鎊。"],[3,"附錄 A.3.4.2",3,10,"第三方資料共享與 API 外洩",0,"嚴格管控透過 API 或檔案交換向第三方共享 PII 之範圍、驗證機制與速率限制，防止資料遭大規模爬蟲擷取。","2021 年 Facebook 因通訊錄匯入功能 API 缺乏速率限制與防爬蟲機制，遭惡意人士利用自動化工具比對擷取超過 5.33 億名用戶的電話號碼與個資。"],[0,"附錄 A.3.2.8",3,10,"PII 存取與查詢日誌稽核",340,"完整記錄所有針對敏感個資資料庫的查詢、匯出與修改軌跡，並定期稽核異常大量查詢行為（如內部人員窺探）。","某電信公司門市人員長期利用職務權限私下查詢名人與特定對象通話明細並販售，因系統未對異常查詢設定告警而長達兩年未被察覺。"],[0,"本文 7.2/7.3",0,12,"隱私保護專業能力與意識",280,"確保隱私治理人員具備法規與技術專業能力，並讓所有處理個資的員工了解違反隱私政策之法律與組織後果。","某醫院行政人員因缺乏個資意識，將包含數千名病患診斷結果的 Excel 檔案誤以「副本（CC）」而非「密件副本（BCC）」寄出，造成嚴重醫療隱私外洩。"],[0,"附錄 A.2.6.1",2,11,"合約終止後 PII 返還與刪除",340,"委外服務終止後，PII 處理者必須依客戶選擇安全返還所有個人資料，並徹底銷毀現有副本且出具銷毀證明。","摩根士丹利（Morgan Stanley）淘汰舊資料中心伺服器時，未徹底清除委外廠商硬碟上的客戶財富管理個資即直接轉售，遭美國貨幣監理署重罰 6,000 萬美元。"],[0,"附錄 A.1.5.3",1,9,"自動化決策與剖析透明度",360,"當組織使用演算法對個人進行自動化信用評分、徵才篩選或定價剖析時，須告知邏輯準則並提供人工介入複審管道。","荷蘭政府福利機構使用不透明的自動化演算法篩選育兒津貼詐欺風險，誤將數萬個少數族裔家庭標記為詐欺犯追討補助，引發內閣總辭與巨額國賠。"],[0,"本文 10.2",0,7,"PIMS 矯正措施與合規演進",400,"針對隱私稽核發現、當事人申訴或個資事故進行根因矯正，並隨各國最新隱私法規動態持續強化 PIMS 成熟度。","某跨國社交平台在首次遭裁罰 Cookie 同意機制違規後，僅修改版面顏色卻未實質改善拒絕追蹤流程，半年後遭主管機關認定蓄意不改善並加倍重罰。"]]],"22301":["ISO 22301:2019","營運持續管理系統 (BCMS)","#f59e0b",[["本文 第4~5章 全景與領導","#3b82f6"],["本文 第6~7章 規劃與支援","#8b5cf6"],["本文 第8章 營運與應變","#f59e0b"],["本文 第9~10章 演練與改善","#10b981"]],[[1,"本文 4.1/4.3",0,0,"BCMS 範圍與核心業務界定",0,"識別影響營運持續的內外部因素、法規要求與關鍵利害關係人，明確界定 BCMS 涵蓋的關鍵產品與服務邊界。","2021 年蘇伊士運河長賜輪擱淺事件暴露全球製造業在界定營運持續範圍時，過度聚焦單一工廠而忽略海運物流樞紐中斷的連鎖衝擊。"],[0,"本文 5.1/5.2",0,8,"營運持續政策與危機授權",220,"高階管理層發布營運持續政策，承諾提供必要預算與資源，並於重大危機發生時授予緊急應變指揮官快速決策權。","2011 年東日本大地震期間，部分企業因緊急採購與產線調度需層層簽核，錯失搶購有限備援零件與海運艙位的黃金 48 小時。"],[0,"本文 6.1",1,1,"營運持續風險與機會評估",240,"系統性評估天災、停電、疫情、網路攻擊與供應鏈斷鏈對關鍵資源的威脅，規劃預防與減災措施。","2021 年台灣興達電廠事故引發全台分區輪流停電，多座未預先評估長時間市電中斷與柴油儲量不足的資料中心面臨緊急降載危機。"],[2,"本文 9.2",3,3,"BCMS 內部稽核檢視",0,"透過內部稽核檢視營運持續計畫（BCP）文件、聯絡清冊與備援設施是否與現行組織架構與系統版本保持一致。","某證券商在進行內部稽核時發現，其災難復原計畫中記載的緊急聯絡人已有半數離職，且備援機房資料庫版本落後生產環境兩個大版本。"],[0,"本文 7.1/7.2",1,12,"關鍵資源與應變團隊能力",260,"確保危機應變小組（CMT）與復原團隊具備足夠人力代理人（Backup Personnel）與專業訓練，避免單點人員依賴。","2020 年新冠疫情爆發初期，某大型物流中心因關鍵調度員集體確診隔離且無跨部門代理人，導致整個區域配送系統癱瘓數日。"],[0,"本文 7.4",1,12,"危機溝通與內外部通報機制",260,"建立危機期間對員工、客戶、主管機關與媒體的標準化溝通管道與替代聯絡方式（防止公司信箱與總機同時癱瘓）。","2023 年澳洲電信巨頭 Optus 全國斷網 14 小時期間，因內部應變團隊過度依賴自家網路溝通且對外資訊混亂，引發民眾恐慌與執行長引咎辭職。"],[3,"本文 8.4.2",2,13,"突發重大營運中斷事件",0,"於中斷事件發生瞬間啟動緊急應變架構，確保人員生命安全、控制災情擴大並通報危機管理團隊接管指揮。","2021 年日本瑞薩電子（Renesas）那珂工廠無塵室發生火災，因火勢與煙霧損毀關鍵晶圓設備，導致全球車用晶片供應鏈大斷鏈並停工數月。"],[0,"本文 8.2.2",2,13,"營運衝擊分析 (BIA)",320,"量化各業務活動中斷隨時間推移造成的財務與聲譽損失，科學化訂定最大可容忍中斷時間（MTPD）、復原時間目標（RTO）與復原點目標（RPO）。","某大型零售銀行未精準執行 BIA，將核心清算系統的 RTO 誤設為 24 小時，實際發生中斷僅 4 小時即引發跨行結算違約與擠兌恐慌。"],[0,"本文 8.2.3",2,13,"中斷風險評估 (RA)",300,"針對支撐關鍵業務的五大資源（人員、廠房、設備/IT、供應商、資料）評估單點故障風險，識別高脆弱度環節。","2021 年德州大暴雪導致大規模停電與天然氣管線結冰，三星與恩智浦位於奧斯汀的晶圓廠因未針對極端寒潮設計水電防凍備援而被迫停產數週。"],[0,"本文 8.3.2",2,13,"營運持續策略與解決方案",340,"依據 BIA 與風險評估結果，選定並建置符合 RTO/RPO 的替代營運模式（如異地備援中心、雙活架構、替代產線或居家辦公）。","2024 年 CrowdStrike 錯誤更新導致全球 850 萬台 Windows 裝置藍屏當機，達美航空因機組員調度系統缺乏手動或異地備援策略，連續 5 天取消逾 5,000 班航班，損失 5 億美元。"],[0,"本文 8.3.3",2,13,"關鍵供應鏈與外包韌性",320,"評估單一來源供應商的中斷風險，建立第二供應商（Second Source）、安全庫存或合約化緊急供貨保障機制。","2020 年新冠疫情期間，多家歐美車廠因採行極致零庫存（JIT）且高度依賴單一線束與晶片供應商，被迫關閉數十座組裝廠，損失數百億美元營收。"],[0,"本文 8.4.3",2,13,"緊急告警與初動處置",280,"建立 24/7 異常偵測、人員疏散清點、消防抑災與設施緊急關閉標準作業程序，防止次生災害擴大。","2022 年韓國板橋 SK C&C 資料中心鋰電池起火，因缺乏精準局部斷電與消防隔離機制，被迫切斷整棟電源，導致 KakaoTalk 全國通訊與支付服務癱瘓數日。"],[2,"本文 9.3",3,3,"BCMS 管理階層審查",0,"最高管理階層定期審查演練報告、BIA 更新、供應鏈韌性變化與資源配置，確保營運持續能力與企業成長同步。","某電商在業務規模擴大五倍後，管理層未重新審查備援機房頻寬容量，雙十一期間主機房故障切換至備援中心時瞬間頻寬爆滿崩潰。"],[0,"本文 8.4.4",2,13,"營運持續計畫 (BCP) 編製",340,"為各關鍵部門編製簡明、可執行的步驟化營運持續計畫（BCP），明列啟動條件、替代作業流程、表單與復原順序。","2023 年豐田汽車日本 14 座工廠因伺服器磁碟空間滿載而全面停產，事後檢討發現現場缺乏離線手動切換備援資料庫的標準作業程序。"],[0,"本文 8.4.5",2,13,"正常營運復原與回切 (Return)",340,"規劃從緊急備援狀態安全遷回正常營運環境（Failback）的資料同步、一致性驗證與風險控制程序，避免二次中斷。","某航空公司於颱風過後將訂位系統從備援中心切回主機房時，因未執行雙向交易資料比對，導致數千筆颱風期間改票紀錄遺失，引發機場大混亂。"],[0,"本文 8.5.1",2,13,"桌面推演與模擬演練",300,"透過無預警通知測試、桌面推演（Tabletop Exercise）與功能演練，驗證應變團隊在壓力下的協作與決策能力。","多家企業的 BCP 演練長年僅在會議室「照本宣科朗讀腳本」，當真實勒索攻擊鎖死內網與電話系統時，團隊完全不知如何在無網路環境下協作。"],[0,"本文 8.5.2",2,13,"實兵系統切換與 DR 測試",380,"實際執行異地備援系統切換（Failover）與資料還原測試，實測實際復原時間（RTA）是否真正符合 BIA 設定的 RTO。","2012 年騎士資本（Knight Capital）部署新交易軟體時漏更新其中一台伺服器，且缺乏一鍵回滾與切換驗證，45 分鐘內虧損 4.4 億美元並宣告破產。"],[0,"本文 8.6",2,13,"營運持續文件與能力評估",320,"在重大組織改組、新系統上線或供應商變更後，即時評估並更新營運持續文件與備援資源有效性。","某銀行完成核心系統微服務化上雲後，未同步更新災難復原相依性清單，演練時才發現微服務依賴的外部金鑰管理節點未納入異地備援。"],[3,"本文 8.4.1",2,13,"跨國雲端／骨幹網路斷線",0,"針對單一雲端區域（Region）或 CDN 骨幹網路大斷線，預先建置多區域（Multi-Region）或備援路由切換機制。","2021 年 CDN 巨頭 Fastly 因一項客戶組態變更觸發軟體臭蟲，導致全球 85% 節點離線近一小時，亞馬遜、Reddit、英國政府網站全面癱瘓。"],[0,"本文 7.5",1,12,"離線與異地緊急文件保存",280,"確保 BCP 手冊、緊急聯絡清冊、系統架構圖與金鑰資訊同時保存於離線紙本與異地安全雲端，避免主機癱瘓時無法讀取。","某大型醫院遭勒索軟體加密所有內部檔案伺服器後，由於所有緊急應變手冊與廠商支援電話皆存於內網共享資料夾，醫護與 IT 團隊陷入完全盲目狀態。"],[0,"本文 9.1",3,3,"營運持續績效監督與量測",300,"建立備援系統可用率、備份成功率、演練達標率等關鍵績效指標（KPI），持續量測組織營運韌性水準。","某製造業 ERP 每日自動備份排程其實已連續三個月因權限過期失敗，但因無人監控備份成功率指標，直到硬碟陣列損毀才發現無任何可用備份。"],[0,"本文 10.1",3,7,"演練後檢討 (AAR) 與矯正",340,"每次演練或真實中斷事件結束後，產出正式檢討報告並追蹤缺失矯正措施，將教訓轉化為制度與架構強化。","某航空公司於前一年演練時已發現機組員排班資料庫切換耗時過長，但未追蹤矯正改善，隔年暴風雪來襲時同一瓶頸直接導致全線大停飛。"],[0,"本文 6.2",1,1,"營運持續目標與達成計畫",320,"於各關鍵營運層級建立可量測的營運持續目標（如 RTO 縮短至 2 小時內），並明訂負責人、預算與完成時程。","某電信商僅在口頭宣示「打造高韌性網路」卻未制定具體量化目標與預算排程，導致核心交換機雙路由改造工程延宕三年並發生重大斷網事故。"],[0,"本文 10.2",3,7,"BCMS 韌性成熟度持續精進",400,"結合產業最佳實務、自動化混沌工程（Chaos Engineering）與最新威脅趨勢，持續提升組織整體營運韌性成熟度。","缺乏持續演進的傳統災難復原架構在面對現代「雙重勒索＋供應鏈中斷」複合式危機時往往全面失靈，唯有持續精進方能確保企業永續生存。"]]],"20000":["ISO/IEC 20000-1:2018","IT 服務管理系統 (SMS)","#10b981",[["本文 第4~7章 服務治理與支援","#3b82f6"],["本文 8.1~8.3 服務設計與關係","#8b5cf6"],["本文 8.4~8.5 變更與部署","#f59e0b"],["本文 8.6~10章 事件與持續改善","#10b981"]],[[1,"本文 4.1/4.3",0,0,"SMS 服務目錄與範圍界定",0,"界定 IT 服務管理系統涵蓋的內部與外部服務範圍、服務目錄（Service Catalogue）與利害關係人期望。","某大型企業 IT 部門因未釐清各事業群自行採購的雲端微服務是否納入支援範圍，系統故障時發生跨部門互相推諉、無人接手處理的窘境。"],[0,"本文 5.1/5.2",0,8,"服務管理政策與價值導向",220,"高階管理層建立服務管理政策，確保 IT 服務規劃與交付緊密對齊業務價值與客戶服務水準期望。","某銀行 IT 團隊長期以「技術穩定不改動」為唯一指標，拒絕配合業務部門調整系統容量與功能，最終導致行動銀行在促銷日全面壅塞當機。"],[0,"本文 7.5",0,12,"服務知識庫管理 (KEDB)",240,"建立與維護已知錯誤資料庫（KEDB）與標準操作知識庫，加速服務台第一線解決率並減少重複排查時間。","某電商客服與維運團隊缺乏共享知識庫，同一資料庫連線池耗盡問題在半年內重複發生五次，每次皆耗費數小時重新排查。"],[2,"本文 9.2",3,3,"SMS 服務流程內部稽核",0,"定期稽核變更管理、事件管理、問題管理與 SLA 執行紀錄，確保實際維運作業符合標準流程規範。","內部稽核抽查發現，某金融機構高達 35% 的生產環境資料庫異動未經正式變更單審批，存在極高的人為誤操作與舞弊風險。"],[0,"本文 8.2.3",1,13,"服務目錄管理 (Service Catalogue)",260,"維護準確且即時更新的服務目錄，清楚定義各項 IT 服務的功能、支援時段、申請流程與依賴關係。","某跨國集團在進行資料中心整併時，因服務目錄嚴重過期，誤將一套仍支撐歐洲財務結算的舊排程主機關機，造成月結延誤三天。"],[0,"本文 8.2.4",1,13,"資產與組態管理 (CMDB)",300,"建立組態管理資料庫（CMDB），精確記錄組態項目（CI）屬性及其上下游相依拓撲，支撐變更影響評估與根因分析。","2021 年 Facebook 全球大斷網長達 6 小時，工程師執行骨幹路由器維護指令時因缺乏精確的組態相依性驗證，意外撤銷所有 BGP 路由宣告，連門禁系統都隨之失效。"],[3,"本文 8.6.1",3,13,"重大服務中斷事件 (Major Incident)",0,"建立重大事件（Major Incident）升級機制與戰情室指揮流程，以最快速度恢復正常服務營運（Workaround / Recovery）。","2022 年日本 KDDI 電信發生長達 61 小時的大規模通訊斷網，影響近 4,000 萬用戶與緊急救護通報，主因正是核心路由器維護後的重大事件升級與流量控管失靈。"],[0,"本文 8.3.2",1,13,"服務水準管理 (SLA / OLA)",300,"與客戶簽訂明確的服務水準協議（SLA），並與內部支援團隊（OLA）及外部供應商（UC）建立對齊的支援指標。","某雲端支付業者對客戶承諾 99.99% 可用率 SLA，卻未與底層資料庫代管商簽訂同等級支援合約，故障發生時原廠支援延遲 8 小時才介入，引發巨額違約賠償。"],[0,"本文 8.3.4",1,13,"供應商與外包服務管理",280,"系統化管理外部 IT 服務供應商的績效、變更協調與合約履行，確保外部服務品質不影響整體服務交付。","2023 年英國國家航空交通服務（NATS）因第三方系統處理一份異常飛行計畫格式引發軟體當機，導致全英逾 1,500 班航班取消、數十萬旅客滯留。"],[0,"本文 8.4.2",1,13,"容量與效能管理 (Capacity)",320,"持續監控運算、儲存、網路頻寬與授權容量使用趨勢，預測未來業務成長與尖峰負載並提前擴容。","2022 年美國西南航空在冬季暴風雪期間，因機組員排班系統（SkySolver）長期未進行容量擴充與負載優化，運算效能崩潰導致取消超過 16,700 班航班，損失逾 11 億美元。"],[0,"本文 8.4.3",1,13,"服務可用性管理 (Availability)",320,"設計高可用性架構（HA）、消除單點故障（SPOF）並持續量測平均無故障時間（MTBF）與平均修復時間（MTTR）。","2017 年 AWS S3 美國東區發生大斷線，起因竟是工程師輸入錯誤指令移除過多計費子系統伺服器，且該核心索引服務缺乏平滑降級與高可用隔離機制。"],[0,"本文 8.5.1",2,13,"變更管理與 CAB 審查",360,"所有對服務或基礎設施的變更皆須經過風險與影響評估、變更諮詢委員會（CAB）審批、測試與回滾計畫驗證。","2021 年 Rogers 電信在進行核心 IP 網路路由更新時，因變更審查未充分評估過濾器規則刪除的連鎖影響，導致全加拿大斷網 15 小時，癱瘓金融刷卡與 911 報案。"],[2,"本文 9.3",3,3,"SMS 管理階層審查",0,"高階主管定期審查 SLA 達成率、重大事件趨勢、客戶滿意度與資源瓶頸，推動服務管理系統持續優化。","某資訊服務商因高階主管長期未檢視客服滿意度下滑與積壓問題單趨勢，最終在年度續約時遭三大主力客戶集體解約。"],[0,"本文 8.5.2",2,13,"新服務設計與移轉 (Transition)",300,"確保新建或重大修改的 IT 服務在正式上線移轉至維運團隊前，已完成驗收測試、監控接入與維運文件交付。","某銀行開發團隊未經正式服務移轉驗收即在週五晚間上線新網銀模組，結果週末發生記憶體洩漏當機時，維運團隊完全沒有監控儀表板與重啟手冊。"],[0,"本文 8.5.3",2,13,"發布與部署管理 (Release)",340,"規劃發布套件、採用藍綠部署或金絲雀發布（Canary Release）策略，並備妥經實測的緊急退版（Rollback）機制。","2024 年 CrowdStrike 透過自動化通道向全球端點同步推送未經分階段金絲雀驗證的驅動程式更新檔（Channel File 291），瞬間引發全球 IT 史上最大規模當機。"],[0,"本文 8.6.2",3,13,"問題管理與根因分析 (RCA)",340,"針對重複發生或重大服務事件執行深入的根本原因分析（RCA），徹底消除潛在結構性缺陷而非僅做表面重啟。","2023 年瑞穗銀行（Mizuho Bank）因長期僅以重啟主機應付交易系統錯誤、未根除資料庫鎖死問題，一年內連續發生 8 次 ATM 與網銀大當機，遭日本金融廳下達業務改善令。"],[0,"本文 8.6.3",3,13,"服務請求履行 (Service Request)",260,"針對密碼重設、軟體安裝、權限申請等標準服務請求建立自助服務入口與自動化履行流程，提升使用者體驗。","某大型企業缺乏標準服務請求驗證流程，服務台人員僅憑電話口頭確認即協助重設高階主管密碼，遭社交工程駭客輕易突破內網。"],[0,"本文 8.7.2",3,13,"服務報告與 SLA 透明度",280,"定期產出準確、客觀的服務績效報告，向客戶與管理層揭露可用率、事件回應時間與改善行動進度。","某雲端代管商在發生多次短暫微斷線後，在月度報告中刻意將其歸類為「非計畫性例行維護」以美化 SLA 數據，遭客戶稽核揭發並求償。"],[3,"本文 8.5.1",2,13,"未經授權變更 (Rogue Change)",0,"透過組態漂移偵測與特權操作錄影稽核，嚴格禁止並即時攔截未經變更單核准的生產環境直接修改。","某證券交易所工程師於盤中未經變更審批直接修改撮合引擎參數，導致開盤交易延遲近兩小時，引發國際投資機構嚴重質疑。"],[0,"本文 8.2.2",1,13,"業務關係管理 (BRM)",280,"指派專責業務關係經理定期與業務部門及客戶溝通，掌握未來業務策略變化並轉化為 IT 服務需求。","某零售集團行銷部門推出限時搶購活動卻未事先通知 IT 部門，導致流量暴增十倍瞬間擊垮結帳系統，品牌形象嚴重受損。"],[0,"本文 8.4.1",1,13,"IT 服務財務與預算管理",280,"精準編列與追蹤 IT 服務成本（含雲端 FinOps 成本控管），確保服務定價、資源投入與業務效益維持平衡。","某新創公司未設定雲端服務預算告警與自動擴展上限，遭惡意流量攻擊觸發無上限自動擴容，一夜間產生超過 10 萬美元天價雲端帳單。"],[0,"本文 8.7.3",3,13,"服務資訊安全整合",340,"確保所有 IT 服務的設計、變更、存取與供應商交付皆符合資訊安全控制要求，防止服務中斷演變為資安外洩。","某公有雲供應商在部署新託管資料庫服務時，預設開啟公開網路連接埠且未強制加密，導致數千家企業資料庫暴露於公開網路遭勒索清空。"],[0,"本文 9.1",3,3,"端到端服務監控與可觀測性",340,"建置全棧監控與可觀測性（Observability）平台，即時追蹤應用程式延遲、錯誤率與基礎設施健康度，實現主動預警。","某航空訂位平台因 SSL 憑證過期未納入自動化監控告警，憑證失效瞬間全球官網與 App 全面無法連線長達 6 小時。"],[0,"本文 10.2",3,7,"持續服務改善計畫 (CSI)",400,"建立持續改善登記冊（CSI Register），系統化追蹤自動化維運、缺陷消除與服務體驗優化專案。","傳統人工維運團隊若缺乏持續自動化與改善機制，隨系統複雜度指數上升，人為操作失誤率將必然導致重大服務中斷事故。"]]],"42001":["ISO/IEC 42001:2023","人工智慧管理系統 (AIMS)","#ec4899",[["本文條文 (4~10章)","#3b82f6"],["附錄 A.2~A.4 政策與資源","#8b5cf6"],["附錄 A.5~A.7 衝擊與生命週期","#ec4899"],["附錄 A.8~A.10 透明度與第三方","#10b981"]],[[1,"本文 4.1/4.2",0,0,"AIMS 範圍與 AI 角色界定",0,"界定組織在 AI 生態系中的角色（AI 供應者、部署者、使用者或資料提供者），並識別適用的 AI 法規（如歐盟 AI Act）與倫理期望。","多家企業在員工全面導入生成式 AI 工具時未界定 AIMS 治理邊界與角色責任，導致機密程式碼與客戶合約直接輸入公有雲 LLM 遭到外洩。"],[0,"附錄 A.2.2",1,14,"負責任 AI 治理政策",240,"制定並發布組織層級的 AI 政策，明確規範可接受與禁止的 AI 使用情境、公平性、透明度與人類監督原則。","2023 年三星電子半導體部門因缺乏明確的生成式 AI 使用政策，工程師將機密設備測量原始碼與會議紀錄貼入 ChatGPT 除錯，導致內部機密外流。"],[0,"本文 6.1.2",0,1,"AI 系統風險評鑑",280,"評估 AI 系統特有的技術與社會風險，包括模型幻覺（Hallucination）、演算法偏見、對抗式攻擊、隱私外洩與安全失控。","2023 年美國律師使用 ChatGPT 撰寫法庭訴狀卻未評估模型幻覺風險，引用了 6 個 AI 憑空捏造的虛假判例，遭聯邦法官重罰並公開懲戒。"],[2,"本文 9.2",0,3,"AIMS 內部稽核與模型審查",0,"定期稽核組織內所有上線 AI 系統的資料來源合法性、模型效能漂移、偏見測試報告與人類監督落實情形。","某大型人力資源平台在內部稽核時發現，其導入三年的履歷篩選 AI 從未進行性別與年齡偏見檢定，系統性排除了特定族群求職者。"],[0,"附錄 A.3.2",1,15,"AI 治理問責與人類監督",300,"明確指派 AI 系統各生命週期階段的問責人員，並在關鍵高風險決策中設計「人在迴路中（Human-in-the-Loop）」監督與緊急停止機制。","2023 年美國聯合健康保險（UnitedHealth）遭集體訴訟，指控其使用錯誤率高達 90% 的 nH Predict AI 演算法自動拒絕高齡病患術後復健給付，且缺乏有效人工覆核。"],[0,"附錄 A.4.2",1,16,"AI 系統清冊與算力／模型管理",280,"建立完整 AI 系統資產清冊，追蹤基礎模型版本、微調權重、訓練算力環境與相依軟體套件。","某金融機構在盤點時發現各部門私自部署了超過 40 個未登記的開源大模型與 RAG 服務（Shadow AI），部分模型存在已知遠端程式碼執行漏洞。"],[3,"附錄 A.6.2.6",2,17,"提示詞注入與對抗攻擊",0,"針對提示詞注入（Prompt Injection）、資料投毒（Data Poisoning）與模型萃取攻擊建立輸入輸出防護護欄（Guardrails）。","2023 年雪佛蘭（Chevrolet）經銷商網站導入的 GPT 客服機器人遭網友透過提示詞注入操控，不僅公開承諾「以 1 美元出售 2024 年款休旅車」，還宣告具備法律約束力。"],[0,"附錄 A.5.2",2,18,"AI 系統社會與個人衝擊評估",320,"在部署 AI 系統前，評估其對個人基本權利、心理安全、就業公平與社會信任的潛在負面衝擊並制定緩解措施。","2018 年亞馬遜（Amazon）開發的 AI 招募引擎因未事前評估歷史聘用資料偏見對女性求職者的衝擊，自動對包含「女子」字樣的履歷扣分，最終被迫全面廢止該系統。"],[0,"附錄 A.6.1.2",2,17,"負責任 AI 設計與安全性",320,"在 AI 系統架構設計階段設定明確的目標函數、安全邊界、可解釋性要求與故障安全（Fail-safe）機制。","2023 年自動駕駛公司 Cruise 的無人計程車在舊金山發生事故後，因車輛軟體缺乏對二次拖行風險的安全設計，導致行人被拖行 20 英尺重傷，公司營運執照遭吊銷。"],[0,"附錄 A.6.2.4",2,17,"AI 系統驗證、確認與紅隊演練",340,"在 AI 上線前進行嚴格的準確度驗證、邊界案例測試與 AI 紅隊演練（Red Teaming），確保模型在異常輸入下仍安全可控。","2024 年紐約市政府推出的企業輔助聊天機器人 MyCity 因上線前缺乏充分驗證，竟教導企業主可以「違法扣留員工小費」與「拒絕租屋給特定補助對象」，引發輿論撻伐。"],[0,"附錄 A.6.2.7",2,17,"AI 運行監控與模型漂移偵測",340,"持續監控生產環境中 AI 模型的輸出品質、資料漂移（Data Drift）與概念漂移（Concept Drift），異常時自動觸發降級或重訓。","2021 年房地產平台 Zillow 的購屋演算法（Zillow Offers）在疫情期間房市劇烈波動時未能及時偵測模型預測漂移，高價買入大量房產最終認列逾 5 億美元鉅額虧損並裁員 25%。"],[0,"附錄 A.7.2",2,19,"訓練與測試資料來源合法性",340,"驗證用於訓練、微調與 RAG 檢索之資料集具備合法版權授權與個資合規性，防止侵權與隱私污染。","2023 年《紐約時報》控告 OpenAI 與微軟未經授權使用數百萬篇新聞報導訓練大模型並逐字輸出付費內容，引發數十億美元智慧財產權訴訟。"],[2,"本文 9.3",0,3,"AIMS 管理階層審查",0,"最高管理階層定期審查 AI 衝擊評估結果、模型準確度與偏見指標、新興 AI 法規動態與資源投入。","某銀行消費金融部門擅自調高 AI 核貸模型風險權重以追求業績，因高階主管未召開 AIMS 審查會議，半年後呆帳率暴增才被發現。"],[0,"附錄 A.7.4",2,19,"資料品質、去偏見與血緣追蹤",320,"確保 AI 訓練與推論資料的完整性、代表性與準確性，建立資料血緣（Data Lineage）並消除歷史歧視偏見。","2019 年《科學》期刊揭露美國醫院廣泛使用的醫療風險預測演算法存在嚴重種族偏見，因訓練資料以「過去醫療支出金額」代理健康需求，低估了弱勢族群的實際病情。"],[0,"附錄 A.8.2",3,20,"AI 系統透明度與使用揭露",300,"明確告知使用者正在與 AI 系統互動、AI 生成內容標示（如浮水印/中繼資料），並說明系統能力與限制。","2024 年加拿大航空（Air Canada）官網 AI 客服機器人向喪親旅客提供錯誤的喪葬優惠票退費規則，法院判決航空公司須對 AI 錯誤陳述負全責並賠償旅客。"],[0,"附錄 A.8.4",3,20,"AI 事件與異常通報管道",280,"為內外部使用者建立便捷的 AI 錯誤輸出、偏見歧視或安全異常回報機制，並納入組織事件應變追蹤。","某教育科技公司推出的 AI 寫作偵測工具頻繁將母語非英語學生的正常作文誤判為 AI 代寫，因缺乏申訴與異常回報機制，導致多名無辜學生遭學校停學處分。"],[0,"附錄 A.9.2",3,21,"組織負責任使用 AI 規範",300,"規範內部員工使用內外部 AI 工具的行為準則，包括禁止輸入機密與個資、強制人工審核 AI 產出內容等。","2024 年多家顧問公司與科技媒體被揭發直接發布未經人工查核的 AI 生成文章，因內容充斥事實錯誤與抄襲段落，導致品牌公信力重創。"],[0,"附錄 A.10.2",3,22,"AI 供應鏈與基礎模型評估",340,"在採購第三方 AI 平台、API 或開源模型時，評估供應商的資料隱私承諾（零資料留存 ZDR）、安全性與合規責任。","2023 年 Zoom 更新服務條款時因條文暗示可能使用客戶音訊與視訊內容訓練 AI 模型，引發全球企業客戶強烈反彈與抵制，迫使 Zoom 緊急修改條款澄清。"],[3,"附錄 A.7.3",2,19,"訓練資料記憶化與個資外洩",0,"採用差分隱私（Differential Privacy）、資料脫敏與輸出過濾機制，防止大模型背誦並洩漏訓練集中的敏感個資。","研究人員證實透過特定提示詞誘導（Divergence Attack），可使大型語言模型直接吐出訓練資料中真實個人的姓名、電子郵件、電話號碼與程式碼片段。"],[0,"本文 7.2/7.3",0,12,"AI 素養與專業團隊培訓",280,"提升開發者、稽核員與一般員工的 AI 素養（AI Literacy），使其理解模型侷限性、幻覺風險與倫理合規要求。","歐盟《人工智慧法案》（EU AI Act）明確要求所有部署或使用 AI 系統的組織必須確保人員具備充分 AI 素養，缺乏培訓之企業將面臨合規調查。"],[0,"附錄 A.6.2.5",2,17,"AI 系統可追溯性與稽核軌跡",340,"完整記錄 AI 系統的提示詞輸入、檢索上下文、模型版本、推論結果與人工覆核紀錄，確保高風險決策可完整追溯。","某保險公司使用自動化 AI 理賠系統拒賠數千件醫療保單，當主管機關要求說明拒賠依據時，因系統未保留推論版本與決策日誌而無法舉證合規。"],[0,"附錄 A.10.3",3,22,"客戶 AI 部署指引與邊界",320,"向使用組織 AI 產品的客戶清楚說明系統的預期用途（Intended Use）、已知限制、準確率邊界與禁止高風險濫用場景。","多家醫療 AI 影像輔助軟體供應商因未在說明書中明確界定適用病患族群與臨床限制，導致部分診所醫師過度依賴 AI 判讀而延誤癌症早期診斷。"],[0,"附錄 A.6.2.8",2,17,"AI 系統安全退役與模型銷毀",320,"規範 AI 系統除役時的模型權重銷毀、訓練資料集清除與 API 端點下線程序，防止遺留模型遭竊取或逆向還原。","某科技公司淘汰舊版推薦系統後，未刪除雲端物件儲存桶中的歷史訓練模型權重檔，遭研究人員下載並透過模型反演攻擊還原出部分訓練用戶特徵。"],[0,"本文 10.2",0,7,"AIMS 持續改善與倫理演進",400,"結合全球 AI 安全基準更新、紅隊測試結果與事件經驗，持續優化 AI 治理框架與安全護欄有效性。","AI 技術與攻擊手法以月為單位快速迭代，若企業僅在導入初期進行一次性合規檢查而未建立持續改善機制，AIMS 護欄將在數月內形同虛設。"]]]}};
+let stdKey="27001",mode="solo",player={},turn=1,built={},moving=false,dice=1;
+const $=id=>document.getElementById(id);
+const getStd=()=>DB.S[stdKey];
+const getClauseType=code=>code.startsWith("本文")?"本文":(stdKey==="27701"&&/^附錄 A\.\d/.test(code)?code.slice(0,6):"附錄 A");
+const badgeCls=ct=>ct.startsWith("附錄")?"bg-amber-500/20 text-amber-300 border border-amber-500/40":"bg-sky-500/20 text-sky-300 border border-sky-500/40";
+const toggleModal=(id,show)=>{const el=$(id);el.classList.toggle("hidden",!show);el.classList.toggle("flex",!!show);};
 
-  <!-- 24項控制項與案例總覽彈窗 -->
-  <div id="catalogModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-5xl w-full p-5 md:p-6 shadow-2xl flex flex-col max-h-[90vh]">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
-        <div>
-          <h3 id="catalogTitle" class="text-lg md:text-xl font-black text-white">📚 標準控制項與事故案例總覽</h3>
-          <p class="text-xs text-slate-400">完整區分「本文」與「附錄 A」，並收錄各條文核心目的與未遵守之真實事件案例</p>
-        </div>
-        <button onclick="closeCatalogModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-sm font-bold">✕ 關閉</button>
-      </div>
-      <div id="catalogBody" class="overflow-y-auto space-y-3 pr-1">
-        <!-- 由 JS 動態填入 -->
-      </div>
+function initPlayer(){
+  const isC=mode==="consultant";
+  player=isC
+    ?{name:"外部輔導顧問",isC:true,pos:0,budget:99999,maturity:100,risk:10,color:"#f59e0b",badge:"顧問"}
+    :{name:"資安長 (你)",isC:false,pos:0,budget:2500,maturity:100,risk:15,color:"#38bdf8",badge:"P1"};
+  turn=1;built={};moving=false;
+}
+function changeStandard(v){stdKey=v;resetGame();}
+function changeMode(v){mode=v;resetGame();}
+function resetGame(){
+  initPlayer();
+  toggleModal("eventModal",0);toggleModal("inspectModal",0);
+  renderAll();clearLogs();
+  const s=getStd();
+  addLog(`🎮 已切換至【${s[0]} - ${s[1]}】（${player.isC?"外部顧問版":"企業內部版"}），新賽局開始！`,"text-sky-300 font-bold");
+  addLog(player.isC?"💼 外部顧問版：預算無上限且免破產中斷，適合客戶輔導與教育訓練簡報。":"💡 提示：滑鼠直接點擊棋盤上的任何一格，可隨時查詢該控制項目的與真實資安事件。","text-amber-300");
+}
+function renderAll(){renderBoard();renderPlayerCard();renderDomainStats();}
+function renderBoard(){
+  const box=$("boardContainer"),s=getStd(),doms=s[3],tiles=s[4];
+  box.innerHTML="";
+  tiles.forEach((t,i)=>{
+    const [tp,code,di,li,title,cost]=t,[r,c]=COORDS[i],ct=getClauseType(code),lv=built[i]||0;
+    const el=document.createElement("div");
+    el.className=`tile ${player.pos===i?"active-tile":""}`;
+    el.style.gridRow=r;el.style.gridColumn=c;
+    el.title=`點擊查詢：${code} ${title}`;
+    el.onclick=()=>openInspectModal(i);
+    const icon=tp===1?"🚩":tp===2?"🔍":tp===3?"⚡":"";
+    const rightTag=lv
+      ?`<span class="text-[10px] font-black px-1.5 rounded" style="background:${player.color}33;color:${player.color};border:1px solid ${player.color}">${player.badge} ${"★".repeat(lv)}</span>`
+      :(tp===0?`<span class="text-[10px] text-slate-400 font-mono">${player.isC?"輔導":"$"+cost}</span>`:"");
+    const tok=player.pos===i?`<span class="token" style="background:${player.color};color:#0f172a" title="${player.name}">${player.badge}</span>`:"";
+    el.innerHTML=`<div><div class="tile-bar" style="background:${doms[di][1]}"></div><div class="flex items-center justify-between gap-1"><span class="text-[10px] font-mono font-bold text-slate-300 truncate">${icon} ${code}</span>${rightTag}</div><div class="text-[11px] md:text-xs font-bold text-white leading-snug mt-0.5 line-clamp-2">${title}</div></div><div class="flex items-center justify-between mt-1 pt-1 border-t border-slate-800/80"><span class="text-[9px] font-black px-1.5 rounded ${badgeCls(ct)}">${ct}</span><div class="flex items-center gap-1">${tok}</div></div>`;
+    box.appendChild(el);
+  });
+  const hub=document.createElement("div");
+  hub.className="center-hub";
+  const faces=["⚀","⚁","⚂","⚃","⚄","⚅"];
+  const legend=doms.map(d=>`<span class="inline-flex items-center gap-1 text-[11px] bg-slate-800/90 border border-slate-700 px-2 py-0.5 rounded-md text-slate-200"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:${d[1]}"></span>${d[0]}</span>`).join("");
+  const totalCtrl=tiles.filter(t=>t[0]===0).length;
+  hub.innerHTML=`
+    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+      <div><div class="text-xs font-bold text-sky-400 uppercase tracking-wider">CURRENT FRAMEWORK</div><div class="text-lg md:text-2xl font-black text-white">${s[0]}</div><div class="text-xs text-slate-400">${s[1]}</div></div>
+      <div class="text-right"><div class="text-xs text-slate-400">目前身分模式</div><div class="text-sm md:text-base font-black" style="color:${player.color}">${player.name}</div></div>
     </div>
-  </div>
-
-  <script>
-    // =========================================================================
-    // 24 格棋盤座標映射 (7x7 外圈順時針，共 24 格)
-    // =========================================================================
-    const BOARD_COORDS = [
-      { r: 1, c: 1 }, { r: 1, c: 2 }, { r: 1, c: 3 }, { r: 1, c: 4 }, { r: 1, c: 5 }, { r: 1, c: 6 }, { r: 1, c: 7 },
-      { r: 2, c: 7 }, { r: 3, c: 7 }, { r: 4, c: 7 }, { r: 5, c: 7 }, { r: 6, c: 7 },
-      { r: 7, c: 7 }, { r: 7, c: 6 }, { r: 7, c: 5 }, { r: 7, c: 4 }, { r: 7, c: 3 }, { r: 7, c: 2 }, { r: 7, c: 1 },
-      { r: 6, c: 1 }, { r: 5, c: 1 }, { r: 4, c: 1 }, { r: 3, c: 1 }, { r: 2, c: 1 }
-    ];
-
-    // =========================================================================
-    // 五大 ISO 標準資料庫 (含本文/附錄A分類、核心目的、真實資安/營運事故案例)
-    // =========================================================================
-    const STANDARDS_DATA = {
-      // -----------------------------------------------------------------------
-      // 1. ISO/IEC 27001:2022 資訊安全管理系統
-      // -----------------------------------------------------------------------
-      "27001": {
-        name: "ISO/IEC 27001:2022",
-        subtitle: "資訊安全管理系統 (ISMS)",
-        color: "#0ea5e9",
-        domains: [
-          { id: "clause", name: "本文條文 (4~10章)", color: "#3b82f6" },
-          { id: "org", name: "附錄 A.5 組織控制", color: "#8b5cf6" },
-          { id: "people", name: "附錄 A.6 人員控制", color: "#10b981" },
-          { id: "phys", name: "附錄 A.7 實體控制", color: "#f59e0b" },
-          { id: "tech", name: "附錄 A.8 技術控制", color: "#ef4444" }
-        ],
-        tiles: [
-          {
-            type: "start", clauseType: "本文", code: "本文 4.1/4.2", domain: "clause", domainLabel: "本文 第4章 組織全景",
-            title: "ISMS 範圍與利害關係人", cost: 0, rent: 0,
-            purpose: "界定組織內外部議題、利害關係人（主管機關、客戶、供應商）需求及 ISMS 驗證邊界，確保資安治理涵蓋所有關鍵業務與雲端服務。",
-            incident: "2020 年 SolarWinds 供應鏈攻擊中，攻擊者透過未納入嚴格邊界監控的建置伺服器植入惡意程式，波及美國財政部與超過 18,000 家企業。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 6.1.2", domain: "clause", domainLabel: "本文 第6章 規劃",
-            title: "資訊安全風險評鑑", cost: 220, rent: 55,
-            purpose: "建立系統化的風險準則，定期識別資產威脅與弱點並評估衝擊，確保有限資安資源優先投入高風險項目。",
-            incident: "2017 年 Equifax 因未評估 Apache Struts 重大漏洞對核心信用資料庫的風險並及時修補，導致 1.47 億筆個資外洩，賠償逾 7 億美元。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.5.1", domain: "org", domainLabel: "附錄 A.5 組織控制",
-            title: "資訊安全政策", cost: 200, rent: 50,
-            purpose: "由高階管理層核定並發布資安總綱政策與主題特定政策，提供組織全員遵循的明確管理方向與承諾。",
-            incident: "多家跨國企業因缺乏明確的「影子 IT 與未授權雲端儲存管理政策」，員工將機密設計圖上傳至個人雲端硬碟並設為公開，遭競爭對手直接下載。"
-          },
-          {
-            type: "audit", clauseType: "本文", code: "本文 9.2", domain: "clause", domainLabel: "本文 第9章 績效評估",
-            title: "ISMS 內部稽核抽查", cost: 0, rent: 0,
-            purpose: "透過獨立且客觀的內部稽核，驗證 ISMS 是否符合組織自訂規範與 ISO 27001 標準要求，並有效實施與維持。",
-            incident: "某金融機構長期將內部稽核流於書面勾選，未實際抽測特權帳號清冊，直到外部金檢才發現離職員工 VPN 帳號仍可登入核心主機。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.5.7", domain: "org", domainLabel: "附錄 A.5 組織控制",
-            title: "威脅情資收集與分析", cost: 260, rent: 65,
-            purpose: "主動收集與分析與組織相關的網路威脅情資（攻擊手法、IOC、零時差漏洞），轉化為防禦規則與應變行動。",
-            incident: "2021 年 Microsoft Exchange ProxyLogon 漏洞爆發時，未訂閱威脅情資的企業延遲數週才察覺，導致 WebShell 早已被大量植入內網。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.5.15", domain: "org", domainLabel: "附錄 A.5 組織控制",
-            title: "存取控制與權限管理", cost: 280, rent: 70,
-            purpose: "依據業務需要（Need-to-Know）與最小權限原則（Least Privilege），嚴格管制實體與邏輯資訊資產的存取權限。",
-            incident: "2020 年 Twitter 內部管理介面遭社交工程突破，由於過多員工擁有重設高知名度帳號權限，導致歐巴馬、馬斯克等帳號遭集體挾持發送詐騙推文。"
-          },
-          {
-            type: "incident", clauseType: "附錄 A", code: "附錄 A.5.24", domain: "org", domainLabel: "附錄 A.5 組織控制",
-            title: "資安事件應變演練", cost: 0, rent: 0,
-            purpose: "建立資安事件通報、分類、圍堵、根除與復原程序，並明確指派應變角色與職責，縮短事件處理時間。",
-            incident: "2021 年 Colonial Pipeline 遭 DarkSide 勒索軟體攻擊，因缺乏明確的 IT/OT 隔離應變劇本，被迫緊急關閉全美東岸輸油管線長達 6 天。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.5.23", domain: "org", domainLabel: "附錄 A.5 組織控制",
-            title: "雲端服務之資訊安全", cost: 300, rent: 75,
-            purpose: "確立雲端服務採購、使用、管理與退場的安全要求，釐清組織與雲端服務供應商（CSP）之間的共同責任模型。",
-            incident: "2019 年 Capital One 因雲端 WAF 反向代理組態錯誤，攻擊者利用 SSRF 取得 AWS IAM 角色憑證，竊取超過 1 億名客戶申請資料。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.5.30", domain: "org", domainLabel: "附錄 A.5 組織控制",
-            title: "營運持續之 ICT 整備度", cost: 320, rent: 80,
-            purpose: "依據營運持續目標（RTO/RPO），規劃、建置並定期驗證資通訊系統的備援架構與災難復原能力。",
-            incident: "2021 年 OVHcloud 法國史特拉斯堡資料中心大火，許多客戶雖有備份卻未驗證異地備援整備度（備份與主機同機房），導致網站資料永久滅失。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.6.3", domain: "people", domainLabel: "附錄 A.6 人員控制",
-            title: "資安認知、教育與訓練", cost: 240, rent: 60,
-            purpose: "定期對全體員工與相關人員進行資安意識培訓與社交工程演練，強化人員辨識釣魚郵件與通報異常的能力。",
-            incident: "2022 年 Uber 員工遭攻擊者透過 MFA 疲勞轟炸（MFA Fatigue）與 WhatsApp 冒充 IT 人員誘騙按下核准，使駭客長驅直入內部網路。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.6.5", domain: "people", domainLabel: "附錄 A.6 人員控制",
-            title: "終止或變更僱用後之責任", cost: 240, rent: 60,
-            purpose: "定義員工、約聘人員離職或職務調動後仍須履行的保密義務與資產歸還規範，並即時撤銷所有存取權限。",
-            incident: "2020 年 Ubiquiti 前任雲端主管利用離職前暗中保留的 AWS 最高權限金鑰，下載機密原始碼並冒充駭客勒索公司 50 個比特幣。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.7.1", domain: "phys", domainLabel: "附錄 A.7 實體控制",
-            title: "實體安全周界與門禁", cost: 260, rent: 65,
-            purpose: "建立實體安全邊界（圍牆、門禁刷卡、警衛）保護機房與敏感辦公區域，防止未經授權人員實體闖入。",
-            incident: "某歐洲銀行分行遭偽裝成空調維修技師的犯罪集團尾隨進入機房，直接於核心交換器植入硬體側錄裝置並遠端轉帳盜領。"
-          },
-          {
-            type: "audit", clauseType: "本文", code: "本文 9.3", domain: "clause", domainLabel: "本文 第9章 績效評估",
-            title: "管理階層審查會議", cost: 0, rent: 0,
-            purpose: "最高管理階層定期審查 ISMS 運作績效、稽核結果、風險變化與資源需求，確保管理系統持續適切、充分與有效。",
-            incident: "多家企業在發生重大資安罰鍰後遭主管機關調查，發現高階主管連續兩年未召開資安管理審查會議，被認定治理失職加重裁罰。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.7.4", domain: "phys", domainLabel: "附錄 A.7 實體控制",
-            title: "實體安全監控", cost: 260, rent: 65,
-            purpose: "透過閉路電視（CCTV）、入侵偵測警報與環境感測器持續監控機房與敏感設施，即時偵測異常實體活動。",
-            incident: "某半導體委外倉儲因機房監視器故障未修且無異常告警，遭內部人員多次潛入拔取存有製程參數的伺服器硬碟變賣。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.8.1", domain: "tech", domainLabel: "附錄 A.8 技術控制",
-            title: "使用者端點裝置防護", cost: 300, rent: 75,
-            purpose: "針對筆電、桌機與行動裝置實施組態強化、磁碟加密、EDR 防護與遠端抹除，降低端點遺失或遭惡意程式感染風險。",
-            incident: "某醫療機構醫師遺失未啟用磁碟加密的公務筆電，導致內含超過 3 萬名病患病歷與身分證號的檔案外洩，遭主管機關重罰。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.8.5", domain: "tech", domainLabel: "附錄 A.8 技術控制",
-            title: "安全身分驗證 (MFA)", cost: 340, rent: 85,
-            purpose: "依據存取風險強度實施多因子驗證（MFA）與強密碼政策，防止單一密碼外洩或撞庫攻擊導致帳號淪陷。",
-            incident: "2024 年 Snowflake 雲端資料倉儲客戶遭駭事件中，攻擊者利用竊取的帳號密碼登入未強制啟用 MFA 的企業租戶，竊走 Ticketmaster 與 AT&T 大量資料。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.8.8", domain: "tech", domainLabel: "附錄 A.8 技術控制",
-            title: "技術弱點管理", cost: 340, rent: 85,
-            purpose: "定期進行弱點掃描與滲透測試，建立修補優先順序與 SLA 時限，及時修補作業系統與應用程式已知漏洞。",
-            incident: "2023 年 MOVEit Transfer 零時差 SQL 注入漏洞公布後，未於第一時間套用修補程式的企業遭 Cl0p 勒索集團自動化掃描攻破，全球逾 2,700 家組織受害。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.8.9", domain: "tech", domainLabel: "附錄 A.8 技術控制",
-            title: "組態管理 (Configuration)", cost: 320, rent: 80,
-            purpose: "建立系統、網路設備與雲端服務的安全基準組態（Hardening Baseline），並監控未經授權的組態變更。",
-            incident: "2023 年微軟因工程師除錯後遺留的崩潰傾印組態錯誤，導致消費者簽章金鑰外洩，使駭客得以偽造令牌存取美國國務院等政府機構信箱。"
-          },
-          {
-            type: "incident", clauseType: "附錄 A", code: "附錄 A.8.13", domain: "tech", domainLabel: "附錄 A.8 技術控制",
-            title: "資訊備份與不可變儲存", cost: 0, rent: 0,
-            purpose: "依據備份政策定期執行資料備份並進行還原測試，採用離線或不可變（Immutable）儲存防止備份遭勒索軟體加密。",
-            incident: "多家遭受 LockBit 勒索軟體攻擊的製造業，因網路備份磁碟直接掛載於網域主機且無離線隔離，駭客先刪除所有備份再加密產線，迫使企業停工數週。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.8.16", domain: "tech", domainLabel: "附錄 A.8 技術控制",
-            title: "監控活動與異常偵測", cost: 360, rent: 90,
-            purpose: "透過 SIEM/SOC 持續監控網路流量、系統日誌與使用者異常行為，及早發現橫向移動與資料外傳跡象。",
-            incident: "2013 年 Target 百貨遭駭客透過空調承包商憑證潛入 POS 系統長達兩週，期間雖有安全設備發出警報卻無人監控處置，導致 4,000 萬張信用卡外洩。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.8.20", domain: "tech", domainLabel: "附錄 A.8 技術控制",
-            title: "網路安全與網段隔離", cost: 360, rent: 90,
-            purpose: "實施網路分段（Segmentation）、防火牆策略與零信任存取控制，限制威脅在企業內網與 OT 環境間橫向擴散。",
-            incident: "2017 年 NotPetya 惡意程式爆發時，航運巨頭 Maersk 因辦公網段與全球港口營運網路缺乏有效隔離，癱瘓全球 76 座港口碼頭，損失高達 3 億美元。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.8.24", domain: "tech", domainLabel: "附錄 A.8 技術控制",
-            title: "密碼學之使用與金鑰管理", cost: 380, rent: 95,
-            purpose: "規範傳輸中與靜態敏感資料的加密演算法強度，並嚴格控管加密金鑰的產生、儲存、輪替與銷毀生命週期。",
-            incident: "2022 年 LastPass 遭駭客竊取客戶密碼庫備份，部分仍使用舊版弱迭代次數（PBKDF2）加密金鑰的用戶面臨主密碼被離線暴力破解的高度風險。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.8.25", domain: "tech", domainLabel: "附錄 A.8 技術控制",
-            title: "安全系統開發生命週期", cost: 380, rent: 95,
-            purpose: "在系統分析、設計、編碼、測試與部署各階段融入安全要求（SSDLC / DevSecOps），從源頭消除程式碼漏洞。",
-            incident: "2021 年 Log4j (Log4Shell) 重大漏洞暴露出眾多企業在開發流程中缺乏軟體物料清單（SBOM）與元件安全審查，耗費數月才清查完畢。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 10.2", domain: "clause", domainLabel: "本文 第10章 持續改善",
-            title: "不符合事項與矯正措施", cost: 400, rent: 100,
-            purpose: "針對稽核缺失或資安事件進行根本原因分析（RCA），採取系統性矯正措施防止問題再次發生，並驗證有效性。",
-            incident: "某大型電商在首次發生 API 越權漏洞後僅局部修補單一端點、未從架構面根除權限驗證缺陷，半年後再度因相同設計缺陷遭竊取百萬筆會員資料。"
-          }
-        ]
-      },
-
-      // -----------------------------------------------------------------------
-      // 2. ISO/IEC 27701:2025 隱私資訊管理系統 (獨立 PIMS 新版架構)
-      // -----------------------------------------------------------------------
-      "27701": {
-        name: "ISO/IEC 27701:2025",
-        subtitle: "隱私資訊管理系統 (獨立 PIMS 架構)",
-        color: "#8b5cf6",
-        domains: [
-          { id: "clause", name: "本文條文 (4~10章)", color: "#6366f1" },
-          { id: "a1", name: "附錄 A.1 PII 控制者", color: "#ec4899" },
-          { id: "a2", name: "附錄 A.2 PII 處理者", color: "#f59e0b" },
-          { id: "a3", name: "附錄 A.3 通用控制項", color: "#10b981" }
-        ],
-        tiles: [
-          {
-            type: "start", clauseType: "本文", code: "本文 4.1/4.2", domain: "clause", domainLabel: "本文 第4章 組織全景",
-            title: "PIMS 範圍與 PII 角色界定", cost: 0, rent: 0,
-            purpose: "ISO/IEC 27701:2025 已獨立為無須綁定 27001 即可驗證的 PIMS 標準。組織須於本文第 4 章明確界定自身身為 PII 控制者（Controller）或 PII 處理者（Processor）之角色與法規適用範圍。",
-            incident: "多家中小型 SaaS 業者誤以為自身僅為技術代管商而未界定 PII 處理者責任，在發生客戶個資外洩時因無法釐清跨國隱私法規義務遭連帶裁罰。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 5.2", domain: "clause", domainLabel: "本文 第5章 領導統御",
-            title: "隱私政策與高階承諾", cost: 220, rent: 55,
-            purpose: "最高管理階層須建立並公布隱私政策，宣示對個資保護法令遵循、資料最小化與當事人權利保障的治理承諾。",
-            incident: "某大型連鎖零售集團因內部缺乏統一隱私治理政策，各行銷部門自行蒐集並交叉比對消費者消費紀錄，遭歐盟主管機關依 GDPR 裁罰數千萬歐元。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 6.1.2", domain: "clause", domainLabel: "本文 第6章 規劃",
-            title: "隱私風險評鑑與處理", cost: 260, rent: 65,
-            purpose: "識別個人識別資訊（PII）在蒐集、處理、傳輸與銷毀過程中的隱私侵害風險，並制定對應的隱私風險處理計畫。",
-            incident: "2023 年遺傳基因檢測公司 23andMe 未充分評估撞庫攻擊對家族遺傳資料的連動隱私風險，導致近 690 萬名用戶的敏感血統與健康相關資料遭竊。"
-          },
-          {
-            type: "audit", clauseType: "本文", code: "本文 9.2", domain: "clause", domainLabel: "本文 第9章 績效評估",
-            title: "PIMS 內部隱私稽核", cost: 0, rent: 0,
-            purpose: "定期執行 PIMS 內部稽核，驗證隱私控制措施是否落實於業務流程、資訊系統與委外處理作業中。",
-            incident: "某線上教育平台在系統改版後，稽核未檢視第三方分析 SDK 權限，導致未成年學童的裝置識別碼與學習軌跡被持續回傳至廣告聯播網。"
-          },
-          {
-            type: "control", clauseType: "附錄 A.1", code: "附錄 A.1.2.1", domain: "a1", domainLabel: "附錄 A.1 PII 控制者",
-            title: "識別合法處理基礎與目的", cost: 280, rent: 70,
-            purpose: "PII 控制者必須在蒐集個資前明確界定特定、合法之處理目的，並確認具備合法基礎（如契約履行、法定義務或明確同意）。",
-            incident: "2023 年 Meta 因未取得用戶自由且明確的同意，即以「契約必要性」為由強制將用戶個資用於行為精準廣告，遭愛爾蘭資料保護委員會重罰 3.9 億歐元。"
-          },
-          {
-            type: "control", clauseType: "附錄 A.1", code: "附錄 A.1.2.4", domain: "a1", domainLabel: "附錄 A.1 PII 控制者",
-            title: "隱私衝擊評估 (PIA)", cost: 300, rent: 75,
-            purpose: "在導入新技術、大規模處理敏感個資或進行自動化剖析（Profiling）前，執行隱私衝擊評估（PIA/DPIA）以降低對當事人權益之風險。",
-            incident: "多國警政與零售機構在未執行隱私衝擊評估（PIA）的情況下直接導入即時人臉辨識監控系統，遭個資保護主管機關勒令下架並銷毀生物特徵資料庫。"
-          },
-          {
-            type: "incident", clauseType: "附錄 A.3", code: "附錄 A.3.3.2", domain: "a3", domainLabel: "附錄 A.3 通用控制項",
-            title: "PII 外洩通報與應變", cost: 0, rent: 0,
-            purpose: "當發生個資外洩事故時，建立影響評估機制，於法定時限（如 GDPR 72 小時或台灣個資法規範）內通報主管機關並通知當事人。",
-            incident: "2016 年 Uber 發生 5,700 萬名乘客與司機個資外洩後，選擇私下支付駭客 10 萬美元封口費並隱匿長達一年未通報，最終遭重罰 1.48 億美元且安全長遭刑事起訴。"
-          },
-          {
-            type: "control", clauseType: "附錄 A.1", code: "附錄 A.1.3.1", domain: "a1", domainLabel: "附錄 A.1 PII 控制者",
-            title: "告知義務與隱私權聲明", cost: 260, rent: 65,
-            purpose: "以清晰、易懂且易於取得的方式，向 PII 當事人完整揭露蒐集者身分、處理目的、保存期限、跨境傳輸與權利行使管道。",
-            incident: "2021 年 WhatsApp 因隱私權政策更新條款過於晦澀且缺乏透明度，未清楚說明與母公司 Meta 共享資料的具體範圍，遭愛爾蘭當局裁罰 2.25 億歐元。"
-          },
-          {
-            type: "control", clauseType: "附錄 A.1", code: "附錄 A.1.3.4", domain: "a1", domainLabel: "附錄 A.1 PII 控制者",
-            title: "當事人權利行使機制 (DSAR)", cost: 300, rent: 75,
-            purpose: "建立標準化流程與驗證機制，保障 PII 當事人行使查詢、閱覽、更正、刪除（被遺忘權）、限制處理與資料可攜權。",
-            incident: "多家歐洲電信與航空業者因缺乏自動化當事人權利（DSAR）處理流程，多次逾期未回應客戶的個資刪除與調閱請求，遭主管機關連續開罰。"
-          },
-          {
-            type: "control", clauseType: "附錄 A.1", code: "附錄 A.1.4.1", domain: "a1", domainLabel: "附錄 A.1 PII 控制者",
-            title: "蒐集與處理最小化原則", cost: 280, rent: 70,
-            purpose: "確保所蒐集與處理的 PII 僅限於達成既定合法目的所直接且必要之最小範圍，禁止無關或過度蒐集。",
-            incident: "2023 年 TikTok 因預設將 13 至 17 歲青少年帳號設為公開、並過度蒐集與驗證年齡無關的兒童個資，遭歐盟重罰 3.45 億歐元。"
-          },
-          {
-            type: "control", clauseType: "附錄 A.1", code: "附錄 A.1.4.4", domain: "a1", domainLabel: "附錄 A.1 PII 控制者",
-            title: "PII 保存期限與安全銷毀", cost: 280, rent: 70,
-            purpose: "依據法規與業務需求訂定明確的個資保存期限，期滿或目的消失後應安全刪除或徹底去識別化，避免永久留存風險。",
-            incident: "2023 年法國住房平台 Doctolib 與多家電商因未設定資料自動清除機制，長期留存已註銷帳戶用戶的身分證影本，遭外洩後面臨加倍裁罰。"
-          },
-          {
-            type: "control", clauseType: "附錄 A.2", code: "附錄 A.2.2.1", domain: "a2", domainLabel: "附錄 A.2 PII 處理者",
-            title: "依據客戶書面指示處理 PII", cost: 300, rent: 75,
-            purpose: "PII 處理者僅得在客戶（PII 控制者）的書面契約與合法指示範圍內處理個資，嚴禁擅自將客戶資料用於自身行銷或模型訓練。",
-            incident: "某雲端客服軟體供應商未經企業客戶書面同意，擅自將客戶服務對話紀錄用於訓練自家商業推薦模型，遭多家企業集體求償並終止合約。"
-          },
-          {
-            type: "audit", clauseType: "本文", code: "本文 9.3", domain: "clause", domainLabel: "本文 第9章 績效評估",
-            title: "PIMS 管理階層審查", cost: 0, rent: 0,
-            purpose: "高階主管定期審查隱私投訴趨勢、跨境傳輸合規性、PIA 結果與法令變更，確保 PIMS 資源充足與持續有效。",
-            incident: "某跨國旅遊平台在歐盟新隱私判例生效後，管理層未召開審查會議調整資料傳輸架構，導致持續違法傳輸歐洲用戶個資而受罰。"
-          },
-          {
-            type: "control", clauseType: "附錄 A.2", code: "附錄 A.2.5.1", domain: "a2", domainLabel: "附錄 A.2 PII 處理者",
-            title: "複委託處理者 (Sub-processor) 管理", cost: 320, rent: 80,
-            purpose: "PII 處理者若需將處理作業轉包予複委託處理者，須事前取得客戶授權並簽訂同等隱私保護義務之契約。",
-            incident: "2020 年 Blackbaud 雲端服務商遭勒索攻擊時，多家大學與非營利組織才驚覺其個資被轉包儲存於未經事前揭露的第三方備份節點。"
-          },
-          {
-            type: "control", clauseType: "附錄 A.1", code: "附錄 A.1.5.1", domain: "a1", domainLabel: "附錄 A.1 PII 控制者",
-            title: "跨境傳輸合規與保護機制", cost: 340, rent: 85,
-            purpose: "向境外傳輸 PII 前，須評估目的地國家個資保護水準並採用標準契約條款（SCC）或拘束性企業規則（BCR）等合法機制。",
-            incident: "2023 年 Meta 因將歐盟用戶個資持續傳輸至美國伺服器且缺乏充分補充保護措施，創下 GDPR 史上最高 12 億歐元天價罰款紀錄。"
-          },
-          {
-            type: "control", clauseType: "附錄 A.3", code: "附錄 A.3.1.1", domain: "a3", domainLabel: "附錄 A.3 通用控制項",
-            title: "PII 清冊與資料流向圖", cost: 320, rent: 80,
-            purpose: "建立完整的處理活動紀錄（RoPA）與 PII 資料流向圖，掌握所有個人資料的儲存位置、用途、存取角色與傳輸路徑。",
-            incident: "多家銀行在進行個資盤點時因缺乏資料流向圖，未發現測試環境長期直接複製生產環境的真實客戶信用卡與身分證資料，遭駭客從測試機竊取。"
-          },
-          {
-            type: "control", clauseType: "附錄 A.3", code: "附錄 A.3.2.1", domain: "a3", domainLabel: "附錄 A.3 通用控制項",
-            title: "設計與預設隱私 (Privacy by Design)", cost: 340, rent: 85,
-            purpose: "於系統架構設計與產品開發初期即內建隱私保護機制，並將系統預設選項設為最高隱私保護等級。",
-            incident: "2022 年 Sephora 因網站預設自動啟用第三方追蹤器且未提供一鍵拒絕選項，違反加州消費者隱私法（CCPA），遭裁罰 120 萬美元。"
-          },
-          {
-            type: "control", clauseType: "附錄 A.3", code: "附錄 A.3.2.4", domain: "a3", domainLabel: "附錄 A.3 通用控制項",
-            title: "去識別化、假名化與加密", cost: 360, rent: 90,
-            purpose: "對儲存與傳輸中的 PII 實施強加密、假名化或統計去識別化技術，確保即使資料遭攔截亦無法直接辨識特定個人。",
-            incident: "2018 年萬豪國際集團（Marriott）喜達屋訂房資料庫遭駭，約 3.83 億筆旅客護照號碼與個資因未落實加密儲存而全數明文外洩，遭罰 1,840 萬英鎊。"
-          },
-          {
-            type: "incident", clauseType: "附錄 A.3", code: "附錄 A.3.4.2", domain: "a3", domainLabel: "附錄 A.3 通用控制項",
-            title: "第三方資料共享與 API 外洩", cost: 0, rent: 0,
-            purpose: "嚴格管控透過 API 或檔案交換向第三方共享 PII 之範圍、驗證機制與速率限制，防止資料遭大規模爬蟲擷取。",
-            incident: "2021 年 Facebook 因通訊錄匯入功能 API 缺乏速率限制與防爬蟲機制，遭惡意人士利用自動化工具比對擷取超過 5.33 億名用戶的電話號碼與個資。"
-          },
-          {
-            type: "control", clauseType: "附錄 A.3", code: "附錄 A.3.2.8", domain: "a3", domainLabel: "附錄 A.3 通用控制項",
-            title: "PII 存取與查詢日誌稽核", cost: 340, rent: 85,
-            purpose: "完整記錄所有針對敏感個資資料庫的查詢、匯出與修改軌跡，並定期稽核異常大量查詢行為（如內部人員窺探）。",
-            incident: "某電信公司門市人員長期利用職務權限私下查詢名人與特定對象通話明細並販售，因系統未對異常查詢設定告警而長達兩年未被察覺。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 7.2/7.3", domain: "clause", domainLabel: "本文 第7章 支援",
-            title: "隱私保護專業能力與意識", cost: 280, rent: 70,
-            purpose: "確保隱私治理人員具備法規與技術專業能力，並讓所有處理個資的員工了解違反隱私政策之法律與組織後果。",
-            incident: "某醫院行政人員因缺乏個資意識，將包含數千名病患診斷結果的 Excel 檔案誤以「副本（CC）」而非「密件副本（BCC）」寄出，造成嚴重醫療隱私外洩。"
-          },
-          {
-            type: "control", clauseType: "附錄 A.2", code: "附錄 A.2.6.1", domain: "a2", domainLabel: "附錄 A.2 PII 處理者",
-            title: "合約終止後 PII 返還與刪除", cost: 340, rent: 85,
-            purpose: "委外服務終止後，PII 處理者必須依客戶選擇安全返還所有個人資料，並徹底銷毀現有副本且出具銷毀證明。",
-            incident: "摩根士丹利（Morgan Stanley）淘汰舊資料中心伺服器時，未徹底清除委外廠商硬碟上的客戶財富管理個資即直接轉售，遭美國貨幣監理署重罰 6,000 萬美元。"
-          },
-          {
-            type: "control", clauseType: "附錄 A.1", code: "附錄 A.1.5.3", domain: "a1", domainLabel: "附錄 A.1 PII 控制者",
-            title: "自動化決策與剖析透明度", cost: 360, rent: 90,
-            purpose: "當組織使用演算法對個人進行自動化信用評分、徵才篩選或定價剖析時，須告知邏輯準則並提供人工介入複審管道。",
-            incident: "荷蘭政府福利機構使用不透明的自動化演算法篩選育兒津貼詐欺風險，誤將數萬個少數族裔家庭標記為詐欺犯追討補助，引發內閣總辭與巨額國賠。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 10.2", domain: "clause", domainLabel: "本文 第10章 持續改善",
-            title: "PIMS 矯正措施與合規演進", cost: 400, rent: 100,
-            purpose: "針對隱私稽核發現、當事人申訴或個資事故進行根因矯正，並隨各國最新隱私法規動態持續強化 PIMS 成熟度。",
-            incident: "某跨國社交平台在首次遭裁罰 Cookie 同意機制違規後，僅修改版面顏色卻未實質改善拒絕追蹤流程，半年後遭主管機關認定蓄意不改善並加倍重罰。"
-          }
-        ]
-      },
-
-      // -----------------------------------------------------------------------
-      // 3. ISO 22301:2019 營運持續管理系統
-      // -----------------------------------------------------------------------
-      "22301": {
-        name: "ISO 22301:2019",
-        subtitle: "營運持續管理系統 (BCMS)",
-        color: "#f59e0b",
-        domains: [
-          { id: "c45", name: "本文 第4~5章 全景與領導", color: "#3b82f6" },
-          { id: "c67", name: "本文 第6~7章 規劃與支援", color: "#8b5cf6" },
-          { id: "c8", name: "本文 第8章 營運與應變", color: "#f59e0b" },
-          { id: "c910", name: "本文 第9~10章 演練與改善", color: "#10b981" }
-        ],
-        tiles: [
-          {
-            type: "start", clauseType: "本文", code: "本文 4.1/4.3", domain: "c45", domainLabel: "本文 第4章 組織全景",
-            title: "BCMS 範圍與核心業務界定", cost: 0, rent: 0,
-            purpose: "識別影響營運持續的內外部因素、法規要求與關鍵利害關係人，明確界定 BCMS 涵蓋的關鍵產品與服務邊界。",
-            incident: "2021 年蘇伊士運河長賜輪擱淺事件暴露全球製造業在界定營運持續範圍時，過度聚焦單一工廠而忽略海運物流樞紐中斷的連鎖衝擊。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 5.1/5.2", domain: "c45", domainLabel: "本文 第5章 領導統御",
-            title: "營運持續政策與危機授權", cost: 220, rent: 55,
-            purpose: "高階管理層發布營運持續政策，承諾提供必要預算與資源，並於重大危機發生時授予緊急應變指揮官快速決策權。",
-            incident: "2011 年東日本大地震期間，部分企業因緊急採購與產線調度需層層簽核，錯失搶購有限備援零件與海運艙位的黃金 48 小時。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 6.1", domain: "c67", domainLabel: "本文 第6章 規劃",
-            title: "營運持續風險與機會評估", cost: 240, rent: 60,
-            purpose: "系統性評估天災、停電、疫情、網路攻擊與供應鏈斷鏈對關鍵資源的威脅，規劃預防與減災措施。",
-            incident: "2021 年台灣興達電廠事故引發全台分區輪流停電，多座未預先評估長時間市電中斷與柴油儲量不足的資料中心面臨緊急降載危機。"
-          },
-          {
-            type: "audit", clauseType: "本文", code: "本文 9.2", domain: "c910", domainLabel: "本文 第9章 績效評估",
-            title: "BCMS 內部稽核檢視", cost: 0, rent: 0,
-            purpose: "透過內部稽核檢視營運持續計畫（BCP）文件、聯絡清冊與備援設施是否與現行組織架構與系統版本保持一致。",
-            incident: "某證券商在進行內部稽核時發現，其災難復原計畫中記載的緊急聯絡人已有半數離職，且備援機房資料庫版本落後生產環境兩個大版本。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 7.1/7.2", domain: "c67", domainLabel: "本文 第7章 支援",
-            title: "關鍵資源與應變團隊能力", cost: 260, rent: 65,
-            purpose: "確保危機應變小組（CMT）與復原團隊具備足夠人力代理人（Backup Personnel）與專業訓練，避免單點人員依賴。",
-            incident: "2020 年新冠疫情爆發初期，某大型物流中心因關鍵調度員集體確診隔離且無跨部門代理人，導致整個區域配送系統癱瘓數日。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 7.4", domain: "c67", domainLabel: "本文 第7章 支援",
-            title: "危機溝通與內外部通報機制", cost: 260, rent: 65,
-            purpose: "建立危機期間對員工、客戶、主管機關與媒體的標準化溝通管道與替代聯絡方式（防止公司信箱與總機同時癱瘓）。",
-            incident: "2023 年澳洲電信巨頭 Optus 全國斷網 14 小時期間，因內部應變團隊過度依賴自家網路溝通且對外資訊混亂，引發民眾恐慌與執行長引咎辭職。"
-          },
-          {
-            type: "incident", clauseType: "本文", code: "本文 8.4.2", domain: "c8", domainLabel: "本文 第8章 營運",
-            title: "突發重大營運中斷事件", cost: 0, rent: 0,
-            purpose: "於中斷事件發生瞬間啟動緊急應變架構，確保人員生命安全、控制災情擴大並通報危機管理團隊接管指揮。",
-            incident: "2021 年日本瑞薩電子（Renesas）那珂工廠無塵室發生火災，因火勢與煙霧損毀關鍵晶圓設備，導致全球車用晶片供應鏈大斷鏈並停工數月。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.2.2", domain: "c8", domainLabel: "本文 第8章 營運",
-            title: "營運衝擊分析 (BIA)", cost: 320, rent: 80,
-            purpose: "量化各業務活動中斷隨時間推移造成的財務與聲譽損失，科學化訂定最大可容忍中斷時間（MTPD）、復原時間目標（RTO）與復原點目標（RPO）。",
-            incident: "某大型零售銀行未精準執行 BIA，將核心清算系統的 RTO 誤設為 24 小時，實際發生中斷僅 4 小時即引發跨行結算違約與擠兌恐慌。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.2.3", domain: "c8", domainLabel: "本文 第8章 營運",
-            title: "中斷風險評估 (RA)", cost: 300, rent: 75,
-            purpose: "針對支撐關鍵業務的五大資源（人員、廠房、設備/IT、供應商、資料）評估單點故障風險，識別高脆弱度環節。",
-            incident: "2021 年德州大暴雪導致大規模停電與天然氣管線結冰，三星與恩智浦位於奧斯汀的晶圓廠因未針對極端寒潮設計水電防凍備援而被迫停產數週。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.3.2", domain: "c8", domainLabel: "本文 第8章 營運",
-            title: "營運持續策略與解決方案", cost: 340, rent: 85,
-            purpose: "依據 BIA 與風險評估結果，選定並建置符合 RTO/RPO 的替代營運模式（如異地備援中心、雙活架構、替代產線或居家辦公）。",
-            incident: "2024 年 CrowdStrike 錯誤更新導致全球 850 萬台 Windows 裝置藍屏當機，達美航空因機組員調度系統缺乏手動或異地備援策略，連續 5 天取消逾 5,000 班航班，損失 5 億美元。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.3.3", domain: "c8", domainLabel: "本文 第8章 營運",
-            title: "關鍵供應鏈與外包韌性", cost: 320, rent: 80,
-            purpose: "評估單一來源供應商的中斷風險，建立第二供應商（Second Source）、安全庫存或合約化緊急供貨保障機制。",
-            incident: "2020 年新冠疫情期間，多家歐美車廠因採行極致零庫存（JIT）且高度依賴單一線束與晶片供應商，被迫關閉數十座組裝廠，損失數百億美元營收。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.4.3", domain: "c8", domainLabel: "本文 第8章 營運",
-            title: "緊急告警與初動處置", cost: 280, rent: 70,
-            purpose: "建立 24/7 異常偵測、人員疏散清點、消防抑災與設施緊急關閉標準作業程序，防止次生災害擴大。",
-            incident: "2022 年韓國板橋 SK C&C 資料中心鋰電池起火，因缺乏精準局部斷電與消防隔離機制，被迫切斷整棟電源，導致 KakaoTalk 全國通訊與支付服務癱瘓數日。"
-          },
-          {
-            type: "audit", clauseType: "本文", code: "本文 9.3", domain: "c910", domainLabel: "本文 第9章 績效評估",
-            title: "BCMS 管理階層審查", cost: 0, rent: 0,
-            purpose: "最高管理階層定期審查演練報告、BIA 更新、供應鏈韌性變化與資源配置，確保營運持續能力與企業成長同步。",
-            incident: "某電商在業務規模擴大五倍後，管理層未重新審查備援機房頻寬容量，雙十一期間主機房故障切換至備援中心時瞬間頻寬爆滿崩潰。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.4.4", domain: "c8", domainLabel: "本文 第8章 營運",
-            title: "營運持續計畫 (BCP) 編製", cost: 340, rent: 85,
-            purpose: "為各關鍵部門編製簡明、可執行的步驟化營運持續計畫（BCP），明列啟動條件、替代作業流程、表單與復原順序。",
-            incident: "2023 年豐田汽車日本 14 座工廠因伺服器磁碟空間滿載而全面停產，事後檢討發現現場缺乏離線手動切換備援資料庫的標準作業程序。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.4.5", domain: "c8", domainLabel: "本文 第8章 營運",
-            title: "正常營運復原與回切 (Return)", cost: 340, rent: 85,
-            purpose: "規劃從緊急備援狀態安全遷回正常營運環境（Failback）的資料同步、一致性驗證與風險控制程序，避免二次中斷。",
-            incident: "某航空公司於颱風過後將訂位系統從備援中心切回主機房時，因未執行雙向交易資料比對，導致數千筆颱風期間改票紀錄遺失，引發機場大混亂。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.5.1", domain: "c8", domainLabel: "本文 第8章 營運",
-            title: "桌面推演與模擬演練", cost: 300, rent: 75,
-            purpose: "透過無預警通知測試、桌面推演（Tabletop Exercise）與功能演練，驗證應變團隊在壓力下的協作與決策能力。",
-            incident: "多家企業的 BCP 演練長年僅在會議室「照本宣科朗讀腳本」，當真實勒索攻擊鎖死內網與電話系統時，團隊完全不知如何在無網路環境下協作。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.5.2", domain: "c8", domainLabel: "本文 第8章 營運",
-            title: "實兵系統切換與 DR 測試", cost: 380, rent: 95,
-            purpose: "實際執行異地備援系統切換（Failover）與資料還原測試，實測實際復原時間（RTA）是否真正符合 BIA 設定的 RTO。",
-            incident: "2012 年騎士資本（Knight Capital）部署新交易軟體時漏更新其中一台伺服器，且缺乏一鍵回滾與切換驗證，45 分鐘內虧損 4.4 億美元並宣告破產。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.6", domain: "c8", domainLabel: "本文 第8章 營運",
-            title: "營運持續文件與能力評估", cost: 320, rent: 80,
-            purpose: "在重大組織改組、新系統上線或供應商變更後，即時評估並更新營運持續文件與備援資源有效性。",
-            incident: "某銀行完成核心系統微服務化上雲後，未同步更新災難復原相依性清單，演練時才發現微服務依賴的外部金鑰管理節點未納入異地備援。"
-          },
-          {
-            type: "incident", clauseType: "本文", code: "本文 8.4.1", domain: "c8", domainLabel: "本文 第8章 營運",
-            title: "跨國雲端／骨幹網路斷線", cost: 0, rent: 0,
-            purpose: "針對單一雲端區域（Region）或 CDN 骨幹網路大斷線，預先建置多區域（Multi-Region）或備援路由切換機制。",
-            incident: "2021 年 CDN 巨頭 Fastly 因一項客戶組態變更觸發軟體臭蟲，導致全球 85% 節點離線近一小時，亞馬遜、Reddit、英國政府網站全面癱瘓。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 7.5", domain: "c67", domainLabel: "本文 第7章 支援",
-            title: "離線與異地緊急文件保存", cost: 280, rent: 70,
-            purpose: "確保 BCP 手冊、緊急聯絡清冊、系統架構圖與金鑰資訊同時保存於離線紙本與異地安全雲端，避免主機癱瘓時無法讀取。",
-            incident: "某大型醫院遭勒索軟體加密所有內部檔案伺服器後，由於所有緊急應變手冊與廠商支援電話皆存於內網共享資料夾，醫護與 IT 團隊陷入完全盲目狀態。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 9.1", domain: "c910", domainLabel: "本文 第9章 績效評估",
-            title: "營運持續績效監督與量測", cost: 300, rent: 75,
-            purpose: "建立備援系統可用率、備份成功率、演練達標率等關鍵績效指標（KPI），持續量測組織營運韌性水準。",
-            incident: "某製造業 ERP 每日自動備份排程其實已連續三個月因權限過期失敗，但因無人監控備份成功率指標，直到硬碟陣列損毀才發現無任何可用備份。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 10.1", domain: "c910", domainLabel: "本文 第10章 持續改善",
-            title: "演練後檢討 (AAR) 與矯正", cost: 340, rent: 85,
-            purpose: "每次演練或真實中斷事件結束後，產出正式檢討報告並追蹤缺失矯正措施，將教訓轉化為制度與架構強化。",
-            incident: "某航空公司於前一年演練時已發現機組員排班資料庫切換耗時過長，但未追蹤矯正改善，隔年暴風雪來襲時同一瓶頸直接導致全線大停飛。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 6.2", domain: "c67", domainLabel: "本文 第6章 規劃",
-            title: "營運持續目標與達成計畫", cost: 320, rent: 80,
-            purpose: "於各關鍵營運層級建立可量測的營運持續目標（如 RTO 縮短至 2 小時內），並明訂負責人、預算與完成時程。",
-            incident: "某電信商僅在口頭宣示「打造高韌性網路」卻未制定具體量化目標與預算排程，導致核心交換機雙路由改造工程延宕三年並發生重大斷網事故。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 10.2", domain: "c910", domainLabel: "本文 第10章 持續改善",
-            title: "BCMS 韌性成熟度持續精進", cost: 400, rent: 100,
-            purpose: "結合產業最佳實務、自動化混沌工程（Chaos Engineering）與最新威脅趨勢，持續提升組織整體營運韌性成熟度。",
-            incident: "缺乏持續演進的傳統災難復原架構在面對現代「雙重勒索＋供應鏈中斷」複合式危機時往往全面失靈，唯有持續精進方能確保企業永續生存。"
-          }
-        ]
-      },
-
-      // -----------------------------------------------------------------------
-      // 4. ISO/IEC 20000-1:2018 資訊技術服務管理系統
-      // -----------------------------------------------------------------------
-      "20000": {
-        name: "ISO/IEC 20000-1:2018",
-        subtitle: "IT 服務管理系統 (SMS)",
-        color: "#10b981",
-        domains: [
-          { id: "c47", name: "本文 第4~7章 服務治理與支援", color: "#3b82f6" },
-          { id: "c81", name: "本文 8.1~8.3 服務設計與關係", color: "#8b5cf6" },
-          { id: "c82", name: "本文 8.4~8.5 變更與部署", color: "#f59e0b" },
-          { id: "c83", name: "本文 8.6~10章 事件與持續改善", color: "#10b981" }
-        ],
-        tiles: [
-          {
-            type: "start", clauseType: "本文", code: "本文 4.1/4.3", domain: "c47", domainLabel: "本文 第4章 組織全景",
-            title: "SMS 服務目錄與範圍界定", cost: 0, rent: 0,
-            purpose: "界定 IT 服務管理系統涵蓋的內部與外部服務範圍、服務目錄（Service Catalogue）與利害關係人期望。",
-            incident: "某大型企業 IT 部門因未釐清各事業群自行採購的雲端微服務是否納入支援範圍，系統故障時發生跨部門互相推諉、無人接手處理的窘境。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 5.1/5.2", domain: "c47", domainLabel: "本文 第5章 領導統御",
-            title: "服務管理政策與價值導向", cost: 220, rent: 55,
-            purpose: "高階管理層建立服務管理政策，確保 IT 服務規劃與交付緊密對齊業務價值與客戶服務水準期望。",
-            incident: "某銀行 IT 團隊長期以「技術穩定不改動」為唯一指標，拒絕配合業務部門調整系統容量與功能，最終導致行動銀行在促銷日全面壅塞當機。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 7.5", domain: "c47", domainLabel: "本文 第7章 支援",
-            title: "服務知識庫管理 (KEDB)", cost: 240, rent: 60,
-            purpose: "建立與維護已知錯誤資料庫（KEDB）與標準操作知識庫，加速服務台第一線解決率並減少重複排查時間。",
-            incident: "某電商客服與維運團隊缺乏共享知識庫，同一資料庫連線池耗盡問題在半年內重複發生五次，每次皆耗費數小時重新排查。"
-          },
-          {
-            type: "audit", clauseType: "本文", code: "本文 9.2", domain: "c83", domainLabel: "本文 第9章 績效評估",
-            title: "SMS 服務流程內部稽核", cost: 0, rent: 0,
-            purpose: "定期稽核變更管理、事件管理、問題管理與 SLA 執行紀錄，確保實際維運作業符合標準流程規範。",
-            incident: "內部稽核抽查發現，某金融機構高達 35% 的生產環境資料庫異動未經正式變更單審批，存在極高的人為誤操作與舞弊風險。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.2.3", domain: "c81", domainLabel: "本文 第8章 營運",
-            title: "服務目錄管理 (Service Catalogue)", cost: 260, rent: 65,
-            purpose: "維護準確且即時更新的服務目錄，清楚定義各項 IT 服務的功能、支援時段、申請流程與依賴關係。",
-            incident: "某跨國集團在進行資料中心整併時，因服務目錄嚴重過期，誤將一套仍支撐歐洲財務結算的舊排程主機關機，造成月結延誤三天。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.2.4", domain: "c81", domainLabel: "本文 第8章 營運",
-            title: "資產與組態管理 (CMDB)", cost: 300, rent: 75,
-            purpose: "建立組態管理資料庫（CMDB），精確記錄組態項目（CI）屬性及其上下游相依拓撲，支撐變更影響評估與根因分析。",
-            incident: "2021 年 Facebook 全球大斷網長達 6 小時，工程師執行骨幹路由器維護指令時因缺乏精確的組態相依性驗證，意外撤銷所有 BGP 路由宣告，連門禁系統都隨之失效。"
-          },
-          {
-            type: "incident", clauseType: "本文", code: "本文 8.6.1", domain: "c83", domainLabel: "本文 第8章 營運",
-            title: "重大服務中斷事件 (Major Incident)", cost: 0, rent: 0,
-            purpose: "建立重大事件（Major Incident）升級機制與戰情室指揮流程，以最快速度恢復正常服務營運（Workaround / Recovery）。",
-            incident: "2022 年日本 KDDI 電信發生長達 61 小時的大規模通訊斷網，影響近 4,000 萬用戶與緊急救護通報，主因正是核心路由器維護後的重大事件升級與流量控管失靈。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.3.2", domain: "c81", domainLabel: "本文 第8章 營運",
-            title: "服務水準管理 (SLA / OLA)", cost: 300, rent: 75,
-            purpose: "與客戶簽訂明確的服務水準協議（SLA），並與內部支援團隊（OLA）及外部供應商（UC）建立對齊的支援指標。",
-            incident: "某雲端支付業者對客戶承諾 99.99% 可用率 SLA，卻未與底層資料庫代管商簽訂同等級支援合約，故障發生時原廠支援延遲 8 小時才介入，引發巨額違約賠償。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.3.4", domain: "c81", domainLabel: "本文 第8章 營運",
-            title: "供應商與外包服務管理", cost: 280, rent: 70,
-            purpose: "系統化管理外部 IT 服務供應商的績效、變更協調與合約履行，確保外部服務品質不影響整體服務交付。",
-            incident: "2023 年英國國家航空交通服務（NATS）因第三方系統處理一份異常飛行計畫格式引發軟體當機，導致全英逾 1,500 班航班取消、數十萬旅客滯留。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.4.2", domain: "c81", domainLabel: "本文 第8章 營運",
-            title: "容量與效能管理 (Capacity)", cost: 320, rent: 80,
-            purpose: "持續監控運算、儲存、網路頻寬與授權容量使用趨勢，預測未來業務成長與尖峰負載並提前擴容。",
-            incident: "2022 年美國西南航空在冬季暴風雪期間，因機組員排班系統（SkySolver）長期未進行容量擴充與負載優化，運算效能崩潰導致取消超過 16,700 班航班，損失逾 11 億美元。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.4.3", domain: "c81", domainLabel: "本文 第8章 營運",
-            title: "服務可用性管理 (Availability)", cost: 320, rent: 80,
-            purpose: "設計高可用性架構（HA）、消除單點故障（SPOF）並持續量測平均無故障時間（MTBF）與平均修復時間（MTTR）。",
-            incident: "2017 年 AWS S3 美國東區發生大斷線，起因竟是工程師輸入錯誤指令移除過多計費子系統伺服器，且該核心索引服務缺乏平滑降級與高可用隔離機制。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.5.1", domain: "c82", domainLabel: "本文 第8章 營運",
-            title: "變更管理與 CAB 審查", cost: 360, rent: 90,
-            purpose: "所有對服務或基礎設施的變更皆須經過風險與影響評估、變更諮詢委員會（CAB）審批、測試與回滾計畫驗證。",
-            incident: "2021 年 Rogers 電信在進行核心 IP 網路路由更新時，因變更審查未充分評估過濾器規則刪除的連鎖影響，導致全加拿大斷網 15 小時，癱瘓金融刷卡與 911 報案。"
-          },
-          {
-            type: "audit", clauseType: "本文", code: "本文 9.3", domain: "c83", domainLabel: "本文 第9章 績效評估",
-            title: "SMS 管理階層審查", cost: 0, rent: 0,
-            purpose: "高階主管定期審查 SLA 達成率、重大事件趨勢、客戶滿意度與資源瓶頸，推動服務管理系統持續優化。",
-            incident: "某資訊服務商因高階主管長期未檢視客服滿意度下滑與積壓問題單趨勢，最終在年度續約時遭三大主力客戶集體解約。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.5.2", domain: "c82", domainLabel: "本文 第8章 營運",
-            title: "新服務設計與移轉 (Transition)", cost: 300, rent: 75,
-            purpose: "確保新建或重大修改的 IT 服務在正式上線移轉至維運團隊前，已完成驗收測試、監控接入與維運文件交付。",
-            incident: "某銀行開發團隊未經正式服務移轉驗收即在週五晚間上線新網銀模組，結果週末發生記憶體洩漏當機時，維運團隊完全沒有監控儀表板與重啟手冊。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.5.3", domain: "c82", domainLabel: "本文 第8章 營運",
-            title: "發布與部署管理 (Release)", cost: 340, rent: 85,
-            purpose: "規劃發布套件、採用藍綠部署或金絲雀發布（Canary Release）策略，並備妥經實測的緊急退版（Rollback）機制。",
-            incident: "2024 年 CrowdStrike 透過自動化通道向全球端點同步推送未經分階段金絲雀驗證的驅動程式更新檔（Channel File 291），瞬間引發全球 IT 史上最大規模當機。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.6.2", domain: "c83", domainLabel: "本文 第8章 營運",
-            title: "問題管理與根因分析 (RCA)", cost: 340, rent: 85,
-            purpose: "針對重複發生或重大服務事件執行深入的根本原因分析（RCA），徹底消除潛在結構性缺陷而非僅做表面重啟。",
-            incident: "2023 年瑞穗銀行（Mizuho Bank）因長期僅以重啟主機應付交易系統錯誤、未根除資料庫鎖死問題，一年內連續發生 8 次 ATM 與網銀大當機，遭日本金融廳下達業務改善令。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.6.3", domain: "c83", domainLabel: "本文 第8章 營運",
-            title: "服務請求履行 (Service Request)", cost: 260, rent: 65,
-            purpose: "針對密碼重設、軟體安裝、權限申請等標準服務請求建立自助服務入口與自動化履行流程，提升使用者體驗。",
-            incident: "某大型企業缺乏標準服務請求驗證流程，服務台人員僅憑電話口頭確認即協助重設高階主管密碼，遭社交工程駭客輕易突破內網。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.7.2", domain: "c83", domainLabel: "本文 第8章 營運",
-            title: "服務報告與 SLA 透明度", cost: 280, rent: 70,
-            purpose: "定期產出準確、客觀的服務績效報告，向客戶與管理層揭露可用率、事件回應時間與改善行動進度。",
-            incident: "某雲端代管商在發生多次短暫微斷線後，在月度報告中刻意將其歸類為「非計畫性例行維護」以美化 SLA 數據，遭客戶稽核揭發並求償。"
-          },
-          {
-            type: "incident", clauseType: "本文", code: "本文 8.5.1", domain: "c82", domainLabel: "本文 第8章 營運",
-            title: "未經授權變更 (Rogue Change)", cost: 0, rent: 0,
-            purpose: "透過組態漂移偵測與特權操作錄影稽核，嚴格禁止並即時攔截未經變更單核准的生產環境直接修改。",
-            incident: "某證券交易所工程師於盤中未經變更審批直接修改撮合引擎參數，導致開盤交易延遲近兩小時，引發國際投資機構嚴重質疑。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.2.2", domain: "c81", domainLabel: "本文 第8章 營運",
-            title: "業務關係管理 (BRM)", cost: 280, rent: 70,
-            purpose: "指派專責業務關係經理定期與業務部門及客戶溝通，掌握未來業務策略變化並轉化為 IT 服務需求。",
-            incident: "某零售集團行銷部門推出限時搶購活動卻未事先通知 IT 部門，導致流量暴增十倍瞬間擊垮結帳系統，品牌形象嚴重受損。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.4.1", domain: "c81", domainLabel: "本文 第8章 營運",
-            title: "IT 服務財務與預算管理", cost: 280, rent: 70,
-            purpose: "精準編列與追蹤 IT 服務成本（含雲端 FinOps 成本控管），確保服務定價、資源投入與業務效益維持平衡。",
-            incident: "某新創公司未設定雲端服務預算告警與自動擴展上限，遭惡意流量攻擊觸發無上限自動擴容，一夜間產生超過 10 萬美元天價雲端帳單。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 8.7.3", domain: "c83", domainLabel: "本文 第8章 營運",
-            title: "服務資訊安全整合", cost: 340, rent: 85,
-            purpose: "確保所有 IT 服務的設計、變更、存取與供應商交付皆符合資訊安全控制要求，防止服務中斷演變為資安外洩。",
-            incident: "某公有雲供應商在部署新託管資料庫服務時，預設開啟公開網路連接埠且未強制加密，導致數千家企業資料庫暴露於公開網路遭勒索清空。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 9.1", domain: "c83", domainLabel: "本文 第9章 績效評估",
-            title: "端到端服務監控與可觀測性", cost: 340, rent: 85,
-            purpose: "建置全棧監控與可觀測性（Observability）平台，即時追蹤應用程式延遲、錯誤率與基礎設施健康度，實現主動預警。",
-            incident: "某航空訂位平台因 SSL 憑證過期未納入自動化監控告警，憑證失效瞬間全球官網與 App 全面無法連線長達 6 小時。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 10.2", domain: "c83", domainLabel: "本文 第10章 持續改善",
-            title: "持續服務改善計畫 (CSI)", cost: 400, rent: 100,
-            purpose: "建立持續改善登記冊（CSI Register），系統化追蹤自動化維運、缺陷消除與服務體驗優化專案。",
-            incident: "傳統人工維運團隊若缺乏持續自動化與改善機制，隨系統複雜度指數上升，人為操作失誤率將必然導致重大服務中斷事故。"
-          }
-        ]
-      },
-
-      // -----------------------------------------------------------------------
-      // 5. ISO/IEC 42001:2023 人工智慧管理系統
-      // -----------------------------------------------------------------------
-      "42001": {
-        name: "ISO/IEC 42001:2023",
-        subtitle: "人工智慧管理系統 (AIMS)",
-        color: "#ec4899",
-        domains: [
-          { id: "clause", name: "本文條文 (4~10章)", color: "#3b82f6" },
-          { id: "a24", name: "附錄 A.2~A.4 政策與資源", color: "#8b5cf6" },
-          { id: "a57", name: "附錄 A.5~A.7 衝擊與生命週期", color: "#ec4899" },
-          { id: "a810", name: "附錄 A.8~A.10 透明度與第三方", color: "#10b981" }
-        ],
-        tiles: [
-          {
-            type: "start", clauseType: "本文", code: "本文 4.1/4.2", domain: "clause", domainLabel: "本文 第4章 組織全景",
-            title: "AIMS 範圍與 AI 角色界定", cost: 0, rent: 0,
-            purpose: "界定組織在 AI 生態系中的角色（AI 供應者、部署者、使用者或資料提供者），並識別適用的 AI 法規（如歐盟 AI Act）與倫理期望。",
-            incident: "多家企業在員工全面導入生成式 AI 工具時未界定 AIMS 治理邊界與角色責任，導致機密程式碼與客戶合約直接輸入公有雲 LLM 遭到外洩。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.2.2", domain: "a24", domainLabel: "附錄 A.2 AI 政策",
-            title: "負責任 AI 治理政策", cost: 240, rent: 60,
-            purpose: "制定並發布組織層級的 AI 政策，明確規範可接受與禁止的 AI 使用情境、公平性、透明度與人類監督原則。",
-            incident: "2023 年三星電子半導體部門因缺乏明確的生成式 AI 使用政策，工程師將機密設備測量原始碼與會議紀錄貼入 ChatGPT 除錯，導致內部機密外流。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 6.1.2", domain: "clause", domainLabel: "本文 第6章 規劃",
-            title: "AI 系統風險評鑑", cost: 280, rent: 70,
-            purpose: "評估 AI 系統特有的技術與社會風險，包括模型幻覺（Hallucination）、演算法偏見、對抗式攻擊、隱私外洩與安全失控。",
-            incident: "2023 年美國律師使用 ChatGPT 撰寫法庭訴狀卻未評估模型幻覺風險，引用了 6 個 AI 憑空捏造的虛假判例，遭聯邦法官重罰並公開懲戒。"
-          },
-          {
-            type: "audit", clauseType: "本文", code: "本文 9.2", domain: "clause", domainLabel: "本文 第9章 績效評估",
-            title: "AIMS 內部稽核與模型審查", cost: 0, rent: 0,
-            purpose: "定期稽核組織內所有上線 AI 系統的資料來源合法性、模型效能漂移、偏見測試報告與人類監督落實情形。",
-            incident: "某大型人力資源平台在內部稽核時發現，其導入三年的履歷篩選 AI 從未進行性別與年齡偏見檢定，系統性排除了特定族群求職者。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.3.2", domain: "a24", domainLabel: "附錄 A.3 內部組織",
-            title: "AI 治理問責與人類監督", cost: 300, rent: 75,
-            purpose: "明確指派 AI 系統各生命週期階段的問責人員，並在關鍵高風險決策中設計「人在迴路中（Human-in-the-Loop）」監督與緊急停止機制。",
-            incident: "2023 年美國聯合健康保險（UnitedHealth）遭集體訴訟，指控其使用錯誤率高達 90% 的 nH Predict AI 演算法自動拒絕高齡病患術後復健給付，且缺乏有效人工覆核。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.4.2", domain: "a24", domainLabel: "附錄 A.4 AI 系統資源",
-            title: "AI 系統清冊與算力／模型管理", cost: 280, rent: 70,
-            purpose: "建立完整 AI 系統資產清冊，追蹤基礎模型版本、微調權重、訓練算力環境與相依軟體套件。",
-            incident: "某金融機構在盤點時發現各部門私自部署了超過 40 個未登記的開源大模型與 RAG 服務（Shadow AI），部分模型存在已知遠端程式碼執行漏洞。"
-          },
-          {
-            type: "incident", clauseType: "附錄 A", code: "附錄 A.6.2.6", domain: "a57", domainLabel: "附錄 A.6 系統生命週期",
-            title: "提示詞注入與對抗攻擊", cost: 0, rent: 0,
-            purpose: "針對提示詞注入（Prompt Injection）、資料投毒（Data Poisoning）與模型萃取攻擊建立輸入輸出防護護欄（Guardrails）。",
-            incident: "2023 年雪佛蘭（Chevrolet）經銷商網站導入的 GPT 客服機器人遭網友透過提示詞注入操控，不僅公開承諾「以 1 美元出售 2024 年款休旅車」，還宣告具備法律約束力。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.5.2", domain: "a57", domainLabel: "附錄 A.5 系統衝擊評估",
-            title: "AI 系統社會與個人衝擊評估", cost: 320, rent: 80,
-            purpose: "在部署 AI 系統前，評估其對個人基本權利、心理安全、就業公平與社會信任的潛在負面衝擊並制定緩解措施。",
-            incident: "2018 年亞馬遜（Amazon）開發的 AI 招募引擎因未事前評估歷史聘用資料偏見對女性求職者的衝擊，自動對包含「女子」字樣的履歷扣分，最終被迫全面廢止該系統。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.6.1.2", domain: "a57", domainLabel: "附錄 A.6 系統生命週期",
-            title: "負責任 AI 設計與安全性", cost: 320, rent: 80,
-            purpose: "在 AI 系統架構設計階段設定明確的目標函數、安全邊界、可解釋性要求與故障安全（Fail-safe）機制。",
-            incident: "2023 年自動駕駛公司 Cruise 的無人計程車在舊金山發生事故後，因車輛軟體缺乏對二次拖行風險的安全設計，導致行人被拖行 20 英尺重傷，公司營運執照遭吊銷。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.6.2.4", domain: "a57", domainLabel: "附錄 A.6 系統生命週期",
-            title: "AI 系統驗證、確認與紅隊演練", cost: 340, rent: 85,
-            purpose: "在 AI 上線前進行嚴格的準確度驗證、邊界案例測試與 AI 紅隊演練（Red Teaming），確保模型在異常輸入下仍安全可控。",
-            incident: "2024 年紐約市政府推出的企業輔助聊天機器人 MyCity 因上線前缺乏充分驗證，竟教導企業主可以「違法扣留員工小費」與「拒絕租屋給特定補助對象」，引發輿論撻伐。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.6.2.7", domain: "a57", domainLabel: "附錄 A.6 系統生命週期",
-            title: "AI 運行監控與模型漂移偵測", cost: 340, rent: 85,
-            purpose: "持續監控生產環境中 AI 模型的輸出品質、資料漂移（Data Drift）與概念漂移（Concept Drift），異常時自動觸發降級或重訓。",
-            incident: "2021 年房地產平台 Zillow 的購屋演算法（Zillow Offers）在疫情期間房市劇烈波動時未能及時偵測模型預測漂移，高價買入大量房產最終認列逾 5 億美元鉅額虧損並裁員 25%。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.7.2", domain: "a57", domainLabel: "附錄 A.7 AI 系統資料",
-            title: "訓練與測試資料來源合法性", cost: 340, rent: 85,
-            purpose: "驗證用於訓練、微調與 RAG 檢索之資料集具備合法版權授權與個資合規性，防止侵權與隱私污染。",
-            incident: "2023 年《紐約時報》控告 OpenAI 與微軟未經授權使用數百萬篇新聞報導訓練大模型並逐字輸出付費內容，引發數十億美元智慧財產權訴訟。"
-          },
-          {
-            type: "audit", clauseType: "本文", code: "本文 9.3", domain: "clause", domainLabel: "本文 第9章 績效評估",
-            title: "AIMS 管理階層審查", cost: 0, rent: 0,
-            purpose: "最高管理階層定期審查 AI 衝擊評估結果、模型準確度與偏見指標、新興 AI 法規動態與資源投入。",
-            incident: "某銀行消費金融部門擅自調高 AI 核貸模型風險權重以追求業績，因高階主管未召開 AIMS 審查會議，半年後呆帳率暴增才被發現。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.7.4", domain: "a57", domainLabel: "附錄 A.7 AI 系統資料",
-            title: "資料品質、去偏見與血緣追蹤", cost: 320, rent: 80,
-            purpose: "確保 AI 訓練與推論資料的完整性、代表性與準確性，建立資料血緣（Data Lineage）並消除歷史歧視偏見。",
-            incident: "2019 年《科學》期刊揭露美國醫院廣泛使用的醫療風險預測演算法存在嚴重種族偏見，因訓練資料以「過去醫療支出金額」代理健康需求，低估了弱勢族群的實際病情。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.8.2", domain: "a810", domainLabel: "附錄 A.8 利害關係人資訊",
-            title: "AI 系統透明度與使用揭露", cost: 300, rent: 75,
-            purpose: "明確告知使用者正在與 AI 系統互動、AI 生成內容標示（如浮水印/中繼資料），並說明系統能力與限制。",
-            incident: "2024 年加拿大航空（Air Canada）官網 AI 客服機器人向喪親旅客提供錯誤的喪葬優惠票退費規則，法院判決航空公司須對 AI 錯誤陳述負全責並賠償旅客。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.8.4", domain: "a810", domainLabel: "附錄 A.8 利害關係人資訊",
-            title: "AI 事件與異常通報管道", cost: 280, rent: 70,
-            purpose: "為內外部使用者建立便捷的 AI 錯誤輸出、偏見歧視或安全異常回報機制，並納入組織事件應變追蹤。",
-            incident: "某教育科技公司推出的 AI 寫作偵測工具頻繁將母語非英語學生的正常作文誤判為 AI 代寫，因缺乏申訴與異常回報機制，導致多名無辜學生遭學校停學處分。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.9.2", domain: "a810", domainLabel: "附錄 A.9 AI 系統使用",
-            title: "組織負責任使用 AI 規範", cost: 300, rent: 75,
-            purpose: "規範內部員工使用內外部 AI 工具的行為準則，包括禁止輸入機密與個資、強制人工審核 AI 產出內容等。",
-            incident: "2024 年多家顧問公司與科技媒體被揭發直接發布未經人工查核的 AI 生成文章，因內容充斥事實錯誤與抄襲段落，導致品牌公信力重創。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.10.2", domain: "a810", domainLabel: "附錄 A.10 第三方與客戶",
-            title: "AI 供應鏈與基礎模型評估", cost: 340, rent: 85,
-            purpose: "在採購第三方 AI 平台、API 或開源模型時，評估供應商的資料隱私承諾（零資料留存 ZDR）、安全性與合規責任。",
-            incident: "2023 年 Zoom 更新服務條款時因條文暗示可能使用客戶音訊與視訊內容訓練 AI 模型，引發全球企業客戶強烈反彈與抵制，迫使 Zoom 緊急修改條款澄清。"
-          },
-          {
-            type: "incident", clauseType: "附錄 A", code: "附錄 A.7.3", domain: "a57", domainLabel: "附錄 A.7 AI 系統資料",
-            title: "訓練資料記憶化與個資外洩", cost: 0, rent: 0,
-            purpose: "採用差分隱私（Differential Privacy）、資料脫敏與輸出過濾機制，防止大模型背誦並洩漏訓練集中的敏感個資。",
-            incident: "研究人員證實透過特定提示詞誘導（Divergence Attack），可使大型語言模型直接吐出訓練資料中真實個人的姓名、電子郵件、電話號碼與程式碼片段。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 7.2/7.3", domain: "clause", domainLabel: "本文 第7章 支援",
-            title: "AI 素養與專業團隊培訓", cost: 280, rent: 70,
-            purpose: "提升開發者、稽核員與一般員工的 AI 素養（AI Literacy），使其理解模型侷限性、幻覺風險與倫理合規要求。",
-            incident: "歐盟《人工智慧法案》（EU AI Act）明確要求所有部署或使用 AI 系統的組織必須確保人員具備充分 AI 素養，缺乏培訓之企業將面臨合規調查。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.6.2.5", domain: "a57", domainLabel: "附錄 A.6 系統生命週期",
-            title: "AI 系統可追溯性與稽核軌跡", cost: 340, rent: 85,
-            purpose: "完整記錄 AI 系統的提示詞輸入、檢索上下文、模型版本、推論結果與人工覆核紀錄，確保高風險決策可完整追溯。",
-            incident: "某保險公司使用自動化 AI 理賠系統拒賠數千件醫療保單，當主管機關要求說明拒賠依據時，因系統未保留推論版本與決策日誌而無法舉證合規。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.10.3", domain: "a810", domainLabel: "附錄 A.10 第三方與客戶",
-            title: "客戶 AI 部署指引與邊界", cost: 320, rent: 80,
-            purpose: "向使用組織 AI 產品的客戶清楚說明系統的預期用途（Intended Use）、已知限制、準確率邊界與禁止高風險濫用場景。",
-            incident: "多家醫療 AI 影像輔助軟體供應商因未在說明書中明確界定適用病患族群與臨床限制，導致部分診所醫師過度依賴 AI 判讀而延誤癌症早期診斷。"
-          },
-          {
-            type: "control", clauseType: "附錄 A", code: "附錄 A.6.2.8", domain: "a57", domainLabel: "附錄 A.6 系統生命週期",
-            title: "AI 系統安全退役與模型銷毀", cost: 320, rent: 80,
-            purpose: "規範 AI 系統除役時的模型權重銷毀、訓練資料集清除與 API 端點下線程序，防止遺留模型遭竊取或逆向還原。",
-            incident: "某科技公司淘汰舊版推薦系統後，未刪除雲端物件儲存桶中的歷史訓練模型權重檔，遭研究人員下載並透過模型反演攻擊還原出部分訓練用戶特徵。"
-          },
-          {
-            type: "control", clauseType: "本文", code: "本文 10.2", domain: "clause", domainLabel: "本文 第10章 持續改善",
-            title: "AIMS 持續改善與倫理演進", cost: 400, rent: 100,
-            purpose: "結合全球 AI 安全基準更新、紅隊測試結果與事件經驗，持續優化 AI 治理框架與安全護欄有效性。",
-            incident: "AI 技術與攻擊手法以月為單位快速迭代，若企業僅在導入初期進行一次性合規檢查而未建立持續改善機制，AIMS 護欄將在數月內形同虛設。"
-          }
-        ]
-      }
-    };
-
-    // =========================================================================
-    // 遊戲狀態管理
-    // =========================================================================
-    let currentStandardKey = "27001";
-    let currentMode = "solo"; // solo | ai | pvp
-    let players = [];
-    let currentPlayerIdx = 0;
-    let turnCount = 1;
-    let tileOwners = {}; // { tileIndex: { ownerIdx, level } }
-    let isMoving = false;
-    let lastDice = 1;
-
-    function initPlayers() {
-      if (currentMode === "solo") {
-        players = [
-          { id: 0, name: "資安長 (你)", isAI: false, pos: 0, budget: 2500, maturity: 100, risk: 15, color: "#38bdf8", badge: "P1" }
-        ];
-      } else if (currentMode === "ai") {
-        players = [
-          { id: 0, name: "資安長 (你)", isAI: false, pos: 0, budget: 2500, maturity: 100, risk: 15, color: "#38bdf8", badge: "P1" },
-          { id: 1, name: "AI 稽核長", isAI: true, pos: 0, budget: 2500, maturity: 100, risk: 15, color: "#f43f5e", badge: "AI" }
-        ];
-      } else {
-        players = [
-          { id: 0, name: "顧問 A (P1)", isAI: false, pos: 0, budget: 2500, maturity: 100, risk: 15, color: "#38bdf8", badge: "P1" },
-          { id: 1, name: "顧問 B (P2)", isAI: false, pos: 0, budget: 2500, maturity: 100, risk: 15, color: "#a855f7", badge: "P2" }
-        ];
-      }
-      currentPlayerIdx = 0;
-      turnCount = 1;
-      tileOwners = {};
-      isMoving = false;
-    }
-
-    function changeStandard(val) {
-      currentStandardKey = val;
-      resetGame();
-    }
-
-    function changeMode(val) {
-      currentMode = val;
-      resetGame();
-    }
-
-    function resetGame() {
-      initPlayers();
-      closeModal();
-      closeInspectModal();
-      renderAll();
-      clearLogs();
-      const std = STANDARDS_DATA[currentStandardKey];
-      addLog(`🎮 已切換至【${std.name} - ${std.subtitle}】，新賽局開始！`, "text-sky-300 font-bold");
-      addLog(`💡 提示：滑鼠直接點擊棋盤上的任何一格，可隨時查詢該控制項目的與真實資安事件。`, "text-amber-300");
-    }
-
-    // =========================================================================
-    // 渲染主畫面
-    // =========================================================================
-    function renderAll() {
-      renderBoard();
-      renderPlayerCards();
-      renderDomainStats();
-    }
-
-    function renderBoard() {
-      const container = document.getElementById("boardContainer");
-      const std = STANDARDS_DATA[currentStandardKey];
-      const activePlayer = players[currentPlayerIdx];
-      container.innerHTML = "";
-
-      // 渲染 24 個棋盤格
-      std.tiles.forEach((tile, idx) => {
-        const coord = BOARD_COORDS[idx];
-        const domainObj = std.domains.find(d => d.id === tile.domain);
-        const barColor = domainObj ? domainObj.color : "#64748b";
-        const ownerInfo = tileOwners[idx];
-        const isCurrentPos = activePlayer && activePlayer.pos === idx;
-
-        const tileEl = document.createElement("div");
-        tileEl.className = `tile ${isCurrentPos ? "active-tile" : ""}`;
-        tileEl.style.gridRow = coord.r;
-        tileEl.style.gridColumn = coord.c;
-        tileEl.title = `點擊查詢：${tile.code} ${tile.title}`;
-
-        // 滑鼠點擊格子直接顯示該控制項說明與真實資安事件（不含遊戲數據）
-        tileEl.onclick = () => openInspectModal(idx);
-
-        // 類型標籤徽章 (本文 vs 附錄 A)
-        const isAnnex = tile.clauseType.startsWith("附錄");
-        const clauseBadgeClass = isAnnex
-          ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
-          : "bg-sky-500/20 text-sky-300 border border-sky-500/40";
-
-        // 類型圖示
-        let typeIcon = "";
-        if (tile.type === "start") typeIcon = "🚩";
-        else if (tile.type === "audit") typeIcon = "🔍";
-        else if (tile.type === "incident") typeIcon = "⚡";
-
-        // 擁有者標記
-        let ownerHtml = "";
-        if (ownerInfo !== undefined) {
-          const ownerPlayer = players[ownerInfo.ownerIdx];
-          const stars = "★".repeat(ownerInfo.level);
-          ownerHtml = `<span class="text-[10px] font-black px-1.5 py-0.2 rounded" style="background:${ownerPlayer.color}33; color:${ownerPlayer.color}; border:1px solid ${ownerPlayer.color}">${ownerPlayer.badge} ${stars}</span>`;
-        } else if (tile.type === "control") {
-          ownerHtml = `<span class="text-[10px] text-slate-400 font-mono">$${tile.cost}</span>`;
-        }
-
-        // 玩家棋子
-        const tokensHere = players.filter(p => p.pos === idx);
-        const tokensHtml = tokensHere.map(p =>
-          `<span class="player-token" style="background:${p.color}; color:#0f172a;" title="${p.name}">${p.badge}</span>`
-        ).join("");
-
-        tileEl.innerHTML = `
-          <div>
-            <div class="tile-header-bar" style="background:${barColor}"></div>
-            <div class="flex items-center justify-between gap-1">
-              <span class="text-[10px] font-mono font-bold text-slate-300 truncate">${typeIcon} ${tile.code}</span>
-              ${ownerHtml}
-            </div>
-            <div class="text-[11px] md:text-xs font-bold text-white leading-snug mt-0.5 line-clamp-2">${tile.title}</div>
-          </div>
-          <div class="flex items-center justify-between mt-1 pt-1 border-t border-slate-800/80">
-            <span class="text-[9px] font-black px-1.5 py-0.2 rounded ${clauseBadgeClass}">${tile.clauseType}</span>
-            <div class="flex items-center gap-1">${tokensHtml}</div>
-          </div>
-        `;
-
-        container.appendChild(tileEl);
-      });
-
-      // 渲染中央控制中樞 (5x5)
-      const hub = document.createElement("div");
-      hub.className = "center-hub";
-
-      const diceFaces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
-      const currentDiceFace = diceFaces[lastDice - 1] || "⚀";
-
-      // 領域圖例
-      const legendHtml = std.domains.map(d =>
-        `<span class="inline-flex items-center gap-1 text-[11px] bg-slate-800/90 border border-slate-700 px-2 py-0.5 rounded-md text-slate-200">
-          <span class="w-2.5 h-2.5 rounded-full inline-block" style="background:${d.color}"></span>${d.name}
-        </span>`
-      ).join("");
-
-      const rollDisabled = isMoving || (activePlayer && activePlayer.isAI);
-
-      hub.innerHTML = `
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
-          <div>
-            <div class="text-xs font-bold text-sky-400 uppercase tracking-wider">CURRENT FRAMEWORK</div>
-            <div class="text-lg md:text-2xl font-black text-white">${std.name}</div>
-            <div class="text-xs text-slate-400">${std.subtitle}</div>
-          </div>
-          <div class="text-right">
-            <div class="text-xs text-slate-400">當前行動者</div>
-            <div class="text-sm md:text-base font-black" style="color:${activePlayer.color}">${activePlayer.name}</div>
-          </div>
+    <div class="my-auto flex flex-col items-center justify-center text-center py-2 space-y-3">
+      <div class="flex flex-wrap justify-center gap-1.5 max-w-md">${legend}</div>
+      <div class="flex items-center gap-4 bg-slate-950/70 border border-slate-800 px-5 py-3 rounded-2xl shadow-inner">
+        <div id="diceDisplay" class="text-5xl md:text-6xl select-none text-amber-400 drop-shadow">${faces[dice-1]}</div>
+        <div class="text-left">
+          <div class="text-xs text-slate-400">${player.isC?"顧問輔導推演":"擲骰推進治理"}</div>
+          <button onclick="handleRollDice()" ${moving?"disabled":""} class="mt-1 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black text-sm md:text-base px-5 py-2.5 rounded-xl shadow-lg transition transform active:scale-95">🎲 擲骰子前進</button>
         </div>
-
-        <div class="my-auto flex flex-col items-center justify-center text-center py-2 space-y-3">
-          <div class="flex flex-wrap justify-center gap-1.5 max-w-md">
-            ${legendHtml}
-          </div>
-
-          <div class="flex items-center gap-4 bg-slate-950/70 border border-slate-800 px-5 py-3 rounded-2xl shadow-inner">
-            <div id="diceDisplay" class="text-5xl md:text-6xl select-none text-amber-400 drop-shadow">${currentDiceFace}</div>
-            <div class="text-left">
-              <div class="text-xs text-slate-400">擲骰推進治理</div>
-              <button id="rollBtn" onclick="handleRollDice()" ${rollDisabled ? "disabled" : ""}
-                class="mt-1 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black text-sm md:text-base px-5 py-2.5 rounded-xl shadow-lg transition transform active:scale-95">
-                🎲 擲骰子前進
-              </button>
-            </div>
-          </div>
-
-          <div class="text-[11px] text-slate-400 max-w-md leading-relaxed">
-            💡 <strong class="text-slate-200">玩法與查詢：</strong>點擊「🎲 擲骰子前進」進行建置與稽核挑戰；亦可隨時<strong class="text-sky-300">滑鼠點擊棋盤上任一格子</strong>直接查閱該控制項目的與真實資安事件。
-          </div>
+      </div>
+      <div class="text-[11px] text-slate-400 max-w-md leading-relaxed">💡 <strong class="text-slate-200">玩法與查詢：</strong>點擊「🎲 擲骰子前進」進行建置與稽核挑戰；亦可隨時<strong class="text-sky-300">滑鼠點擊棋盤上任一格子</strong>直接查閱該控制項目的與真實資安事件。</div>
+    </div>
+    <div class="grid grid-cols-3 gap-2 border-t border-slate-800 pt-2.5 text-center text-xs">
+      <div class="bg-slate-900/80 rounded-lg p-1.5 border border-slate-800"><div class="text-slate-400 text-[10px]">通關目標</div><div class="font-bold text-emerald-400">成熟度 ≥ 250</div></div>
+      <div class="bg-slate-900/80 rounded-lg p-1.5 border border-slate-800"><div class="text-slate-400 text-[10px]">${player.isC?"顧問簡報保障":"破產／失職警戒"}</div><div class="font-bold ${player.isC?"text-amber-300":"text-rose-400"}">${player.isC?"免破產／不中斷":"預算 < 0 或 風險 ≥ 100"}</div></div>
+      <div class="bg-slate-900/80 rounded-lg p-1.5 border border-slate-800"><div class="text-slate-400 text-[10px]">已建置控制項</div><div class="font-bold text-sky-400">${Object.keys(built).length} / ${totalCtrl} 項</div></div>
+    </div>`;
+  box.appendChild(hub);
+}
+function renderPlayerCard(){
+  $("turnBadge").textContent=`第 ${turn} 回合`;
+  const owned=Object.keys(built).length;
+  $("playerCard").innerHTML=`
+    <div class="rounded-xl p-3 border bg-slate-800/95 border-sky-400 shadow-md">
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center gap-2">
+          <span class="px-1.5 h-5 rounded-full inline-flex items-center justify-center text-[10px] font-black text-slate-950" style="background:${player.color}">${player.badge}</span>
+          <span class="font-black text-sm text-white">${player.name}</span>
         </div>
-
-        <div class="grid grid-cols-3 gap-2 border-t border-slate-800 pt-2.5 text-center text-xs">
-          <div class="bg-slate-900/80 rounded-lg p-1.5 border border-slate-800">
-            <div class="text-slate-400 text-[10px]">通關目標</div>
-            <div class="font-bold text-emerald-400">成熟度 ≥ 250</div>
-          </div>
-          <div class="bg-slate-900/80 rounded-lg p-1.5 border border-slate-800">
-            <div class="text-slate-400 text-[10px]">破產／失職警戒</div>
-            <div class="font-bold text-rose-400">預算 &lt; 0 或 風險 ≥ 100</div>
-          </div>
-          <div class="bg-slate-900/80 rounded-lg p-1.5 border border-slate-800">
-            <div class="text-slate-400 text-[10px]">已建置控制項</div>
-            <div class="font-bold text-sky-400">${Object.keys(tileOwners).length} / 18 項</div>
-          </div>
-        </div>
-      `;
-
-      container.appendChild(hub);
+        <span class="text-[11px] font-bold text-slate-400">${player.isC?"已輔導":"已建置"} ${owned} 項</span>
+      </div>
+      <div class="grid grid-cols-3 gap-1.5 text-center text-xs">
+        <div class="bg-slate-900 rounded-lg p-1.5"><div class="text-[10px] text-slate-400">治理預算</div><div class="font-black text-amber-400">${player.isC?"∞ 無上限":"$"+player.budget}</div></div>
+        <div class="bg-slate-900 rounded-lg p-1.5"><div class="text-[10px] text-slate-400">成熟度</div><div class="font-black text-emerald-400">${player.maturity}</div></div>
+        <div class="bg-slate-900 rounded-lg p-1.5"><div class="text-[10px] text-slate-400">暴露風險</div><div class="font-black ${player.risk>=70?"text-rose-400":"text-sky-300"}">${player.risk}%</div></div>
+      </div>
+    </div>`;
+}
+function renderDomainStats(){
+  const box=$("domainStats"),s=getStd(),doms=s[3],tiles=s[4];
+  box.innerHTML=doms.map((d,di)=>{
+    const list=tiles.map((t,idx)=>[t,idx]).filter(([t])=>t[2]===di&&t[0]===0);
+    const done=list.filter(([,idx])=>built[idx]).length,tot=list.length||1,pct=Math.round(done/tot*100);
+    return `<div><div class="flex justify-between text-[11px] mb-0.5"><span class="text-slate-300 font-medium">${d[0]}</span><span class="text-slate-400 font-mono">${done}/${tot} (${pct}%)</span></div><div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden"><div class="h-full rounded-full transition-all duration-300" style="width:${pct}%;background:${d[1]}"></div></div></div>`;
+  }).join("");
+}
+function openInspectModal(idx){
+  const s=getStd(),t=s[4][idx];if(!t)return;
+  const ct=getClauseType(t[1]);
+  $("iClause").textContent=ct;$("iClause").className=`text-xs font-black px-2.5 py-0.5 rounded-md ${badgeCls(ct)}`;
+  $("iDomain").textContent=`${s[0]} • ${DB.L[t[3]]}`;
+  $("iCode").textContent=t[1];$("iTitle").textContent=`${t[1]} ${t[4]}`;
+  $("iPurpose").textContent=t[6];$("iIncident").textContent=t[7];
+  toggleModal("inspectModal",1);
+}
+function handleRollDice(){
+  if(moving)return;moving=true;
+  const dEl=$("diceDisplay");if(dEl)dEl.classList.add("rolling");
+  dice=Math.floor(Math.random()*6)+1;
+  setTimeout(()=>{
+    if(dEl)dEl.classList.remove("rolling");
+    addLog(`🎲 ${player.name} 擲出了 ${dice} 點！`,"text-slate-200");
+    stepMove(dice);
+  },450);
+}
+function stepMove(rem){
+  if(rem<=0){moving=false;renderAll();triggerTileEvent(player.pos);return;}
+  player.pos=(player.pos+1)%24;
+  if(player.pos===0){
+    if(!player.isC)player.budget+=400;
+    player.maturity+=15;
+    addLog(`🚩 ${player.name} 通過年度範圍審查起點，${player.isC?"輔導成熟度 +15！":"獲得治理預算 +$400、成熟度 +15！"}`,"text-emerald-300 font-bold");
+  }
+  renderBoard();renderPlayerCard();
+  setTimeout(()=>stepMove(rem-1),170);
+}
+function triggerTileEvent(idx){
+  const s=getStd(),t=s[4][idx],[tp,code,,li,title,cost,purpose,incident]=t,ct=getClauseType(code);
+  $("mClause").textContent=ct;$("mClause").className=`text-xs font-black px-2.5 py-0.5 rounded-md ${badgeCls(ct)}`;
+  $("mDomain").textContent=DB.L[li];$("mCode").textContent=code;$("mTitle").textContent=`${code} ${title}`;
+  $("mPurpose").textContent=purpose;$("mIncident").textContent=incident;
+  const ctx=$("mCtx"),act=$("mAct");act.innerHTML="";
+  if(tp===1){
+    $("mIcon").textContent="🚩";
+    ctx.innerHTML=`<div>🎉 <strong>年度治理週期起點：</strong>組織重新檢視管理系統範圍與利害關係人要求，治理狀態穩定！</div>`;
+    act.innerHTML=`<button onclick="finishTurn()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-4 py-2 rounded-xl text-sm">確認並結束回合</button>`;
+  }else if(tp===2){
+    $("mIcon").textContent="🔍";
+    const bonus=player.risk<=30?250:100,mat=player.risk<=30?25:10;
+    ctx.innerHTML=`<div>📋 <strong>稽核抽查結果：</strong>目前組織暴露風險為 <span class="font-bold text-amber-300">${player.risk}%</span>。</div><div class="text-emerald-300 font-bold">通過稽核驗證！${player.isC?`輔導成熟度 +${mat}，風險降低 5%。`:`獲得治理獎勵預算 +$${bonus}、成熟度 +${mat}，風險降低 5%。`}</div>`;
+    act.innerHTML=`<button onclick="applyAudit(${bonus},${mat})" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-sm">領取稽核獎勵</button>`;
+  }else if(tp===3){
+    $("mIcon").textContent="⚡";
+    const mit=player.maturity>=160,loss=mit?100:250,rAdd=mit?8:18;
+    ctx.innerHTML=`<div>⚠️ <strong>突發治理／資安考驗：</strong>外部威脅或營運異常衝擊組織防線！</div><div>${mit?`<span class="text-emerald-300 font-bold">🛡️ 得益於高治理成熟度 (≥160)，損害大幅減輕！</span>`:`<span class="text-rose-300 font-bold">💥 治理成熟度不足，承受較高衝擊！</span>`} ${player.isC?`風險 +${rAdd}%（顧問版免扣預算）。`:`應變支出 -$${loss}，風險 +${rAdd}%。`}</div>`;
+    act.innerHTML=`<button onclick="applyIncident(${loss},${rAdd})" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-4 py-2 rounded-xl text-sm">執行緊急應變</button>`;
+  }else{
+    $("mIcon").textContent="🛡️";
+    const lv=built[idx]||0;
+    if(!lv){
+      const can=player.isC||player.budget>=cost;
+      ctx.innerHTML=`<div class="flex flex-wrap justify-between gap-2"><span>狀態：<strong class="text-amber-300">尚未建置此控制項</strong></span><span>${player.isC?"顧問輔導模式（免扣預算）":`建置預算：<strong class="text-sky-300">$${cost}</strong>`} | 效益：成熟度 +30、風險 -8%</span></div>`;
+      if(can)act.innerHTML+=`<button onclick="buildCtrl(${idx})" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-sm">✅ ${player.isC?"輔導導入此控制項":`投入 $${cost} 建置控制項`}</button>`;
+      act.innerHTML+=`<button onclick="skipCtrl(${idx})" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold px-4 py-2 rounded-xl text-sm">暫不建置 (風險 +5%)</button>`;
+    }else{
+      const upCost=Math.round(cost*0.7),canUp=lv<3&&(player.isC||player.budget>=upCost);
+      ctx.innerHTML=`<div>🌟 <strong>已完成建置</strong>（目前成熟等級：Lv.${lv} / 3）。</div><div>強化自動化與持續監控可提升等級，增加成熟度 +20、風險 -5%。</div>`;
+      if(canUp)act.innerHTML+=`<button onclick="upgradeCtrl(${idx},${upCost})" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-4 py-2 rounded-xl text-sm">⬆️ ${player.isC?`輔導強化至 Lv.${lv+1}`:`投入 $${upCost} 升級至 Lv.${lv+1}`}</button>`;
+      act.innerHTML+=`<button onclick="finishTurn()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold px-4 py-2 rounded-xl text-sm">維持現狀並結束回合</button>`;
     }
-
-    function renderPlayerCards() {
-      const container = document.getElementById("playerCards");
-      document.getElementById("turnBadge").textContent = `第 ${turnCount} 回合`;
-      container.innerHTML = "";
-
-      players.forEach((p, idx) => {
-        const isTurn = idx === currentPlayerIdx;
-        const ownedCount = Object.values(tileOwners).filter(o => o.ownerIdx === idx).length;
-        const card = document.createElement("div");
-        card.className = `rounded-xl p-3 border transition ${isTurn ? "bg-slate-800/95 border-sky-400 shadow-md" : "bg-slate-950/60 border-slate-800"}`;
-
-        card.innerHTML = `
-          <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center gap-2">
-              <span class="w-5 h-5 rounded-full inline-flex items-center justify-center text-[10px] font-black text-slate-950" style="background:${p.color}">${p.badge}</span>
-              <span class="font-black text-sm text-white">${p.name}</span>
-            </div>
-            <span class="text-[11px] font-bold text-slate-400">持有 ${ownedCount} 項</span>
-          </div>
-          <div class="grid grid-cols-3 gap-1.5 text-center text-xs">
-            <div class="bg-slate-900 rounded-lg p-1.5">
-              <div class="text-[10px] text-slate-400">治理預算</div>
-              <div class="font-black text-amber-400">$${p.budget}</div>
-            </div>
-            <div class="bg-slate-900 rounded-lg p-1.5">
-              <div class="text-[10px] text-slate-400">成熟度</div>
-              <div class="font-black text-emerald-400">${p.maturity}</div>
-            </div>
-            <div class="bg-slate-900 rounded-lg p-1.5">
-              <div class="text-[10px] text-slate-400">暴露風險</div>
-              <div class="font-black ${p.risk >= 70 ? "text-rose-400" : "text-sky-300"}">${p.risk}%</div>
-            </div>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    function renderDomainStats() {
-      const container = document.getElementById("domainStats");
-      const std = STANDARDS_DATA[currentStandardKey];
-      container.innerHTML = "";
-
-      std.domains.forEach(d => {
-        const domainTiles = std.tiles
-          .map((t, idx) => ({ ...t, idx }))
-          .filter(t => t.domain === d.id && t.type === "control");
-        const builtCount = domainTiles.filter(t => tileOwners[t.idx] !== undefined).length;
-        const total = domainTiles.length || 1;
-        const pct = Math.round((builtCount / total) * 100);
-
-        const row = document.createElement("div");
-        row.innerHTML = `
-          <div class="flex justify-between text-[11px] mb-0.5">
-            <span class="text-slate-300 font-medium">${d.name}</span>
-            <span class="text-slate-400 font-mono">${builtCount}/${total} (${pct}%)</span>
-          </div>
-          <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
-            <div class="h-full rounded-full transition-all duration-300" style="width:${pct}%; background:${d.color}"></div>
-          </div>
-        `;
-        container.appendChild(row);
-      });
-    }
-
-    // =========================================================================
-    // 滑鼠點擊格子純查詢視窗（無遊戲數據、無操作按鈕）
-    // =========================================================================
-    function openInspectModal(tileIdx) {
-      const std = STANDARDS_DATA[currentStandardKey];
-      const tile = std.tiles[tileIdx];
-      if (!tile) return;
-
-      const isAnnex = tile.clauseType.startsWith("附錄");
-      const badgeEl = document.getElementById("inspectClauseTypeBadge");
-      badgeEl.textContent = tile.clauseType;
-      badgeEl.className = isAnnex
-        ? "text-xs font-black px-2.5 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/40"
-        : "text-xs font-black px-2.5 py-0.5 rounded-md bg-sky-500/20 text-sky-300 border border-sky-500/40";
-
-      document.getElementById("inspectDomainBadge").textContent = `${std.name} • ${tile.domainLabel}`;
-      document.getElementById("inspectCodeBadge").textContent = tile.code;
-      document.getElementById("inspectTitle").textContent = `${tile.code} ${tile.title}`;
-      document.getElementById("inspectPurpose").textContent = tile.purpose;
-      document.getElementById("inspectIncident").textContent = tile.incident;
-
-      const modal = document.getElementById("inspectModal");
-      modal.classList.remove("hidden");
-      modal.classList.add("flex");
-    }
-
-    function closeInspectModal() {
-      const modal = document.getElementById("inspectModal");
-      modal.classList.add("hidden");
-      modal.classList.remove("flex");
-    }
-
-    // =========================================================================
-    // 擲骰與移動邏輯
-    // =========================================================================
-    function handleRollDice() {
-      if (isMoving) return;
-      const p = players[currentPlayerIdx];
-      isMoving = true;
-
-      const diceEl = document.getElementById("diceDisplay");
-      if (diceEl) diceEl.classList.add("rolling");
-
-      const steps = Math.floor(Math.random() * 6) + 1;
-      lastDice = steps;
-
-      setTimeout(() => {
-        if (diceEl) diceEl.classList.remove("rolling");
-        addLog(`🎲 ${p.name} 擲出了 ${steps} 點！`, "text-slate-200");
-        movePlayerStepByStep(p, steps);
-      }, 450);
-    }
-
-    function movePlayerStepByStep(player, remainingSteps) {
-      if (remainingSteps <= 0) {
-        isMoving = false;
-        renderAll();
-        triggerTileEvent(player, player.pos);
-        return;
-      }
-
-      player.pos = (player.pos + 1) % 24;
-
-      // 經過起點獲得年度治理預算撥款
-      if (player.pos === 0) {
-        player.budget += 400;
-        player.maturity += 15;
-        addLog(`🚩 ${player.name} 通過年度範圍審查起點，獲得治理預算 +$400、成熟度 +15！`, "text-emerald-300 font-bold");
-      }
-
-      renderBoard();
-      renderPlayerCards();
-
-      setTimeout(() => {
-        movePlayerStepByStep(player, remainingSteps - 1);
-      }, 170);
-    }
-
-    // =========================================================================
-    // 棋盤事件觸發與決策彈窗（遊戲回合用）
-    // =========================================================================
-    function triggerTileEvent(player, tileIdx) {
-      const std = STANDARDS_DATA[currentStandardKey];
-      const tile = std.tiles[tileIdx];
-
-      // 若為 AI 玩家自動決策
-      if (player.isAI) {
-        handleAIDecision(player, tileIdx, tile);
-        return;
-      }
-
-      const modal = document.getElementById("eventModal");
-      const isAnnex = tile.clauseType.startsWith("附錄");
-      const clauseBadge = document.getElementById("modalClauseTypeBadge");
-      clauseBadge.textContent = tile.clauseType;
-      clauseBadge.className = isAnnex
-        ? "text-xs font-black px-2.5 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/40"
-        : "text-xs font-black px-2.5 py-0.5 rounded-md bg-sky-500/20 text-sky-300 border border-sky-500/40";
-
-      document.getElementById("modalDomainBadge").textContent = tile.domainLabel;
-      document.getElementById("modalCodeBadge").textContent = tile.code;
-      document.getElementById("modalTitle").textContent = `${tile.code} ${tile.title}`;
-      document.getElementById("modalPurpose").textContent = tile.purpose;
-      document.getElementById("modalIncident").textContent = tile.incident;
-
-      const ctxEl = document.getElementById("modalGameContext");
-      const actEl = document.getElementById("modalActions");
-      actEl.innerHTML = "";
-
-      if (tile.type === "start") {
-        document.getElementById("modalIcon").textContent = "🚩";
-        ctxEl.innerHTML = `<div>🎉 <strong>年度治理週期起點：</strong>組織重新檢視管理系統範圍與利害關係人要求，治理狀態穩定！</div>`;
-        actEl.innerHTML = `<button onclick="finishTurn()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-4 py-2 rounded-xl text-sm">確認並結束回合</button>`;
-      } else if (tile.type === "audit") {
-        document.getElementById("modalIcon").textContent = "🔍";
-        const bonus = player.risk <= 30 ? 250 : 100;
-        const matGain = player.risk <= 30 ? 25 : 10;
-        ctxEl.innerHTML = `
-          <div>📋 <strong>稽核抽查結果：</strong>目前組織暴露風險為 <span class="font-bold text-amber-300">${player.risk}%</span>。</div>
-          <div class="text-emerald-300 font-bold">通過稽核驗證！獲得治理獎勵預算 +$${bonus}、成熟度 +${matGain}，風險降低 5%。</div>
-        `;
-        actEl.innerHTML = `<button onclick="applyAuditReward(${bonus}, ${matGain})" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-sm">領取稽核獎勵</button>`;
-      } else if (tile.type === "incident") {
-        document.getElementById("modalIcon").textContent = "⚡";
-        const rawLoss = 250;
-        const mitigated = player.maturity >= 160;
-        const actualLoss = mitigated ? 100 : rawLoss;
-        const riskAdd = mitigated ? 8 : 18;
-        ctxEl.innerHTML = `
-          <div>⚠️ <strong>突發治理／資安考驗：</strong>外部威脅或營運異常衝擊組織防線！</div>
-          <div>${mitigated
-            ? `<span class="text-emerald-300 font-bold">🛡️ 得益於高治理成熟度 (≥160)，損害大幅減輕！</span> 應變支出 -$${actualLoss}，風險 +${riskAdd}%。`
-            : `<span class="text-rose-300 font-bold">💥 治理成熟度不足，承受較高衝擊！</span> 緊急應變支出 -$${actualLoss}，風險 +${riskAdd}%。`}
-          </div>
-        `;
-        actEl.innerHTML = `<button onclick="applyIncidentImpact(${actualLoss}, ${riskAdd})" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-4 py-2 rounded-xl text-sm">執行緊急應變</button>`;
-      } else if (tile.type === "control") {
-        document.getElementById("modalIcon").textContent = "🛡️";
-        const ownerInfo = tileOwners[tileIdx];
-
-        if (ownerInfo === undefined) {
-          // 尚未建置
-          const canAfford = player.budget >= tile.cost;
-          ctxEl.innerHTML = `
-            <div class="flex flex-wrap justify-between gap-2">
-              <span>狀態：<strong class="text-amber-300">尚未建置此控制項</strong></span>
-              <span>建置預算：<strong class="text-sky-300">$${tile.cost}</strong> | 效益：成熟度 +30、風險 -8%</span>
-            </div>
-          `;
-          if (canAfford) {
-            actEl.innerHTML += `<button onclick="buildControl(${tileIdx})" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-sm">✅ 投入 $${tile.cost} 建置控制項</button>`;
-          }
-          actEl.innerHTML += `<button onclick="skipControl(${tileIdx})" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold px-4 py-2 rounded-xl text-sm">暫不建置 (風險 +5%)</button>`;
-        } else if (ownerInfo.ownerIdx === player.id) {
-          // 自己已建置，可升級
-          const upgradeCost = Math.round(tile.cost * 0.7);
-          const canUpgrade = ownerInfo.level < 3 && player.budget >= upgradeCost;
-          ctxEl.innerHTML = `
-            <div>🌟 <strong>你已建置此控制項</strong>（目前成熟等級：Lv.${ownerInfo.level} / 3）。</div>
-            <div>強化自動化與持續監控可提升等級，增加成熟度 +20 並提高對手稽核顧問費。</div>
-          `;
-          if (canUpgrade) {
-            actEl.innerHTML += `<button onclick="upgradeControl(${tileIdx}, ${upgradeCost})" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-4 py-2 rounded-xl text-sm">⬆️ 投入 $${upgradeCost} 升級至 Lv.${ownerInfo.level + 1}</button>`;
-          }
-          actEl.innerHTML += `<button onclick="finishTurn()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold px-4 py-2 rounded-xl text-sm">維持現狀並結束回合</button>`;
-        } else {
-          // 對手已建置，支付標竿顧問費
-          const ownerPlayer = players[ownerInfo.ownerIdx];
-          const fee = tile.rent * ownerInfo.level;
-          ctxEl.innerHTML = `
-            <div>🏢 此控制項已由 <strong style="color:${ownerPlayer.color}">${ownerPlayer.name}</strong> 完成建置（Lv.${ownerInfo.level}）。</div>
-            <div>向標竿單位支付跨組織稽核與最佳實務顧問費：<strong class="text-amber-300">$${fee}</strong>（同時吸取經驗，成熟度 +10）。</div>
-          `;
-          actEl.innerHTML = `<button onclick="payBenchmarkFee(${tileIdx}, ${fee})" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-2 rounded-xl text-sm">支付 $${fee} 顧問費</button>`;
-        }
-      }
-
-      modal.classList.remove("hidden");
-      modal.classList.add("flex");
-    }
-
-    function closeModal() {
-      const modal = document.getElementById("eventModal");
-      modal.classList.add("hidden");
-      modal.classList.remove("flex");
-    }
-
-    // =========================================================================
-    // 玩家決策動作處理
-    // =========================================================================
-    function buildControl(tileIdx) {
-      const std = STANDARDS_DATA[currentStandardKey];
-      const tile = std.tiles[tileIdx];
-      const p = players[currentPlayerIdx];
-
-      p.budget -= tile.cost;
-      p.maturity += 30;
-      p.risk = Math.max(0, p.risk - 8);
-      tileOwners[tileIdx] = { ownerIdx: p.id, level: 1 };
-
-      addLog(`✅ ${p.name} 建置了【${tile.code} ${tile.title}】(-$${tile.cost}，成熟度+30，風險-8%)`, "text-emerald-300");
-      closeModal();
-      finishTurn();
-    }
-
-    function upgradeControl(tileIdx, upgradeCost) {
-      const std = STANDARDS_DATA[currentStandardKey];
-      const tile = std.tiles[tileIdx];
-      const p = players[currentPlayerIdx];
-
-      p.budget -= upgradeCost;
-      p.maturity += 20;
-      p.risk = Math.max(0, p.risk - 5);
-      tileOwners[tileIdx].level += 1;
-
-      addLog(`⬆️ ${p.name} 將【${tile.code}】升級至 Lv.${tileOwners[tileIdx].level} (-$${upgradeCost}，成熟度+20)`, "text-sky-300");
-      closeModal();
-      finishTurn();
-    }
-
-    function skipControl(tileIdx) {
-      const std = STANDARDS_DATA[currentStandardKey];
-      const tile = std.tiles[tileIdx];
-      const p = players[currentPlayerIdx];
-
-      p.risk = Math.min(100, p.risk + 5);
-      addLog(`⏭️ ${p.name} 略過【${tile.code} ${tile.title}】，暴露風險上升至 ${p.risk}%`, "text-slate-400");
-      closeModal();
-      finishTurn();
-    }
-
-    function payBenchmarkFee(tileIdx, fee) {
-      const p = players[currentPlayerIdx];
-      const ownerInfo = tileOwners[tileIdx];
-      const ownerPlayer = players[ownerInfo.ownerIdx];
-
-      p.budget -= fee;
-      p.maturity += 10;
-      ownerPlayer.budget += fee;
-
-      addLog(`💸 ${p.name} 向 ${ownerPlayer.name} 支付標竿顧問費 $${fee}（成熟度+10）`, "text-amber-300");
-      closeModal();
-      finishTurn();
-    }
-
-    function applyAuditReward(bonus, matGain) {
-      const p = players[currentPlayerIdx];
-      p.budget += bonus;
-      p.maturity += matGain;
-      p.risk = Math.max(0, p.risk - 5);
-
-      addLog(`🔍 ${p.name} 通過內部／管理審查，獲得預算 +$${bonus}、成熟度 +${matGain}`, "text-emerald-300");
-      closeModal();
-      finishTurn();
-    }
-
-    function applyIncidentImpact(loss, riskAdd) {
-      const p = players[currentPlayerIdx];
-      p.budget -= loss;
-      p.risk = Math.min(100, p.risk + riskAdd);
-
-      addLog(`⚡ ${p.name} 遭遇突發事件應變，支出 -$${loss}，風險上升至 ${p.risk}%`, "text-rose-400");
-      closeModal();
-      finishTurn();
-    }
-
-    // =========================================================================
-    // AI 對手自動決策邏輯
-    // =========================================================================
-    function handleAIDecision(aiPlayer, tileIdx, tile) {
-      setTimeout(() => {
-        if (tile.type === "start") {
-          addLog(`🚩 ${aiPlayer.name} 停留於範圍起點。`, "text-slate-300");
-        } else if (tile.type === "audit") {
-          const bonus = aiPlayer.risk <= 30 ? 250 : 100;
-          const matGain = aiPlayer.risk <= 30 ? 25 : 10;
-          aiPlayer.budget += bonus;
-          aiPlayer.maturity += matGain;
-          aiPlayer.risk = Math.max(0, aiPlayer.risk - 5);
-          addLog(`🔍 ${aiPlayer.name} 完成稽核審查，獲得 +$${bonus}、成熟度 +${matGain}。`, "text-emerald-300");
-        } else if (tile.type === "incident") {
-          const mitigated = aiPlayer.maturity >= 160;
-          const loss = mitigated ? 100 : 250;
-          const riskAdd = mitigated ? 8 : 18;
-          aiPlayer.budget -= loss;
-          aiPlayer.risk = Math.min(100, aiPlayer.risk + riskAdd);
-          addLog(`⚡ ${aiPlayer.name} 處理突發事件，支出 -$${loss}，風險 ${aiPlayer.risk}%。`, "text-rose-400");
-        } else if (tile.type === "control") {
-          const ownerInfo = tileOwners[tileIdx];
-          if (ownerInfo === undefined) {
-            if (aiPlayer.budget >= tile.cost + 200) {
-              aiPlayer.budget -= tile.cost;
-              aiPlayer.maturity += 30;
-              aiPlayer.risk = Math.max(0, aiPlayer.risk - 8);
-              tileOwners[tileIdx] = { ownerIdx: aiPlayer.id, level: 1 };
-              addLog(`🤖 ${aiPlayer.name} 建置了【${tile.code} ${tile.title}】(-$${tile.cost})`, "text-rose-300");
-            } else {
-              aiPlayer.risk = Math.min(100, aiPlayer.risk + 5);
-              addLog(`🤖 ${aiPlayer.name} 保留預算，暫不建置【${tile.code}】`, "text-slate-400");
-            }
-          } else if (ownerInfo.ownerIdx === aiPlayer.id) {
-            const upCost = Math.round(tile.cost * 0.7);
-            if (ownerInfo.level < 3 && aiPlayer.budget >= upCost + 300) {
-              aiPlayer.budget -= upCost;
-              aiPlayer.maturity += 20;
-              tileOwners[tileIdx].level += 1;
-              addLog(`🤖 ${aiPlayer.name} 升級【${tile.code}】至 Lv.${tileOwners[tileIdx].level}`, "text-rose-300");
-            }
-          } else {
-            const ownerPlayer = players[ownerInfo.ownerIdx];
-            const fee = tile.rent * ownerInfo.level;
-            aiPlayer.budget -= fee;
-            aiPlayer.maturity += 10;
-            ownerPlayer.budget += fee;
-            addLog(`💸 ${aiPlayer.name} 向 ${ownerPlayer.name} 支付顧問費 $${fee}`, "text-amber-300");
-          }
-        }
-        finishTurn();
-      }, 650);
-    }
-
-    // =========================================================================
-    // 回合切換與勝負判定
-    // =========================================================================
-    function finishTurn() {
-      closeModal();
-
-      // 檢查勝負條件
-      for (const p of players) {
-        if (p.maturity >= 250) {
-          renderAll();
-          setTimeout(() => {
-            alert(`🏆 恭喜！${p.name} 達成治理成熟度 ${p.maturity} 分，成功通過第三方驗證並贏得本局！`);
-            resetGame();
-          }, 150);
-          return;
-        }
-        if (p.budget < 0 || p.risk >= 100) {
-          renderAll();
-          const reason = p.budget < 0 ? "治理預算耗盡破產" : "組織暴露風險達到 100% 失控";
-          setTimeout(() => {
-            alert(`💥 遊戲結束！${p.name} 因「${reason}」未能通過治理考驗。`);
-            resetGame();
-          }, 150);
-          return;
-        }
-      }
-
-      // 換下一位玩家
-      currentPlayerIdx = (currentPlayerIdx + 1) % players.length;
-      if (currentPlayerIdx === 0) {
-        turnCount += 1;
-      }
-
-      renderAll();
-
-      // 若下一位是 AI，自動擲骰
-      const nextPlayer = players[currentPlayerIdx];
-      if (nextPlayer && nextPlayer.isAI) {
-        setTimeout(() => {
-          handleRollDice();
-        }, 700);
-      }
-    }
-
-    // =========================================================================
-    // 24項控制項與事故案例總覽視窗
-    // =========================================================================
-    function openCatalogModal() {
-      const std = STANDARDS_DATA[currentStandardKey];
-      document.getElementById("catalogTitle").textContent = `📚 ${std.name} — 24 格條文目的與真實事件案例總覽`;
-      const body = document.getElementById("catalogBody");
-      body.innerHTML = "";
-
-      std.tiles.forEach((tile, idx) => {
-        const isAnnex = tile.clauseType.startsWith("附錄");
-        const badgeClass = isAnnex
-          ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
-          : "bg-sky-500/20 text-sky-300 border border-sky-500/40";
-
-        const card = document.createElement("div");
-        card.className = "bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 space-y-2";
-        card.innerHTML = `
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="text-xs font-mono text-slate-400">#${idx + 1}</span>
-              <span class="text-xs font-black px-2 py-0.5 rounded ${badgeClass}">${tile.clauseType}</span>
-              <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">${tile.domainLabel}</span>
-              <span class="text-sm font-black text-white">${tile.code} ${tile.title}</span>
-            </div>
-            ${tile.type === "control" ? `<span class="text-xs font-mono text-amber-400">建置成本 $${tile.cost}</span>` : `<span class="text-xs text-slate-400">治理事件格</span>`}
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs">
-            <div class="bg-slate-900/90 border border-sky-500/25 rounded-lg p-2.5">
-              <div class="font-bold text-sky-300 mb-1">📌 條文／控制項目的</div>
-              <p class="text-slate-300 leading-relaxed">${tile.purpose}</p>
-            </div>
-            <div class="bg-rose-950/30 border border-rose-500/25 rounded-lg p-2.5">
-              <div class="font-bold text-rose-300 mb-1">🚨 未遵守之真實事件案例</div>
-              <p class="text-rose-100/85 leading-relaxed">${tile.incident}</p>
-            </div>
-          </div>
-        `;
-        body.appendChild(card);
-      });
-
-      const modal = document.getElementById("catalogModal");
-      modal.classList.remove("hidden");
-      modal.classList.add("flex");
-    }
-
-    function closeCatalogModal() {
-      const modal = document.getElementById("catalogModal");
-      modal.classList.add("hidden");
-      modal.classList.remove("flex");
-    }
-
-    // =========================================================================
-    // 日誌工具
-    // =========================================================================
-    function addLog(msg, colorClass = "text-slate-300") {
-      const logBox = document.getElementById("gameLog");
-      const entry = document.createElement("div");
-      entry.className = `border-b border-slate-800/70 pb-1 ${colorClass}`;
-      entry.textContent = msg;
-      logBox.prepend(entry);
-    }
-
-    function clearLogs() {
-      document.getElementById("gameLog").innerHTML = "";
-    }
-
-    // 初始化啟動
-    window.addEventListener("DOMContentLoaded", () => {
-      resetGame();
-    });
-  </script>
+  }
+  toggleModal("eventModal",1);
+}
+function buildCtrl(idx){
+  const t=getStd()[4][idx];
+  if(!player.isC)player.budget-=t[5];
+  player.maturity+=30;player.risk=Math.max(0,player.risk-8);built[idx]=1;
+  addLog(`✅ ${player.name} ${player.isC?"輔導導入":"建置"}了【${t[1]} ${t[4]}】(${player.isC?"顧問版免扣預算":"-$"+t[5]}，成熟度+30，風險-8%)`,"text-emerald-300");
+  finishTurn();
+}
+function upgradeCtrl(idx,upCost){
+  const t=getStd()[4][idx];
+  if(!player.isC)player.budget-=upCost;
+  player.maturity+=20;player.risk=Math.max(0,player.risk-5);built[idx]+=1;
+  addLog(`⬆️ ${player.name} 將【${t[1]}】升級至 Lv.${built[idx]} (${player.isC?"顧問強化":"-$"+upCost}，成熟度+20)`,"text-sky-300");
+  finishTurn();
+}
+function skipCtrl(idx){
+  const t=getStd()[4][idx];
+  player.risk=Math.min(100,player.risk+5);
+  addLog(`⏭️ ${player.name} 略過【${t[1]} ${t[4]}】，暴露風險上升至 ${player.risk}%`,"text-slate-400");
+  finishTurn();
+}
+function applyAudit(bonus,mat){
+  if(!player.isC)player.budget+=bonus;
+  player.maturity+=mat;player.risk=Math.max(0,player.risk-5);
+  addLog(`🔍 ${player.name} 通過內部／管理審查，${player.isC?`成熟度 +${mat}`:`預算 +$${bonus}、成熟度 +${mat}`}`,"text-emerald-300");
+  finishTurn();
+}
+function applyIncident(loss,rAdd){
+  if(!player.isC)player.budget-=loss;
+  player.risk=Math.min(100,player.risk+rAdd);
+  addLog(`⚡ ${player.name} 遭遇突發事件應變，${player.isC?"":"支出 -$"+loss+"，"}風險上升至 ${player.risk}%`,"text-rose-400");
+  finishTurn();
+}
+function finishTurn(){
+  toggleModal("eventModal",0);
+  if(player.maturity>=250){
+    renderAll();
+    setTimeout(()=>{alert(`🏆 恭喜！${player.name} 達成治理成熟度 ${player.maturity} 分，成功通過第三方驗證！`);resetGame();},150);
+    return;
+  }
+  if(!player.isC&&(player.budget<0||player.risk>=100)){
+    renderAll();
+    const r=player.budget<0?"治理預算耗盡破產":"組織暴露風險達到 100% 失控";
+    setTimeout(()=>{alert(`💥 遊戲結束！${player.name} 因「${r}」未能通過治理考驗。`);resetGame();},150);
+    return;
+  }
+  turn+=1;renderAll();
+}
+function openCatalogModal(){
+  const s=getStd();
+  $("catalogTitle").textContent=`📚 ${s[0]} — 24 格條文目的與真實事件案例總覽`;
+  $("catalogBody").innerHTML=s[4].map((t,i)=>{
+    const ct=getClauseType(t[1]);
+    return `<div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 space-y-2"><div class="flex flex-wrap items-center justify-between gap-2"><div class="flex items-center gap-2 flex-wrap"><span class="text-xs font-mono text-slate-400">#${i+1}</span><span class="text-xs font-black px-2 py-0.5 rounded ${badgeCls(ct)}">${ct}</span><span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300">${DB.L[t[3]]}</span><span class="text-sm font-black text-white">${t[1]} ${t[4]}</span></div>${t[0]===0?`<span class="text-xs font-mono text-amber-400">建置成本 $${t[5]}</span>`:`<span class="text-xs text-slate-400">治理事件格</span>`}</div><div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs"><div class="bg-slate-900/90 border border-sky-500/25 rounded-lg p-2.5"><div class="font-bold text-sky-300 mb-1">📌 條文／控制項目的</div><p class="text-slate-300 leading-relaxed">${t[6]}</p></div><div class="bg-rose-950/30 border border-rose-500/25 rounded-lg p-2.5"><div class="font-bold text-rose-300 mb-1">🚨 未遵守之真實事件案例</div><p class="text-rose-100/85 leading-relaxed">${t[7]}</p></div></div></div>`;
+  }).join("");
+  toggleModal("catalogModal",1);
+}
+function addLog(msg,cls="text-slate-300"){
+  const d=document.createElement("div");d.className=`border-b border-slate-800/70 pb-1 ${cls}`;d.textContent=msg;$("gameLog").prepend(d);
+}
+function clearLogs(){$("gameLog").innerHTML="";}
+window.addEventListener("DOMContentLoaded",resetGame);
+</script>
 </body>
 </html>
