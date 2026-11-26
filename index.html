@@ -3,13 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>治理與稽核大富翁 v5.0 (ISO 27001 / ISO 27701 / ISO 20000 單機版)</title>
+  <title>治理與稽核大富翁 v7.0 五大標準旗艦版 (ISO 27001 / 27701 / 20000 / 22301 / 42001)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
     body {
       font-family: 'Noto Sans TC', sans-serif;
-      background-color: #0f172a;
+      background-color: #070d19;
+      background-image:
+        radial-gradient(circle at 15% 20%, rgba(14, 165, 233, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+        linear-gradient(rgba(30, 41, 59, 0.28) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30, 41, 59, 0.28) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 28px 28px, 28px 28px;
       color: #f8fafc;
       user-select: none;
     }
@@ -17,45 +23,76 @@
       display: grid;
       grid-template-columns: repeat(10, minmax(0, 1fr));
       grid-template-rows: repeat(10, minmax(0, 1fr));
-      gap: 4px;
+      gap: 5px;
       aspect-ratio: 1 / 1;
-      max-width: 920px;
+      max-width: 940px;
       margin: 0 auto;
     }
     .tile {
       position: relative;
-      border-radius: 8px;
-      padding: 4px;
+      border-radius: 10px;
+      padding: 5px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-      border: 1px solid rgba(255,255,255,0.12);
+      transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.18s ease, border-color 0.18s ease;
+      border: 1px solid rgba(255,255,255,0.13);
       overflow: hidden;
     }
     .tile:hover {
-      transform: scale(1.06);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.65);
-      z-index: 20;
+      transform: scale(1.08) translateY(-2px);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.75), 0 0 12px rgba(56, 189, 248, 0.35);
+      z-index: 25;
     }
     .tile-active {
-      box-shadow: 0 0 0 2.5px #38bdf8, 0 0 16px rgba(56, 189, 248, 0.75);
+      box-shadow: 0 0 0 2.5px #38bdf8, 0 0 22px rgba(56, 189, 248, 0.85);
       z-index: 15;
+    }
+    .tile-watermark {
+      position: absolute;
+      right: -4px;
+      bottom: -6px;
+      font-size: 34px;
+      opacity: 0.11;
+      pointer-events: none;
+      transform: rotate(-12deg);
+      line-height: 1;
     }
     .center-hub {
       grid-column: 2 / 10;
       grid-row: 2 / 10;
-      background: radial-gradient(circle at top, #1e293b 0%, #0b1120 100%);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      border-radius: 16px;
+      background:
+        radial-gradient(circle at 50% 15%, rgba(56, 189, 248, 0.16) 0%, transparent 55%),
+        radial-gradient(circle at bottom, #0f172a 0%, #070d19 100%);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      border-radius: 18px;
       padding: 16px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      position: relative;
+      overflow: hidden;
     }
-    .token-p0 { background: linear-gradient(135deg, #0ea5e9, #2563eb); box-shadow: 0 2px 6px rgba(14,165,233,0.7); }
-    .token-p1 { background: linear-gradient(135deg, #f59e0b, #ea580c); box-shadow: 0 2px 6px rgba(245,158,11,0.7); }
-    .token-p2 { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 2px 6px rgba(16,185,129,0.7); }
+    .token-p0 { background: linear-gradient(135deg, #0ea5e9, #2563eb); box-shadow: 0 3px 10px rgba(14,165,233,0.85); }
+    .token-p1 { background: linear-gradient(135deg, #f59e0b, #ea580c); box-shadow: 0 3px 10px rgba(245,158,11,0.85); }
+    .token-p2 { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 3px 10px rgba(16,185,129,0.85); }
+    @keyframes tokenBounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-4px) scale(1.12); }
+    }
+    .token-bounce {
+      animation: tokenBounce 1.1s infinite ease-in-out;
+    }
+    @keyframes diceShake {
+      0% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-14deg) scale(1.1); }
+      50% { transform: rotate(12deg) scale(1.15); }
+      75% { transform: rotate(-8deg) scale(1.08); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+    .dice-rolling {
+      animation: diceShake 0.35s infinite ease-in-out;
+    }
     .scrollbar-thin::-webkit-scrollbar { width: 5px; }
     .scrollbar-thin::-webkit-scrollbar-thumb { background: #334155; border-radius: 999px; }
   </style>
@@ -64,88 +101,169 @@
 
   <!-- 頂部導覽列 -->
   <header class="bg-slate-900/90 border-b border-slate-800 px-4 py-3 sticky top-0 z-30 backdrop-blur">
-    <div class="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-3">
+    <div class="max-w-[1460px] mx-auto flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-3">
-        <div id="header-icon" class="w-10 h-10 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-xl">
+        <div id="header-icon" class="w-11 h-11 rounded-xl bg-gradient-to-br from-sky-500/30 to-blue-600/20 border border-sky-400/50 flex items-center justify-center text-2xl shadow-lg shadow-sky-950/50">
           🛡️
         </div>
         <div>
           <div class="flex items-center gap-2 flex-wrap">
             <h1 id="header-title" class="text-lg md:text-xl font-black tracking-wide text-sky-300">
-              治理與稽核大富翁 v5.0
+              治理與稽核大富翁 v7.0 五大標準旗艦版
             </h1>
             <span id="std-pill" class="hidden text-[11px] px-2.5 py-0.5 rounded-full font-bold"></span>
             <span id="mode-pill" class="hidden text-[11px] px-2.5 py-0.5 rounded-full font-bold"></span>
           </div>
-          <p id="header-subtitle" class="text-xs text-slate-400">支援 ISO/IEC 27001 資安、ISO/IEC 27701 個資隱私、ISO/IEC 20000-1 IT 服務管理（單機獨立版）</p>
+          <p id="header-subtitle" class="text-xs text-slate-400">ISO 27001 資安｜ISO 27701 個資｜ISO 20000 IT服務｜ISO 22301 營運持續｜ISO 42001 AI治理（各自獨立遊戲）</p>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
-        <button onclick="openSoAModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs md:text-sm font-medium text-sky-300 transition flex items-center gap-1.5">
+        <button onclick="openSoAModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs md:text-sm font-medium text-sky-300 transition flex items-center gap-1.5 shadow">
           <span>📋</span> <span id="soa-btn-text">控制項清單 (24項)</span>
         </button>
-        <button onclick="resetToMenu()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-rose-950/70 border border-slate-700 hover:border-rose-700 text-xs md:text-sm font-medium text-slate-300 hover:text-rose-200 transition">
-          切換標準 / 模式
+        <button onclick="resetToMenu()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-rose-950/70 border border-slate-700 hover:border-rose-700 text-xs md:text-sm font-medium text-slate-300 hover:text-rose-200 transition shadow">
+          🔄 切換標準 / 模式
         </button>
       </div>
     </div>
   </header>
 
-  <!-- 開場大廳（純單機版：第一步選標準，第二步選模式與回合） -->
+  <!-- 開場大廳（加入豐富 SVG 徽章與插畫視覺） -->
   <div id="start-screen" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-    <div class="max-w-5xl w-full bg-slate-900 border border-slate-700/80 rounded-2xl p-6 md:p-8 shadow-2xl my-auto">
+    <div class="max-w-5xl w-full bg-slate-900/95 border border-slate-700/80 rounded-2xl p-6 md:p-8 shadow-2xl my-auto relative overflow-hidden">
+      <!-- 背景裝飾 SVG 光環 -->
+      <svg class="absolute -right-16 -top-16 w-72 h-72 opacity-10 pointer-events-none text-sky-400" viewBox="0 0 200 200" fill="none">
+        <circle cx="100" cy="100" r="85" stroke="currentColor" stroke-width="2" stroke-dasharray="8 6"/>
+        <circle cx="100" cy="100" r="62" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M100 20 L165 55 V110 C165 150 100 180 100 180 C100 180 35 150 35 110 V55 Z" stroke="currentColor" stroke-width="3"/>
+      </svg>
+
       <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/15 border border-sky-400/30 text-sky-300 text-xs font-bold">
-          <span>🎯 多標準管理系統實戰模擬 v5.0｜單機免連線版</span>
+          <span>🎨 視覺圖形強化版 v6.0｜SVG 場景插畫 × 3D 骰子 × 雷達圖</span>
         </div>
-        <span class="text-xs text-slate-400">每次選定一種國際標準，完整體驗 36 格專屬棋盤、事件與稽核情境</span>
+        <span class="text-xs text-slate-400">每次選定一種國際標準，完整體驗 36 格圖形化棋盤與職場情境</span>
       </div>
 
       <h2 class="text-2xl md:text-3xl font-black text-white mb-2">
         請選擇本次要挑戰的國際標準
       </h2>
       <p class="text-slate-300 text-sm leading-relaxed mb-5">
-        每種標準均具備專屬的 <strong>24 項核心控制／流程條款</strong>、<strong>8 大職場突發危機情境</strong>、<strong>客戶抗拒金句</strong>與<strong>稽核檢核邏輯</strong>，可自由切換「企業內部角色」或「資安／管理顧問」視角。
+        每種標準均配有專屬<strong>向量主題插畫</strong>、<strong>建築等級視覺化進度</strong>、<strong>24 項核心條款</strong>與<strong>8 大突發危機情境圖卡</strong>。
       </p>
 
-      <!-- 步驟一：選擇管理標準（三選一） -->
+      <!-- 步驟一：選擇管理標準（附專屬 SVG 徽章插畫） -->
       <div class="mb-5">
         <div class="text-xs font-bold text-slate-300 mb-2.5 flex items-center gap-2">
           <span class="px-2 py-0.5 rounded bg-sky-500/20 text-sky-300">步驟 1</span>
           <span>選擇管理系統標準（每次遊玩其中一種）：</span>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3" id="standard-selector">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="standard-selector">
+          <!-- ISO 27001 -->
           <button type="button" onclick="selectStandard('27001')" data-std="27001"
-            class="std-card text-left p-4 rounded-xl border-2 border-sky-400 bg-sky-950/40 transition">
-            <div class="flex items-center justify-between mb-1">
-              <span class="font-black text-base text-white">🛡️ ISO/IEC 27001</span>
-              <span class="text-[10px] px-2 py-0.5 rounded bg-sky-500/25 text-sky-300 font-bold">ISMS 資安</span>
+            class="std-card text-left p-3.5 rounded-xl border-2 border-sky-400 bg-sky-950/40 transition flex flex-col justify-between gap-2.5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-11 h-11 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center shrink-0">
+                <svg class="w-7 h-7 text-sky-300" viewBox="0 0 64 64" fill="none">
+                  <path d="M32 6L52 14V30C52 44 32 56 32 56C32 56 12 44 12 30V14L32 6Z" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="3"/>
+                  <rect x="24" y="28" width="16" height="13" rx="2.5" stroke="currentColor" stroke-width="2.5"/>
+                  <path d="M27 28V23C27 20.2 29.2 18 32 18C34.8 18 37 20.2 37 23V28" stroke="currentColor" stroke-width="2.5"/>
+                  <circle cx="32" cy="34.5" r="2" fill="currentColor"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-black text-sm text-white">ISO/IEC 27001</div>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-sky-500/25 text-sky-300 font-bold">ISMS 資訊安全</span>
+              </div>
             </div>
-            <p class="text-xs text-slate-300 leading-relaxed">
-              涵蓋 A.5 組織、A.6 人員、A.7 實體、A.8 技術四大領域；防範釣魚郵件、勒索軟體、離職竊密與雲端誤開。
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              A.5 組織、A.6 人員、A.7 實體、A.8 技術四大防線；抵禦釣魚郵件、勒索軟體、離職竊密與雲端誤開。
             </p>
           </button>
 
+          <!-- ISO 27701 -->
           <button type="button" onclick="selectStandard('27701')" data-std="27701"
-            class="std-card text-left p-4 rounded-xl border border-slate-700 bg-slate-950/60 hover:border-teal-400/60 transition">
-            <div class="flex items-center justify-between mb-1">
-              <span class="font-black text-base text-white">🔏 ISO/IEC 27701</span>
-              <span class="text-[10px] px-2 py-0.5 rounded bg-teal-500/20 text-teal-300 font-bold">PIMS 隱私個資</span>
+            class="std-card text-left p-3.5 rounded-xl border border-slate-700 bg-slate-950/60 hover:border-teal-400/60 transition flex flex-col justify-between gap-2.5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-11 h-11 rounded-xl bg-teal-500/20 border border-teal-400/40 flex items-center justify-center shrink-0">
+                <svg class="w-7 h-7 text-teal-300" viewBox="0 0 64 64" fill="none">
+                  <circle cx="26" cy="22" r="8" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="2.5"/>
+                  <path d="M12 46C12 38.5 18 34 26 34C31 34 35 36 37.5 39" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                  <path d="M46 28L56 32V41C56 48 46 54 46 54C46 54 36 48 36 41V32L46 28Z" fill="currentColor" fill-opacity="0.25" stroke="currentColor" stroke-width="2.5"/>
+                  <path d="M42 41L45 44L51 38" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-black text-sm text-white">ISO/IEC 27701</div>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-teal-500/20 text-teal-300 font-bold">PIMS 個資隱私</span>
+              </div>
             </div>
-            <p class="text-xs text-slate-300 leading-relaxed">
-              聚焦控制者 (PII Controller) 與處理者 (PII Processor) 義務：合法性基礎、當事人權利 (DSAR)、跨境傳輸與個資外洩通報。
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              聚焦控制者與處理者義務：合法性基礎、當事人權利 (DSAR)、去識別化、跨境傳輸與 72H 個資外洩通報。
             </p>
           </button>
 
+          <!-- ISO 20000-1 -->
           <button type="button" onclick="selectStandard('20000')" data-std="20000"
-            class="std-card text-left p-4 rounded-xl border border-slate-700 bg-slate-950/60 hover:border-amber-400/60 transition">
-            <div class="flex items-center justify-between mb-1">
-              <span class="font-black text-base text-white">⚙️ ISO/IEC 20000-1</span>
-              <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">ITSM 服務管理</span>
+            class="std-card text-left p-3.5 rounded-xl border border-slate-700 bg-slate-950/60 hover:border-amber-400/60 transition flex flex-col justify-between gap-2.5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-11 h-11 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center shrink-0">
+                <svg class="w-7 h-7 text-amber-300" viewBox="0 0 64 64" fill="none">
+                  <circle cx="32" cy="32" r="10" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="2.5"/>
+                  <path d="M32 10V16M32 48V54M10 32H16M48 32H54M16.5 16.5L20.8 20.8M43.2 43.2L47.5 47.5M47.5 16.5L43.2 20.8M20.8 43.2L16.5 47.5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M28 32L31 35L37 29" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-black text-sm text-white">ISO/IEC 20000-1</div>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">ITSM 服務管理</span>
+              </div>
             </div>
-            <p class="text-xs text-slate-300 leading-relaxed">
-              涵蓋 SLA 服務水準、事件與問題管理、變更管理 (CAB)、組態管理 (CMDB) 與服務可用性／連續性，防範未經授權變更癱瘓產線。
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              涵蓋 SLA 服務水準、事件與問題管理、變更管理 (CAB)、CMDB 組態與服務連續性，防範未授權改版癱瘓。
+            </p>
+          </button>
+
+          <!-- ISO 22301 -->
+          <button type="button" onclick="selectStandard('22301')" data-std="22301"
+            class="std-card text-left p-3.5 rounded-xl border border-slate-700 bg-slate-950/60 hover:border-orange-400/60 transition flex flex-col justify-between gap-2.5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-11 h-11 rounded-xl bg-orange-500/20 border border-orange-400/40 flex items-center justify-center shrink-0">
+                <svg class="w-7 h-7 text-orange-300" viewBox="0 0 64 64" fill="none">
+                  <path d="M32 12C21 12 12 21 12 32C12 43 21 52 32 52C40.5 52 47.8 46.6 50.7 39" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+                  <polygon points="32,6 41,13 32,20" fill="currentColor"/>
+                  <path d="M33 23L25 34H32L30 43L40 31H33L33 23Z" fill="currentColor" fill-opacity="0.3" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-black text-sm text-white">ISO 22301</div>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-orange-500/20 text-orange-300 font-bold">BCMS 營運持續</span>
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              涵蓋 BIA 營運衝擊分析、RTO/RPO 設定、異地備援切換、危機溝通與緊急應變演練，抵禦地震跳電與供應鏈斷鏈。
+            </p>
+          </button>
+
+          <!-- ISO/IEC 42001 -->
+          <button type="button" onclick="selectStandard('42001')" data-std="42001"
+            class="std-card text-left p-3.5 rounded-xl border border-slate-700 bg-slate-950/60 hover:border-violet-400/60 transition flex flex-col justify-between gap-2.5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-11 h-11 rounded-xl bg-violet-500/20 border border-violet-400/40 flex items-center justify-center shrink-0">
+                <svg class="w-7 h-7 text-violet-300" viewBox="0 0 64 64" fill="none">
+                  <rect x="18" y="18" width="28" height="28" rx="6" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="2.5"/>
+                  <circle cx="32" cy="32" r="6" stroke="currentColor" stroke-width="2.5"/>
+                  <path d="M24 10V18M32 10V18M40 10V18M24 46V54M32 46V54M40 46V54M10 24H18M10 32H18M10 40H18M46 24H54M46 32H54M46 40H54" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-black text-sm text-white">ISO/IEC 42001</div>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-violet-500/20 text-violet-300 font-bold">AIMS 人工智慧治理</span>
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-300 leading-relaxed">
+              聚焦 AI 系統衝擊評估 (AIIA)、訓練資料品質、演算法偏見監控、人類監督 (HITL) 與生成式 AI 機密防外洩。
             </p>
           </button>
         </div>
@@ -170,84 +288,99 @@
         </div>
       </div>
 
-      <!-- 步驟三：遊玩視角（直接開局） -->
+      <!-- 步驟三：遊玩視角（附角色頭像插畫） -->
       <div class="mb-2 text-xs font-bold text-slate-300 flex items-center gap-2">
         <span class="px-2 py-0.5 rounded bg-sky-500/20 text-sky-300">步驟 3</span>
         <span>選擇遊玩角色並開始遊戲：</span>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-        <button onclick="startGame(1)" class="text-left p-4 rounded-xl bg-gradient-to-br from-sky-900/50 to-slate-800 hover:from-sky-800/60 border border-sky-500/40 transition">
-          <div class="flex items-center justify-between mb-1">
-            <span class="font-bold text-sm text-white">🧑‍💼 單人企業治理戰</span>
-            <span class="text-[10px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 font-bold">主管視角</span>
+        <button onclick="startGame(1)" class="text-left p-4 rounded-xl bg-gradient-to-br from-sky-900/50 to-slate-800 hover:from-sky-800/60 border border-sky-500/40 transition flex items-start gap-3">
+          <div class="w-11 h-11 rounded-full bg-sky-500/20 border border-sky-400/50 flex items-center justify-center text-2xl shrink-0">🧑‍💼</div>
+          <div>
+            <div class="flex items-center gap-1.5 mb-1">
+              <span class="font-bold text-sm text-white">單人企業治理戰</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 font-bold">主管視角</span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              統籌內部預算與團隊資源，在 36 格地圖逐步建置並升級 24 項防線。
+            </p>
           </div>
-          <p class="text-xs text-slate-400 leading-relaxed">
-            統籌企業內部預算與團隊資源，在 36 格地圖逐步建置並升級 24 項制度與控制措施。
-          </p>
         </button>
 
-        <button onclick="startGame(2)" class="text-left p-4 rounded-xl bg-gradient-to-br from-amber-900/40 to-slate-800 hover:from-amber-800/50 border border-amber-500/40 transition">
-          <div class="flex items-center justify-between mb-1">
-            <span class="font-bold text-sm text-white">⚔️ 雙人同機對抗賽</span>
-            <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">本機輪流</span>
+        <button onclick="startGame(2)" class="text-left p-4 rounded-xl bg-gradient-to-br from-amber-900/40 to-slate-800 hover:from-amber-800/50 border border-amber-500/40 transition flex items-start gap-3">
+          <div class="w-11 h-11 rounded-full bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-2xl shrink-0">⚔️</div>
+          <div>
+            <div class="flex items-center gap-1.5 mb-1">
+              <span class="font-bold text-sm text-white">雙人同機對抗賽</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">本機輪流</span>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              同一台電腦輪流擲骰，比拼誰在資源有限下建立更穩固的制度堡壘。
+            </p>
           </div>
-          <p class="text-xs text-slate-400 leading-relaxed">
-            同一台電腦輪流擲骰，比拼誰在資源有限下建立更穩固的管理防線與稽核績效。
-          </p>
         </button>
 
-        <button onclick="startGame(3)" class="text-left p-4 rounded-xl bg-gradient-to-br from-emerald-900/50 to-slate-800 hover:from-emerald-800/60 border border-emerald-500/40 transition">
-          <div class="flex items-center justify-between mb-1">
-            <span class="font-bold text-sm text-white">💼 外部顧問生存戰</span>
-            <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">顧問視角</span>
+        <button onclick="startGame(3)" class="text-left p-4 rounded-xl bg-gradient-to-br from-emerald-900/50 to-slate-800 hover:from-emerald-800/60 border border-emerald-500/40 transition flex items-start gap-3">
+          <div class="w-11 h-11 rounded-full bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-2xl shrink-0">💼</div>
+          <div>
+            <div class="flex items-center gap-1.5 mb-1">
+              <span class="font-bold text-sm text-white">外部顧問生存戰</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">顧問視角</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              控管顧問人天與客戶配合意願！破解「只抄範本交差」的職場修羅場。
+            </p>
           </div>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            控管顧問人天與客戶配合意願！客戶常只想「抄範本交差」，遇稽核或事故才見真章。
-          </p>
         </button>
       </div>
     </div>
   </div>
 
   <!-- 主遊戲區 -->
-  <main class="flex-1 max-w-[1440px] w-full mx-auto p-3 md:p-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+  <main class="flex-1 max-w-[1460px] w-full mx-auto p-3 md:p-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
     
     <!-- 左側：10x10 棋盤區 -->
     <div class="lg:col-span-8 w-full">
       <div id="board" class="board-grid"></div>
     </div>
 
-    <!-- 右側：狀態面板與戰況紀錄 -->
+    <!-- 右側：狀態面板、圖形化雷達與戰況紀錄 -->
     <div class="lg:col-span-4 space-y-4">
       <div id="players-panel" class="space-y-3"></div>
 
-      <!-- 四大控制領域覆蓋率 -->
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
-        <div class="flex items-center justify-between mb-3">
-          <h3 id="maturity-title" class="text-sm font-bold text-slate-200">📊 管理成熟度總覽</h3>
+      <!-- 四大控制領域圖形化雷達與進度條 -->
+      <div class="bg-slate-900/95 border border-slate-800 rounded-xl p-4">
+        <div class="flex items-center justify-between mb-2">
+          <h3 id="maturity-title" class="text-sm font-bold text-slate-200">📊 管理成熟度雷達圖</h3>
           <span id="overall-maturity" class="text-xs font-bold text-sky-400">0%</span>
         </div>
-        <div class="space-y-2.5 text-xs" id="domain-bars"></div>
+        <div class="grid grid-cols-12 gap-2 items-center">
+          <div class="col-span-5 flex items-center justify-center" id="radar-box"></div>
+          <div class="col-span-7 space-y-2.5 text-xs" id="domain-bars"></div>
+        </div>
       </div>
 
       <!-- 事件日誌 -->
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+      <div class="bg-slate-900/95 border border-slate-800 rounded-xl p-4">
         <div class="flex items-center justify-between mb-2">
           <h3 id="log-title" class="text-sm font-bold text-slate-200">📜 戰情室即時紀錄</h3>
           <span class="text-[11px] text-slate-500">完整軌跡</span>
         </div>
-        <div id="game-log" class="h-64 overflow-y-auto scrollbar-thin space-y-2 text-xs pr-1"></div>
+        <div id="game-log" class="h-60 overflow-y-auto scrollbar-thin space-y-2 text-xs pr-1"></div>
       </div>
     </div>
   </main>
 
-  <!-- 互動決策彈窗 -->
+  <!-- 互動決策彈窗（含情境大型 SVG 插畫橫幅） -->
   <div id="action-modal" class="fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="max-w-lg w-full bg-slate-900 border border-slate-700 rounded-2xl p-6 shadow-2xl transform transition-all max-h-[90vh] overflow-y-auto">
-      <div id="modal-badge" class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold mb-2"></div>
-      <h3 id="modal-title" class="text-xl font-black text-white mb-2"></h3>
-      <div id="modal-body" class="text-sm text-slate-300 leading-relaxed mb-5 space-y-3"></div>
-      <div id="modal-actions" class="flex flex-col gap-2.5"></div>
+    <div class="max-w-lg w-full bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden shadow-2xl transform transition-all max-h-[92vh] flex flex-col">
+      <div id="modal-banner-art" class="w-full"></div>
+      <div class="p-6 overflow-y-auto">
+        <div id="modal-badge" class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold mb-2"></div>
+        <h3 id="modal-title" class="text-xl font-black text-white mb-2"></h3>
+        <div id="modal-body" class="text-sm text-slate-300 leading-relaxed mb-5 space-y-3"></div>
+        <div id="modal-actions" class="flex flex-col gap-2.5"></div>
+      </div>
     </div>
   </div>
 
@@ -257,7 +390,7 @@
       <div class="flex items-center justify-between pb-3 border-b border-slate-800">
         <div>
           <h3 id="soa-modal-title" class="text-lg font-black text-sky-300">📋 控制項與條款總覽（共 24 項）</h3>
-          <p id="soa-modal-sub" class="text-xs text-slate-400">查看各項目目前部署等級與可抵禦的營運／稽核風險</p>
+          <p id="soa-modal-sub" class="text-xs text-slate-400">查看各項目目前部署等級、建築星級與可抵禦的營運／稽核風險</p>
         </div>
         <button onclick="closeSoAModal()" class="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm">關閉</button>
       </div>
@@ -273,7 +406,6 @@
       [9,1],[8,1],[7,1],[6,1],[5,1],[4,1],[3,1],[2,1]
     ];
 
-    // ==================== 三大標準資料庫 ====================
     const STANDARDS_DB = {
       '27001': {
         code: 'ISO/IEC 27001',
@@ -483,8 +615,150 @@
           30: [16, 24, 31, 15],
           34: [31, 33, 32]
         }
+      },
+
+      '22301': {
+        code: 'ISO 22301',
+        shortName: 'ISO 22301 營運持續',
+        icon: '🔄',
+        pillClass: 'bg-orange-500/20 text-orange-300 border border-orange-500/40',
+        soaTitle: '📋 ISO 22301 營運持續管理 (BCMS) 條款與措施總覽（共 24 項）',
+        p1Role: 'BCMS 營運持續長',
+        p2Role: '廠務與災難復原主管',
+        domains: {
+          d1: { name: 'BCMS 治理與組織背景', bar: 'bg-orange-500',  badge: 'bg-orange-500/20 text-orange-300 border-orange-500/40' },
+          d2: { name: 'BIA 衝擊與風險評估',  bar: 'bg-amber-500',   badge: 'bg-amber-500/20 text-amber-300 border-amber-500/40' },
+          d3: { name: '持續策略與應變計畫',  bar: 'bg-sky-500',     badge: 'bg-sky-500/20 text-sky-300 border-sky-500/40' },
+          d4: { name: '演練驗證與持續改善',  bar: 'bg-emerald-500', badge: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' }
+        },
+        clientProfiles: [
+          { name: '半導體封測與精密製造大廠', desc: '國際大廠供應鏈要求零中斷交貨，單廠集中度高，過去只有 IT 備份卻沒有產線替代與供應鏈斷鏈方案。', baseWill: 52 },
+          { name: '跨國海空運與冷鏈物流集團', desc: '極度依賴自動化倉儲與派遣系統，颱風、罷工或系統停擺超過 4 小時就會引發巨額違約賠償。', baseWill: 56 },
+          { name: '大型區域綜合醫院體系', desc: '急診、開刀房與電子病歷必須 24 小時不中斷，但醫護人員極度忙碌，常說「演練只要寫紙本腳本就好」。', baseWill: 48 },
+          { name: '中型傳統家族製造企業', desc: '老闆覺得「工廠開了三十年沒失火過」，認為編列異地備援與發電機演練預算都是浪費錢。', baseWill: 42 }
+        ],
+        tiles: [
+          { id: 0,  type: 'start',      icon: '🚀', name: '年度 BCMS 啟動日',       cName: 'BCMS 輔導啟動會議', desc: '核撥年度營運持續預算，檢視關鍵業務韌性目標。', cDesc: '進入新一季 BCMS 輔導週期，請款入帳並盤點客戶營運持續成熟度。' },
+          { id: 1,  type: 'control',    icon: '📜', code: '5.2',    domain: 'd1', name: '營運持續政策與承諾',     cost: 115, days: 2, difficulty: 0,   counters: '災難發生時指揮權責混亂', desc: '建立高階主管簽署之 BCMS 政策，授權危機發生時之緊急調度權限。', clientExcuse: '「政策書寫得漂亮一點給客戶看就好，真出事老闆自然會現場指揮。」' },
+          { id: 2,  type: 'control',    icon: '🎯', code: '4.3',    domain: 'd1', name: 'BCMS 範圍與利害關係人',  cost: 120, days: 2, difficulty: -2,  counters: '重要客戶與法規要求遺漏', desc: '界定關鍵產品與服務納入 BCMS 範圍，盤點客戶合約 SLA 與法規底線。', clientExcuse: '「我們只把總部辦公室寫進驗證範圍就好，最容易淹水的南部工廠先排除！」' },
+          { id: 3,  type: 'incident',   icon: '⚡', name: '突發：工業區無預警大規模跳電', desc: '變電站故障導致園區停電 6 小時，核心產線與機房面臨緊急停擺危機！', cDesc: '客戶所在工業區上午無預警大停電，這才發現柴發油料只夠撐 1 小時且沒簽補油合約！' },
+          { id: 4,  type: 'control',    icon: '📊', code: '8.2.2',  domain: 'd2', name: '營運衝擊分析 (BIA)',     cost: 145, days: 3, difficulty: -5,  counters: '搶救順序錯誤導致重大虧損', desc: '量化各關鍵業務中斷隨時間累積的財務與聲譽衝擊，排定復原優先順序。', clientExcuse: '「每個部門主管都說自己的系統最重要、一分鐘都不能停，BIA 訪談根本談不下去！」' },
+          { id: 5,  type: 'control',    icon: '⏱️', code: '8.2.2b', domain: 'd2', name: 'RTO / RPO 與 MTPD 設定',  cost: 140, days: 2, difficulty: -5,  counters: '復原時間過長超過最大容忍期', desc: '明確訂定最大可容忍中斷時間 (MTPD)、復原時間目標 (RTO) 與資料復原點 (RPO)。', clientExcuse: '「業務部要求 RTO 設 30 分鐘、RPO 設零遺失，但又不肯編預算買同步複寫設備！」' },
+          { id: 6,  type: 'incident',   icon: '🚚', name: '突發：關鍵單一原料供應商斷鏈', desc: '獨家配合的核心零組件供應商發生大火停工，庫存僅剩 3 天即將斷線！', cDesc: '客戶的獨家化學原料商發生工安意外勒令停工，客戶完全沒有第二供應商名單！' },
+          { id: 7,  type: 'control',    icon: '🔍', code: '8.2.3',  domain: 'd2', name: '營運中斷風險評鑑',       cost: 135, days: 2, difficulty: -4,  counters: '單點故障與環境威脅盲點', desc: '識別廠房、設備、人員、IT 與供應鏈之單點故障 (SPOF) 與災害脆弱點。', clientExcuse: '「地震跟颱風都是天災不可抗力啦，風險評鑑表全部勾『風險接受』最快。」' },
+          { id: 8,  type: 'control',    icon: '🔗', code: '8.3.2',  domain: 'd3', name: '供應鏈與第二供應商備援', cost: 165, days: 3, difficulty: -8,  counters: '關鍵單一原料供應商斷鏈', desc: '建立關鍵原物料與委外服務之第二供應商 (Second Source) 認證與安全庫存機制。', clientExcuse: '「找第二家供應商認證又要花幾十萬開模費，跟原本那家買量大比較便宜啦。」' },
+          { id: 9,  type: 'governance', icon: '📊', name: 'BCMS 管理審查會議',      cName: 'BCMS 高階管理審查會', desc: '向高階主管檢討 BIA 結果、演練缺失與韌性投資預算需求。', cDesc: '向客戶總經理簡報同業斷鏈與停電損失金額，爭取全公司配合演練與備援投資！' },
+          { id: 10, type: 'control',    icon: '🚒', code: '8.4.2',  domain: 'd3', name: '緊急應變小組 (ERT) 建置', cost: 130, days: 2, difficulty: -3,  counters: '災害初期現場失控人員受傷', desc: '成立跨班別緊急應變小組，明確定義通報、疏散、搶救與指揮官代理人制度。', clientExcuse: '「廠長跟環安衛主管名字填上去就好，夜班人員流動率高不用特別編組啦。」' },
+          { id: 11, type: 'control',    icon: '📣', code: '8.4.3',  domain: 'd3', name: '危機溝通與緊急通報樹',   cost: 135, days: 2, difficulty: -4,  counters: '停工消息引發客戶抽單與公關危機', desc: '建立員工、大客戶、媒體與主管機關之多管道緊急通報機制與標準聲明稿。', clientExcuse: '「員工聯絡電話都存在公司內網 ERP 裡，內網斷線時再想辦法用 LINE 找人就好。」' },
+          { id: 12, type: 'incident',   icon: '🌊', name: '突發：強降雨淹水導致一樓機房癱瘓', desc: '颱風暴雨造成園區積水倒灌，一樓配電室與本地機房進水全面停機！', cDesc: '豪雨造成客戶地下室配電盤進水跳脫，所有本地伺服器泡水無法開機！' },
+          { id: 13, type: 'control',    icon: '🏭', code: '8.3.3',  domain: 'd3', name: '異地備援中心與產線調度', cost: 185, days: 3, difficulty: -10, counters: '強降雨淹水導致一樓機房癱瘓', desc: '規劃異地備援辦公區、雲端災難復原站點或同業相互支援產能協議。', clientExcuse: '「租異地備援機房一年要燒掉好幾百萬，真的淹水我們再緊急去買新伺服器裝就好。」' },
+          { id: 14, type: 'audit',      icon: '🔍', name: 'BCMS 期中內部稽核',      cName: 'ISO 22301 期中內稽', desc: '抽查各部門營運持續計畫 (BCP)、聯絡清冊與資源配置是否符合最新現況。', cDesc: '期中內稽登場！稽核員一撥打緊急聯絡清冊，發現有 3 位關鍵聯絡人半年前就離職了！' },
+          { id: 15, type: 'control',    icon: '📘', code: '8.4.4',  domain: 'd3', name: '營運持續計畫 (BCP) 編撰', cost: 150, days: 3, difficulty: -5,  counters: '災難發生時人員不知如何接手作業', desc: '針對各關鍵流程撰寫可執行的啟動條件、降級作業 SOP 與復原步驟手冊。', clientExcuse: '「BCP 手冊寫 200 頁鎖在總經理室櫃子裡，現場作業員其實從來沒翻過。」' },
+          { id: 16, type: 'control',    icon: '🔋', code: '8.3.4',  domain: 'd3', name: '電力、空調與網路雙迴路', cost: 170, days: 3, difficulty: -9,  counters: '工業區無預警大規模跳電', desc: '建置雙路市電、UPS、發電機自動切換 (ATS) 與緊急供油合約保障基礎設施。', clientExcuse: '「發電機去年保養過一次了，油箱剩三分之一應該夠撐到台電修好吧？」' },
+          { id: 17, type: 'incident',   icon: '🦠', name: '突發：關鍵產線爆發群聚感染缺工', desc: '核心技術班別超過 40% 人員同時請假隔離，無人操作關鍵機台與調度！', cDesc: '客戶核心輪班人員爆發集體流感缺工，卻發現沒有任何交叉訓練的職務代理人！' },
+          { id: 18, type: 'quarantine', icon: '☣️', name: '緊急應變指揮中心 (EOC)', cName: '危機復原現場支援', desc: '啟動緊急應變指揮中心，執行降級作業模式並追蹤 RTO 倒數計時。', cDesc: '客戶發生突發營運中斷，緊急 Call 顧問進場協助啟動 BCP 並撰寫復原檢討報告！' },
+          { id: 19, type: 'control',    icon: '👥', code: '7.2',    domain: 'd3', name: '關鍵職務代理人與交叉訓練', cost: 145, days: 2, difficulty: -5,  counters: '關鍵產線爆發群聚感染缺工', desc: '識別單一技能依賴職務，定期實施跨部門交叉訓練與遠距接手演練。', clientExcuse: '「老師傅都不太願意把關鍵參數教給別人，說怕教會徒弟餓死師傅。」' },
+          { id: 20, type: 'control',    icon: '🔄', code: '8.4.5',  domain: 'd3', name: '復原與回歸正常作業程序', cost: 135, days: 2, difficulty: -3,  counters: '備援切回正式環境時資料錯亂', desc: '訂定災難解除後從備援／人工紙本模式安全回補資料並切回正式環境之步驟。', clientExcuse: '「只要系統能重新開機就好了，停機期間手寫的幾千張進出貨單事後慢慢補登吧。」' },
+          { id: 21, type: 'incident',   icon: '🔥', name: '突發：外部雲端機房光纖遭挖斷', desc: '市政施工挖斷骨幹光纖，導致總部與各分公司 ERP 連線全面中斷 8 小時！', cDesc: '外部施工挖斷主幹網路線，客戶沒有異質備援線路，全公司業務停擺一整天！' },
+          { id: 22, type: 'control',    icon: '🧪', code: '8.5',    domain: 'd4', name: '桌上推演與模擬演練計畫', cost: 150, days: 2, difficulty: -6,  counters: 'BCP 計畫紙上談兵無法執行', desc: '設計多情境複合式災害劇本，定期舉辦跨部門桌上推演 (Tabletop Exercise)。', clientExcuse: '「大家坐在會議室照著劇本念一遍台詞、拍幾張照片留存紀錄就算演練完成啦！」' },
+          { id: 23, type: 'grant',      icon: '💎', name: '供應鏈韌性標竿獎勵預算', cName: '二期全球韌性擴充案', desc: '通過大客戶供應鏈韌性評鑑，獲核撥高階災難復原自動化預算！', cDesc: '客戶憑藉完善的 BCMS 拿下國際大廠轉單，主動追加全集團營運持續輔導合約！' },
+          { id: 24, type: 'control',    icon: '🚨', code: '8.5b',   domain: 'd4', name: '無預警實兵切換演練',     cost: 180, days: 3, difficulty: -11, counters: '災難切換失敗、人員慌亂出錯', desc: '在貼近真實壓力下執行斷網／斷電／異地接管實兵演練並精準量測實際 RTO。', clientExcuse: '「真的拔網路線測試萬一系統切不過去怎麼辦？週六加班大家都會抱怨啦！」' },
+          { id: 25, type: 'control',    icon: '📡', code: '9.1',    domain: 'd4', name: '韌性指標與預警監控',     cost: 155, days: 2, difficulty: -6,  counters: '災害徵兆延誤發現錯過黃金時間', desc: '建立氣象、地震、供應商財務與核心系統健康度之早期預警監控看板。', clientExcuse: '「新聞報颱風登陸再叫大家注意就好了，不需要特別設定早期預警觸發標準。」' },
+          { id: 26, type: 'incident',   icon: '📉', name: '突發：大客戶突擊查核供應鏈韌性', desc: '主力大客戶派員突擊查核 BCP 演練紀錄與 RTO 實測數據，不通過將砍單 30%！', cDesc: '客戶的歐美大客戶突然派稽核員查核營運持續能力，要求現場調閱實兵演練 RTO 紀錄！' },
+          { id: 27, type: 'cert_audit', icon: '🏆', name: 'ISO 22301 外部驗證稽核', cName: 'ISO 22301 第三方驗證日', desc: '驗證機構主導稽核員查驗 BIA、復原策略與演練有效性的完整證據鏈！', cDesc: 'ISO 22301 驗證稽核員正式進場！BIA、RTO 與實兵演練紀錄能不能閉環今天見真章！' },
+          { id: 28, type: 'control',    icon: '🎓', code: '7.3',    domain: 'd1', name: '全員營運持續意識訓練',   cost: 125, days: 2, difficulty: -2,  counters: '災難發生時員工不知通報窗口', desc: '確保全體員工與駐點人員熟知緊急集合點、通報電話與自身應變職責。', clientExcuse: '「新人報到第一天 HR 已經講過消防逃生門在哪裡了，應該不用再另外訓練吧？」' },
+          { id: 29, type: 'control',    icon: '💾', code: '8.3.5',  domain: 'd3', name: '關鍵資料異地不可竄改備份', cost: 175, days: 3, difficulty: -9,  counters: '複合式災害導致資料永久毀損', desc: '確保核心資料庫與 ERP 異地備份符合 RPO 要求並定期驗證還原完整性。', clientExcuse: '「備份磁帶都放在同一棟大樓的隔壁房間，這樣拿取比較方便！」' },
+          { id: 30, type: 'incident',   icon: '🌋', name: '突發：強震引發複合式停電斷網危機', desc: '區域發生強震導致廠房設備位移、市電中斷且對外通訊受阻的複合式危機！', cDesc: '深夜發生強震，客戶同時面臨廠房巡檢、機房斷電與員工安全回報的複合式大考驗！' },
+          { id: 31, type: 'control',    icon: '📋', code: '8.5c',   domain: 'd4', name: '演練後檢討 (AAR) 與改進', cost: 140, days: 2, difficulty: -4,  counters: '每次演練犯同樣錯誤卻不修正', desc: '每次演練或真實事件後產出檢討報告 (After Action Report)，追蹤改善落實。', clientExcuse: '「演練順利結束大家拍手鼓掌就好了，缺點寫進報告裡怕被總經理看到會挨罵。」' },
+          { id: 32, type: 'control',    icon: '🤝', code: '8.3.6',  domain: 'd3', name: '外部救援與公部門聯防協定', cost: 145, days: 2, difficulty: -5,  counters: '大型災害孤立無援延誤搶救', desc: '與消防單位、設備原廠、發電機租賃商及保險公證人建立緊急優先支援協定。', clientExcuse: '「等真的淹水或跳電再打電話叫廠商來修就好，幹嘛平時花錢簽緊急優先合約？」' },
+          { id: 33, type: 'control',    icon: '♻️', code: '10.2',   domain: 'd4', name: 'BCMS 持續改善與變更連動', cost: 150, days: 2, difficulty: -5,  counters: '新產線或新系統上線卻無 BCP', desc: '確保組織改組、新廠擴建或新系統上線時同步更新 BIA 與營運持續計畫。', clientExcuse: '「去年新蓋的二廠已經量產半年了，BIA 跟 BCP 還是只寫一廠的資料。」' },
+          { id: 34, type: 'incident',   icon: '🚢', name: '突發：重要港口封鎖導致交貨延誤', desc: '主要出口港口因天候與勞資爭議封閉一週，客戶要求啟動替代出貨路線！', cDesc: '主要海運港口突然封閉，客戶物流部完全沒規劃空運或替代港口轉運方案！' },
+          { id: 35, type: 'control',    icon: '🛡️', code: '7.5.3',  domain: 'd1', name: '緊急應變文件離線可用性', cost: 130, days: 2, difficulty: -3,  counters: '全廠斷網時電子版 BCP 無法開啟', desc: '確保 BCP 手冊、聯絡清冊與架構圖具備實體紙本與離線行動裝置備份。', clientExcuse: '「所有應變計畫都放在公司 SharePoint 雲端硬碟裡，全公司斷網時再想辦法用手機看。」' }
+        ],
+        incidentMap: {
+          3:  [16, 15, 25],
+          6:  [8, 4, 7],
+          12: [13, 29, 16],
+          17: [19, 10, 28],
+          21: [13, 16, 35],
+          26: [24, 22, 5],
+          30: [10, 11, 13, 24],
+          34: [8, 11, 32]
+        }
+      },
+
+      '42001': {
+        code: 'ISO/IEC 42001',
+        shortName: 'ISO 42001 AI治理',
+        icon: '🤖',
+        pillClass: 'bg-violet-500/20 text-violet-300 border border-violet-500/40',
+        soaTitle: '📋 ISO/IEC 42001 人工智慧管理系統 (AIMS) 控制項總覽（共 24 項）',
+        p1Role: 'CAIO / AI 治理長',
+        p2Role: 'AI 研發與模型風控主管',
+        domains: {
+          d1: { name: 'AIMS 政策與角色盤點', bar: 'bg-violet-500',  badge: 'bg-violet-500/20 text-violet-300 border-violet-500/40' },
+          d2: { name: 'AI 衝擊評估與資料治理', bar: 'bg-sky-500',     badge: 'bg-sky-500/20 text-sky-300 border-sky-500/40' },
+          d3: { name: '模型開發、驗證與透明', bar: 'bg-amber-500',   badge: 'bg-amber-500/20 text-amber-300 border-amber-500/40' },
+          d4: { name: '部署監控、人類監督與安全', bar: 'bg-emerald-500', badge: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' }
+        },
+        clientProfiles: [
+          { name: 'AI 客服與生成式 SaaS 新創公司', desc: '全公司天天呼叫 LLM API 開發新功能，但完全沒做提示詞注入防護與幻覺監控，客戶開始質疑輸出準確度。', baseWill: 56 },
+          { name: '大型銀行與智慧核貸金融機構', desc: '導入 AI 信用評分與反洗錢模型，主管機關高度關注演算法歧視、可解釋性與人類覆核機制。', baseWill: 54 },
+          { name: '智慧製造與 AI 瑕疵檢測大廠', desc: '在產線部署大量視覺辨識模型，但模型飄移 (Data Drift) 後沒人追蹤，且工程師常把機密圖紙貼進外部公開 AI。', baseWill: 48 },
+          { name: '醫療影像輔助診斷科技公司', desc: '產品屬於高風險 AI 系統，對訓練資料來源合法性、臨床偏差驗證與上市後監控要求極為嚴格。', baseWill: 52 }
+        ],
+        tiles: [
+          { id: 0,  type: 'start',      icon: '🚀', name: '年度 AIMS 治理啟動日',   cName: 'AI 治理輔導啟動會議', desc: '核撥年度負責任 AI 治理預算，檢視 AI 系統清冊與風險胃納。', cDesc: '進入新一季 AIMS 輔導週期，請款入帳並盤點客戶 AI 治理成熟度。' },
+          { id: 1,  type: 'control',    icon: '📜', code: 'A.2.2',  domain: 'd1', name: '人工智慧政策與倫理準則', cost: 120, days: 2, difficulty: 0,   counters: 'AI 開發盲目衝刺缺乏底線', desc: '建立高階主管核准之 AI 政策，明確公平性、透明性、安全性與問責原則。', clientExcuse: '「我們只是串接外部大廠的模型 API，寫一份短短的 AI 聲明貼在網站上就好吧？」' },
+          { id: 2,  type: 'control',    icon: '🗂️', code: 'A.4.2',  domain: 'd1', name: 'AI 系統與使用案例清冊',  cost: 130, days: 2, difficulty: -4,  counters: '影子 AI 工具私自導入失控', desc: '盤點組織內所有自研與採購之 AI 系統、模型版本、用途與風險等級分級。', clientExcuse: '「各部門自己刷信用卡買了一堆生成式 AI 帳號在用，IT 根本不知道到底有幾個！」' },
+          { id: 3,  type: 'incident',   icon: '🕵️', name: '突發：員工將機密財報貼進公開 AI', desc: '業務與研發人員將未公開財報與原始碼貼進免費公開 LLM 潤稿，導致機密外洩！', cDesc: '客戶工程師把整段核心演算法貼進外部免費聊天機器人除錯，高層驚覺機密已進公開訓練集！' },
+          { id: 4,  type: 'control',    icon: '⚖️', code: 'A.5.2',  domain: 'd2', name: 'AI 系統衝擊評估 (AIIA)', cost: 155, days: 3, difficulty: -6,  counters: '高風險 AI 侵害權益遭主管機關裁罰', desc: '於開發與部署前評估 AI 對個人基本權利、社會公平與安全之潛在衝擊。', clientExcuse: '「AI 功能下週就要配合發表會上線了，做衝擊評估會不會把產品卡死？」' },
+          { id: 5,  type: 'control',    icon: '🧭', code: 'A.3.2',  domain: 'd1', name: 'AI 治理角色與問責分工',  cost: 130, days: 2, difficulty: -3,  counters: 'AI 出錯時研發與業務互踢皮球', desc: '明確指派 AI 系統擁有者、資料管理員、模型驗證者與倫理審查角色。', clientExcuse: '「演算法準不準是資料科學家的事，業務單位只要會按按鈕用就好了。」' },
+          { id: 6,  type: 'incident',   icon: '🎭', name: '突發：AI 招募系統爆發性別與年齡歧視', desc: 'HR 導入的履歷篩選 AI 自動降低特定性別與年齡層分數，引發媒體與勞工局調查！', cDesc: '客戶用過去十年的錄取資料訓練招募 AI，結果模型自動淘汰女性求職者，在社群引發炎上！' },
+          { id: 7,  type: 'control',    icon: '🧬', code: 'A.7.2',  domain: 'd2', name: '訓練資料來源與授權治理', cost: 150, days: 3, difficulty: -6,  counters: '訓練資料侵權訴訟、違法爬蟲爭議', desc: '驗證訓練與微調資料集之取得合法性、著作權授權與個資去識別化合規性。', clientExcuse: '「網路上爬下來的圖片跟文章大家都拿來訓練模型啊，誰會去逐一查授權？」' },
+          { id: 8,  type: 'control',    icon: '📊', code: 'A.7.4',  domain: 'd2', name: '資料品質與偏見檢測校正', cost: 160, days: 3, difficulty: -8,  counters: 'AI 招募系統爆發性別與年齡歧視', desc: '檢核訓練資料代表性、缺漏值與歷史偏見，執行資料平衡與去偏見處理。', clientExcuse: '「資料清洗跟標註太花時間了，直接把歷史資料全部丟進去訓練模型比較快。」' },
+          { id: 9,  type: 'governance', icon: '📊', name: 'AI 治理委員會管理審查', cName: 'AIMS 高階管理審查會', desc: '向高階主管檢討高風險 AI 系統清單、模型漂移趨勢與合規資源配置。', cDesc: '向客戶高層展示歐盟 AI 法案與同業賠償案例，爭取導入正規 AI 風險管控機制！' },
+          { id: 10, type: 'control',    icon: '🏷️', code: 'A.8.2',  domain: 'd3', name: 'AI 系統透明度與使用者告知', cost: 135, days: 2, difficulty: -4, counters: '使用者誤認 AI 輸出為真人專業建議', desc: '明確揭露使用者正在與 AI 互動，標示生成內容來源與系統能力限制。', clientExcuse: '「讓客服機器人假裝成真人專員回覆客戶比較有親切感，幹嘛特別標註是 AI？」' },
+          { id: 11, type: 'control',    icon: '📖', code: 'A.6.2',  domain: 'd3', name: '模型卡與技術文件建置',   cost: 145, days: 2, difficulty: -5,  counters: '模型黑盒子無法追溯與稽核', desc: '建立 Model Card 與資料表單，完整記錄模型架構、訓練參數、基準測試與限制。', clientExcuse: '「研發團隊每天都在調參數改版，寫模型文件根本趕不上程式碼更新的速度啦！」' },
+          { id: 12, type: 'incident',   icon: '🌀', name: '突發：AI 客服產生嚴重幻覺承諾退款', desc: '生成式 AI 客服對客戶編造不存在的優惠與全額退款承諾，法院判決公司須履約！', cDesc: '客戶的 RAG 客服機器人產生嚴重幻覺，胡亂承諾買一送一且免運，一天內湧入上萬筆虧本訂單！' },
+          { id: 13, type: 'control',    icon: '🛡️', code: 'A.6.2b', domain: 'd3', name: 'AI 驗證、紅隊演練與防幻覺', cost: 175, days: 3, difficulty: -9,  counters: 'AI 客服產生嚴重幻覺、越獄攻擊', desc: '上線前執行對抗性測試 (Red Teaming)、提示詞注入防護與輸出護欄 (Guardrails)。', clientExcuse: '「我們測了十幾個常見問題回答得都很順啊，哪需要花錢請人做 AI 紅隊越獄測試？」' },
+          { id: 14, type: 'audit',      icon: '🔍', name: 'AIMS 期中內部稽核',      cName: 'ISO 42001 期中內稽', desc: '抽查高風險 AI 系統之衝擊評估 (AIIA)、資料血緣紀錄與人類監督日誌。', cDesc: '期中內稽登場！稽核員抽查信貸 AI 模型，發現工程師改了權重卻完全沒留驗證紀錄！' },
+          { id: 15, type: 'control',    icon: '🧑‍⚖️', code: 'A.9.2',  domain: 'd4', name: '人類監督與人工介入 (HITL)', cost: 165, days: 3, difficulty: -7,  counters: 'AI 自動化錯誤決策釀成重大損失', desc: '針對高衝擊決策強制保留人類審查、覆核與一鍵緊急中止 (Kill Switch) 權限。', clientExcuse: '「導入 AI 就是為了全自動化省人力，如果每筆都要人再看一遍那還買 AI 幹嘛？」' },
+          { id: 16, type: 'control',    icon: '🔒', code: 'A.8.4',  domain: 'd4', name: '生成式 AI 資料防外洩管控', cost: 160, days: 3, difficulty: -8,  counters: '員工將機密財報貼進公開 AI', desc: '部署企業私有 LLM 閘道器、敏感詞遮罩與禁用外部公開模型訓練資料回傳。', clientExcuse: '「直接在防火牆把所有 AI 網站封鎖就好了吧？但研發部又罵說不能用 Copilot 寫程式！」' },
+          { id: 17, type: 'incident',   icon: '💉', name: '突發：提示詞注入攻擊竊取系統指令', desc: '惡意使用者透過隱藏指令誘導企業 AI 助理吐出後端資料庫連線字串與機密知識庫！', cDesc: '駭客在履歷 PDF 裡藏了白色字體的提示詞注入指令，誘導客戶的招募 AI 洩漏內部薪資表！' },
+          { id: 18, type: 'quarantine', icon: '☣️', name: 'AI 模型緊急下線隔離區',  cName: 'AI 異常緊急隔離支援', desc: '偵測到模型嚴重偏差或遭攻擊，立即切換備援規則引擎並展開根因調查。', cDesc: '客戶的 AI 系統輸出失控引發客訴，緊急 Call 顧問進場協助模型下線隔離與事故調查！' },
+          { id: 19, type: 'control',    icon: '🤝', code: 'A.10.2', domain: 'd1', name: '第三方 AI 供應商與模型審查', cost: 150, days: 2, difficulty: -5, counters: '基礎模型服務商突改條款或外洩資料', desc: '評估外部基礎模型與 AI 元件供應商之資安、隱私、智財賠償與可用性保證。', clientExcuse: '「我們用的是全球最大廠的 LLM API，大廠應該什麼合規都幫我們做好了吧？」' },
+          { id: 20, type: 'control',    icon: '💡', code: 'A.8.3',  domain: 'd3', name: 'AI 決策可解釋性與申訴管道', cost: 155, days: 3, difficulty: -7, counters: '客戶遭 AI 拒件抗議黑箱作業', desc: '提供影響當事人權益之 AI 決策理由說明機制，並建立人工申訴與重新評估管道。', clientExcuse: '「深度學習神經網路有上百億個參數，怎麼跟客戶解釋為什麼系統拒絕他的申請？」' },
+          { id: 21, type: 'incident',   icon: '📉', name: '突發：模型資料漂移導致誤判率飆升', desc: '市場環境改變使 AI 預測準確率從 94% 暴跌至 58%，連續兩週放行大量異常交易！', cDesc: '客戶產線換了新一批原物料後，AI 瑕疵檢測模型把良品全判成不良品，整條產線停擺！' },
+          { id: 22, type: 'control',    icon: '📡', code: 'A.9.3',  domain: 'd4', name: '模型效能與資料漂移持續監控', cost: 175, days: 3, difficulty: -9, counters: '模型資料漂移導致誤判率飆升', desc: '即時監控上線後模型準確率、輸入分佈偏移 (Data Drift) 與推論延遲異常告警。', clientExcuse: '「模型上線驗收準確率有 95% 就結案了，後續沒有另外編預算做持續監控看板。」' },
+          { id: 23, type: 'grant',      icon: '💎', name: '可信任 AI 卓越創新獎助', cName: '二期企業 AI 治理擴充案', desc: '通過可信任 AI 評鑑標章，獲董事會核撥負責任 AI 平台擴充預算！', cDesc: '客戶憑藉 ISO 42001 治理架構順利拿下大型金融與政府 AI 標案，追加二期輔導合約！' },
+          { id: 24, type: 'control',    icon: '🧬', code: 'A.7.5',  domain: 'd2', name: '資料血緣與模型版本可追溯性', cost: 165, days: 3, difficulty: -8, counters: '模型出錯無法還原當時訓練資料', desc: '建立資料集、特徵工程、訓練程式碼與模型權重之完整版本綁定與血緣追蹤。', clientExcuse: '「資料科學家都把訓練資料跟模型權重存在自己電腦 GPU 裡，哪個版本對應哪批資料要問本人。」' },
+          { id: 25, type: 'control',    icon: '🚨', code: 'A.9.4',  domain: 'd4', name: 'AI 事故通報與緊急回退機制', cost: 160, days: 3, difficulty: -7, counters: 'AI 失控時無法一鍵切換傳統規則', desc: '訂定 AI 異常事件分級通報程序，並確保可隨時安全降級或切換至傳統規則系統。', clientExcuse: '「舊的規則引擎早就拆掉了，現在 AI 系統如果暫停服務全公司就不會運作了。」' },
+          { id: 26, type: 'incident',   icon: '⚖️', name: '突發：AI 訓練集遭控侵害原創著作權', desc: '內容創作者聯盟集體控告公司未經授權擷取作品訓練商用生成模型，求償巨額賠償！', cDesc: '客戶訓練行銷生圖模型時直接抓取知名插畫家作品集，收到律師函要求下架模型並賠償！' },
+          { id: 27, type: 'cert_audit', icon: '🏆', name: 'ISO/IEC 42001 外部驗證稽核', cName: 'ISO 42001 第三方驗證日', desc: '驗證機構主導稽核員查驗 AIMS 衝擊評估、資料治理與人類監督完整證據！', cDesc: 'ISO 42001 驗證稽核員正式進場！AI 系統清冊、AIIA 與人類監督紀錄今天見真章！' },
+          { id: 28, type: 'control',    icon: '🎓', code: 'A.4.4',  domain: 'd1', name: '全員 AI 素養與負責任使用訓練', cost: 125, days: 2, difficulty: -2, counters: '員工盲信 AI 幻覺直接對外發布', desc: '訓練員工辨識 AI 幻覺、驗證輸出正確性與遵守生成式 AI 機密保護規範。', clientExcuse: '「大家都會用 ChatGPT 寫信了，還需要特別開課教他們怎麼正確使用 AI 嗎？」' },
+          { id: 29, type: 'control',    icon: '🔐', code: 'A.6.2c', domain: 'd4', name: '模型權重與推論 API 安全防護', cost: 170, days: 3, difficulty: -9, counters: '模型竊取攻擊與惡意資料投毒', desc: '保護專有模型權重檔防遭竊取，實施 API 速率限制與訓練資料投毒防護。', clientExcuse: '「模型權重檔案直接放在公開的物件儲存區讓前端下載，這樣推論速度比較快啊。」' },
+          { id: 30, type: 'incident',   icon: '🤖', name: '突發：高風險自動化決策引發集體申訴', desc: '信貸／理賠 AI 系統因缺乏人類監督與可解釋性，連續誤拒上千名合法客戶遭金管裁罰！', cDesc: '客戶的自動核保 AI 連續誤判大量正常保戶，卻提不出決策邏輯與人工覆核紀錄，遭主管機關重罰！' },
+          { id: 31, type: 'control',    icon: '📝', code: 'A.9.3b', domain: 'd4', name: 'AI 推論與人類覆核稽核日誌', cost: 155, days: 2, difficulty: -6, counters: '發生爭議時無法還原當時 AI 輸出', desc: '完整保存高風險 AI 系統之輸入、輸出、信心分數與人工覆核修改軌跡。', clientExcuse: '「每天幾十萬筆 AI 推論紀錄全部存下來太佔資料庫空間了，只存最終結果就好。」' },
+          { id: 32, type: 'control',    icon: '♻️', code: 'A.6.2d', domain: 'd3', name: 'AI 系統退役與資料安全處置', cost: 135, days: 2, difficulty: -3, counters: '廢棄舊模型殘留敏感訓練記憶', desc: '規範過時 AI 模型下線退役流程，安全銷毀包含敏感資訊之模型權重與快取資料。', clientExcuse: '「舊版模型不用了就留在測試伺服器上當紀念，應該不會有人去連吧？」' },
+          { id: 33, type: 'control',    icon: '🔄', code: '10.2',   domain: 'd4', name: 'AIMS 持續改善與回饋閉環', cost: 150, days: 2, difficulty: -5, counters: '使用者回報的 AI 錯誤石沉大海', desc: '建立使用者錯誤回報與人工修正回饋機制，定期納入模型再訓練與護欄優化。', clientExcuse: '「客服人員每天都在手動修正 AI 寫錯的回覆，但從來沒有把這些錯誤案例回饋給研發部。」' },
+          { id: 34, type: 'incident',   icon: '🎭', name: '突發：深度偽造語音詐騙突破客服驗證', desc: '詐騙集團利用 AI 語音複製技術冒充高階主管與 VIP 客戶，成功騙過客服更改帳戶！', cDesc: '駭客用 5 秒公開演講音檔複製客戶財務長聲音打電話給銀行與客服，差點轉走鉅額資金！' },
+          { id: 35, type: 'control',    icon: '🧩', code: 'A.8.5',  domain: 'd4', name: '合成內容浮水印與真實性驗證', cost: 145, days: 2, difficulty: -5, counters: '深度偽造假訊息與內容來源混淆', desc: '為企業 AI 生成之圖像、音訊與文本嵌入數位浮水印或中繼資料標記 (C2PA)。', clientExcuse: '「AI 生成的行銷圖片跟影片直接發佈就好了，加浮水印會影響畫面美觀啦。」' }
+        ],
+        incidentMap: {
+          3:  [16, 2, 28],
+          6:  [8, 4, 7],
+          12: [13, 15, 28],
+          17: [13, 16, 29],
+          21: [22, 24, 33],
+          26: [7, 4, 19],
+          30: [15, 20, 31, 4],
+          34: [35, 10, 13]
+        }
       }
     };
+
+    
 
     const TOKEN_CLASSES = ['token-p0', 'token-p1', 'token-p2'];
     const BADGE_CLASSES = ['text-sky-400', 'text-amber-400', 'text-emerald-400'];
@@ -494,7 +768,7 @@
 
     let state = {
       standardKey: '27001',
-      mode: 1, // 1: 單人企業, 2: 雙人對抗, 3: 外部顧問
+      mode: 1,
       maxRounds: 24,
       round: 1,
       currentPlayer: 0,
@@ -509,6 +783,7 @@
         clientWill: 52,
         clientStability: 100
       },
+      lastDice: 6,
       busy: false,
       gameOver: false
     };
@@ -517,18 +792,154 @@
       return STANDARDS_DB[state.standardKey] || STANDARDS_DB['27001'];
     }
 
+    // ==================== 繪製立體 SVG 骰子點數圖案 ====================
+    function renderDiceSvg(val, rolling = false) {
+      const pipsMap = {
+        1: [[50, 50]],
+        2: [[28, 28], [72, 72]],
+        3: [[26, 26], [50, 50], [74, 74]],
+        4: [[28, 28], [72, 28], [28, 72], [72, 72]],
+        5: [[28, 28], [72, 28], [50, 50], [28, 72], [72, 72]],
+        6: [[28, 24], [72, 24], [28, 50], [72, 50], [28, 76], [72, 76]]
+      };
+      const pts = pipsMap[val] || pipsMap[6];
+      const circles = pts.map(([cx, cy]) => {
+        const isRed = (val === 1 || val === 4);
+        return `<circle cx="${cx}" cy="${cy}" r="9.5" fill="${isRed ? '#f43f5e' : '#f8fafc'}"/>`;
+      }).join('');
+
+      return `
+        <svg class="w-16 h-16 ${rolling ? 'dice-rolling' : ''}" viewBox="0 0 100 100">
+          <defs>
+            <linearGradient id="diceGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#334155"/>
+              <stop offset="100%" stop-color="#0f172a"/>
+            </linearGradient>
+          </defs>
+          <rect x="6" y="6" width="88" height="88" rx="20" fill="url(#diceGrad)" stroke="#38bdf8" stroke-width="3.5"/>
+          ${circles}
+        </svg>
+      `;
+    }
+
+    // ==================== 繪製等級建築圖示（房屋 -> 大樓 -> 城堡要塞） ====================
+    function getLevelBuildingGraphic(level, adopted = true) {
+      if (!adopted) return '📄';
+      if (level === 1) return '🏠';
+      if (level === 2) return '🏢';
+      if (level >= 3) return '🏰';
+      return '';
+    }
+
+    // ==================== 繪製彈窗情境向量插畫橫幅 ====================
+    function getModalIllustration(tileType, icon) {
+      const configs = {
+        control: {
+          bg: 'from-sky-900/90 via-slate-900 to-slate-900',
+          accent: '#38bdf8',
+          label: 'CONTROL & PROCESS DEPLOYMENT',
+          svg: `<svg class="w-24 h-24 text-sky-400/30" viewBox="0 0 100 100" fill="none">
+            <path d="M50 10L85 24V50C85 72 50 90 50 90C50 90 15 72 15 50V24L50 10Z" stroke="currentColor" stroke-width="4" fill="currentColor" fill-opacity="0.15"/>
+            <path d="M35 50L45 60L66 39" stroke="#7dd3fc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>`
+        },
+        incident: {
+          bg: 'from-rose-950 via-red-950/70 to-slate-900',
+          accent: '#fb7185',
+          label: 'CRITICAL INCIDENT ALERT',
+          svg: `<svg class="w-24 h-24 text-rose-500/35" viewBox="0 0 100 100" fill="none">
+            <polygon points="50,12 90,82 10,82" stroke="currentColor" stroke-width="4" fill="currentColor" fill-opacity="0.2"/>
+            <line x1="50" y1="36" x2="50" y2="58" stroke="#fda4af" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="50" cy="70" r="4" fill="#fda4af"/>
+          </svg>`
+        },
+        audit: {
+          bg: 'from-amber-950/90 via-slate-900 to-slate-900',
+          accent: '#fbbf24',
+          label: 'INTERNAL AUDIT INSPECTION',
+          svg: `<svg class="w-24 h-24 text-amber-400/30" viewBox="0 0 100 100" fill="none">
+            <circle cx="44" cy="44" r="24" stroke="currentColor" stroke-width="5" fill="currentColor" fill-opacity="0.15"/>
+            <line x1="62" y1="62" x2="84" y2="84" stroke="#fcd34d" stroke-width="7" stroke-linecap="round"/>
+          </svg>`
+        },
+        cert_audit: {
+          bg: 'from-emerald-950/90 via-teal-950/70 to-slate-900',
+          accent: '#34d399',
+          label: 'THIRD-PARTY CERTIFICATION AUDIT',
+          svg: `<svg class="w-24 h-24 text-emerald-400/30" viewBox="0 0 100 100" fill="none">
+            <circle cx="50" cy="40" r="24" stroke="currentColor" stroke-width="4" fill="currentColor" fill-opacity="0.2"/>
+            <path d="M38 60L32 88L50 78L68 88L62 60" stroke="#6ee7b7" stroke-width="4" fill="currentColor" fill-opacity="0.15"/>
+          </svg>`
+        },
+        governance: {
+          bg: 'from-indigo-950/90 via-slate-900 to-slate-900',
+          accent: '#818cf8',
+          label: 'MANAGEMENT REVIEW BOARD',
+          svg: `<svg class="w-24 h-24 text-indigo-400/30" viewBox="0 0 100 100" fill="none">
+            <rect x="18" y="52" width="14" height="30" rx="2" fill="currentColor"/>
+            <rect x="43" y="34" width="14" height="48" rx="2" fill="currentColor"/>
+            <rect x="68" y="18" width="14" height="64" rx="2" fill="currentColor"/>
+          </svg>`
+        },
+        grant: {
+          bg: 'from-emerald-950/90 via-slate-900 to-slate-900',
+          accent: '#34d399',
+          label: 'STRATEGIC RESOURCE BOOST',
+          svg: `<svg class="w-24 h-24 text-emerald-400/30" viewBox="0 0 100 100" fill="none">
+            <polygon points="50,14 82,38 50,86 18,38" stroke="currentColor" stroke-width="4" fill="currentColor" fill-opacity="0.2"/>
+          </svg>`
+        },
+        quarantine: {
+          bg: 'from-orange-950/90 via-slate-900 to-slate-900',
+          accent: '#fb923c',
+          label: 'EMERGENCY WAR ROOM',
+          svg: `<svg class="w-24 h-24 text-orange-400/30" viewBox="0 0 100 100" fill="none">
+            <circle cx="50" cy="50" r="32" stroke="currentColor" stroke-width="4" stroke-dasharray="10 6"/>
+            <circle cx="50" cy="50" r="14" fill="currentColor" fill-opacity="0.3"/>
+          </svg>`
+        },
+        start: {
+          bg: 'from-sky-950 via-indigo-950/70 to-slate-900',
+          accent: '#38bdf8',
+          label: 'ANNUAL GOVERNANCE CYCLE',
+          svg: `<svg class="w-24 h-24 text-sky-400/30" viewBox="0 0 100 100" fill="none">
+            <path d="M50 15C68 15 82 29 82 47C82 65 68 79 50 79C32 79 18 65 18 47" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+            <polygon points="50,6 62,18 50,26" fill="currentColor"/>
+          </svg>`
+        }
+      };
+
+      const cfg = configs[tileType] || configs.control;
+      return `
+        <div class="relative h-24 bg-gradient-to-r ${cfg.bg} border-b border-slate-800 px-6 flex items-center justify-between overflow-hidden">
+          <div class="flex items-center gap-4 z-10">
+            <div class="w-14 h-14 rounded-2xl bg-slate-950/75 border border-white/15 flex items-center justify-center text-3xl shadow-lg">
+              ${icon}
+            </div>
+            <div>
+              <div class="text-[10px] font-black tracking-widest opacity-75" style="color:${cfg.accent}">${cfg.label}</div>
+              <div class="text-xs text-slate-300 mt-0.5">${getStd().icon} ${getStd().shortName}</div>
+            </div>
+          </div>
+          <div class="z-0">${cfg.svg}</div>
+        </div>
+      `;
+    }
+
     function selectStandard(stdKey) {
       selectedStandardKey = stdKey;
       const borderMap = {
         '27001': 'border-2 border-sky-400 bg-sky-950/40',
         '27701': 'border-2 border-teal-400 bg-teal-950/40',
-        '20000': 'border-2 border-amber-400 bg-amber-950/40'
+        '20000': 'border-2 border-amber-400 bg-amber-950/40',
+        '22301': 'border-2 border-orange-400 bg-orange-950/40',
+        '42001': 'border-2 border-violet-400 bg-violet-950/40'
       };
       document.querySelectorAll('.std-card').forEach(card => {
         const k = card.getAttribute('data-std');
         card.className = k === stdKey
-          ? `std-card text-left p-4 rounded-xl ${borderMap[k]} transition`
-          : 'std-card text-left p-4 rounded-xl border border-slate-700 bg-slate-950/60 hover:border-slate-500 transition';
+          ? `std-card text-left p-3.5 rounded-xl ${borderMap[k]} transition flex flex-col justify-between gap-2.5`
+          : 'std-card text-left p-3.5 rounded-xl border border-slate-700 bg-slate-950/60 hover:border-slate-500 transition flex flex-col justify-between gap-2.5';
       });
     }
 
@@ -551,6 +962,7 @@
       state.round = 1;
       state.currentPlayer = 0;
       state.controls = {};
+      state.lastDice = 6;
       state.busy = false;
       state.gameOver = false;
 
@@ -559,7 +971,6 @@
       const initBudget = Math.round(2200 * scale);
 
       document.getElementById('game-log').innerHTML = '';
-      document.getElementById('dice-display')?.remove();
 
       document.getElementById('header-icon').textContent = std.icon;
       document.getElementById('header-title').textContent = `${std.shortName}大富翁`;
@@ -586,14 +997,14 @@
           clientStability: 100
         };
         state.players = [{
-          id: 0, name: `外部顧問 (${std.code})`, role: 'Lead Consultant',
+          id: 0, name: `外部顧問 (${std.code})`, role: 'Lead Consultant', avatar: '💼',
           pos: 0, skipTurns: 0, colorClass: 'token-p2', badgeColor: 'text-emerald-400'
         }];
 
         modePill.className = 'text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
         modePill.textContent = `💼 外部顧問版 (${state.maxRounds}回合)`;
-        document.getElementById('header-subtitle').textContent = `輔導客戶：【${profile.name}】｜${std.code} 專屬 36 格實戰地圖`;
-        document.getElementById('maturity-title').textContent = `📊 客戶 ${std.code} 落實成熟度`;
+        document.getElementById('header-subtitle').textContent = `輔導客戶：【${profile.name}】｜${std.code} 專屬 36 格圖形棋盤`;
+        document.getElementById('maturity-title').textContent = `📊 客戶 ${std.code} 成熟度雷達`;
         document.getElementById('log-title').textContent = '📜 顧問專案戰情日誌';
 
         addLog(`💼 <strong>${std.code}</strong> 顧問接案啟動（${state.maxRounds} 回合，初始工時 ${state.consultant.hours} 人天）！客戶：【<strong>${profile.name}</strong>】— ${profile.desc}`, 'info');
@@ -603,21 +1014,21 @@
           : 'text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40';
         modePill.textContent = mode === 1 ? `🧑‍💼 單人企業版 (${state.maxRounds}回合)` : `⚔️ 雙人同機對抗 (${state.maxRounds}回合)`;
 
-        document.getElementById('header-subtitle').textContent = `${std.code} 治理實戰模擬｜36 格專屬地圖（24 項核心控制與流程）`;
-        document.getElementById('maturity-title').textContent = `📊 ${std.code} 防禦與治理成熟度`;
+        document.getElementById('header-subtitle').textContent = `${std.code} 治理實戰模擬｜36 格圖形化地圖（24 項核心控制與流程）`;
+        document.getElementById('maturity-title').textContent = `📊 ${std.code} 成熟度雷達圖`;
         document.getElementById('log-title').textContent = '📜 辦公室戰情室紀錄';
 
         if (mode === 1) {
           state.players = [{
-            id: 0, name: `玩家 1 (${std.p1Role})`, role: std.p1Role,
+            id: 0, name: `玩家 1 (${std.p1Role})`, role: std.p1Role, avatar: '🧑‍💼',
             pos: 0, budget: initBudget, stability: 100, skipTurns: 0,
             colorClass: TOKEN_CLASSES[0], badgeColor: BADGE_CLASSES[0]
           }];
           addLog(`🎬 <strong>${std.code}</strong> 單人挑戰開始（${state.maxRounds} 回合，初始預算 $${initBudget}萬）！`, 'info');
         } else {
           state.players = [
-            { id: 0, name: `玩家 1 (${std.p1Role})`, role: std.p1Role, pos: 0, budget: initBudget, stability: 100, skipTurns: 0, colorClass: TOKEN_CLASSES[0], badgeColor: BADGE_CLASSES[0] },
-            { id: 1, name: `玩家 2 (${std.p2Role})`, role: std.p2Role, pos: 0, budget: initBudget, stability: 100, skipTurns: 0, colorClass: TOKEN_CLASSES[1], badgeColor: BADGE_CLASSES[1] }
+            { id: 0, name: `玩家 1 (${std.p1Role})`, role: std.p1Role, avatar: '🧑‍💼', pos: 0, budget: initBudget, stability: 100, skipTurns: 0, colorClass: TOKEN_CLASSES[0], badgeColor: BADGE_CLASSES[0] },
+            { id: 1, name: `玩家 2 (${std.p2Role})`, role: std.p2Role, avatar: '👩‍💻', pos: 0, budget: initBudget, stability: 100, skipTurns: 0, colorClass: TOKEN_CLASSES[1], badgeColor: BADGE_CLASSES[1] }
           ];
           addLog(`⚔️ <strong>${std.code}</strong> 雙人同機對抗開始（${state.maxRounds} 回合，每人初始預算 $${initBudget}萬）！`, 'info');
         }
@@ -673,24 +1084,24 @@
 
         if (tile.type === 'control') {
           const domObj = domains[tile.domain];
-          topBar = `<div class="h-1 w-full ${domObj.bar} rounded-full mb-0.5"></div>`;
+          topBar = `<div class="h-1.5 w-full ${domObj.bar} rounded-full mb-0.5 shadow-sm"></div>`;
           if (ctrl) {
             if (state.mode === 3) {
               bgClass = ctrl.adopted
-                ? 'bg-emerald-950/70 border-emerald-500/60'
-                : 'bg-amber-950/45 border-amber-500/45 border-dashed';
+                ? 'bg-gradient-to-b from-emerald-950/85 to-slate-900/95 border-emerald-500/70'
+                : 'bg-gradient-to-b from-amber-950/55 to-slate-900/90 border-amber-500/50 border-dashed';
             } else {
               bgClass = ctrl.owner === 0
-                ? 'bg-sky-950/70 border-sky-500/60'
-                : 'bg-amber-950/60 border-amber-500/60';
+                ? 'bg-gradient-to-b from-sky-950/85 to-slate-900/95 border-sky-500/70'
+                : 'bg-gradient-to-b from-amber-950/75 to-slate-900/95 border-amber-500/70';
             }
           }
         } else if (tile.type === 'incident') {
-          bgClass = 'bg-rose-950/45 border-rose-500/35';
+          bgClass = 'bg-gradient-to-b from-rose-950/65 to-slate-900/95 border-rose-500/45';
         } else if (tile.type === 'start' || tile.type === 'cert_audit' || tile.type === 'grant') {
-          bgClass = 'bg-emerald-950/45 border-emerald-500/35';
+          bgClass = 'bg-gradient-to-b from-emerald-950/65 to-slate-900/95 border-emerald-500/45';
         } else {
-          bgClass = 'bg-slate-800/85 border-slate-600/40';
+          bgClass = 'bg-gradient-to-b from-slate-800/90 to-slate-900/95 border-slate-600/45';
         }
 
         const el = document.createElement('div');
@@ -702,39 +1113,42 @@
         let badgeTag = '';
         if (state.mode === 3) {
           if (ctrl) {
+            const bldg = getLevelBuildingGraphic(ctrl.level, ctrl.adopted);
             badgeTag = ctrl.adopted
-              ? `<span class="text-[8px] font-bold px-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40">Lv.${ctrl.level}</span>`
-              : `<span class="text-[8px] font-bold px-1 rounded bg-amber-950 text-amber-300 border border-amber-500/40">紙本</span>`;
+              ? `<span class="text-[9px] font-bold px-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40">${bldg}Lv.${ctrl.level}</span>`
+              : `<span class="text-[8px] font-bold px-1 rounded bg-amber-950 text-amber-300 border border-amber-500/40">📄紙本</span>`;
           } else if (tile.type === 'control') {
-            badgeTag = `<span class="text-[8px] text-slate-400">${tile.days}天</span>`;
+            badgeTag = `<span class="text-[8px] text-slate-400">⏱️${tile.days}天</span>`;
           }
         } else {
           if (ctrl) {
-            badgeTag = `<span class="text-[8px] font-bold px-1 rounded bg-slate-950/80 ${ctrl.owner === 0 ? 'text-sky-300' : 'text-amber-300'}">Lv.${ctrl.level}</span>`;
+            const bldg = getLevelBuildingGraphic(ctrl.level, true);
+            badgeTag = `<span class="text-[9px] font-bold px-1 rounded bg-slate-950/85 ${ctrl.owner === 0 ? 'text-sky-300' : 'text-amber-300'}">${bldg}Lv.${ctrl.level}</span>`;
           } else if (tile.type === 'control') {
-            badgeTag = `<span class="text-[8px] text-slate-400">$${tile.cost}</span>`;
+            badgeTag = `<span class="text-[8px] text-slate-400">💰$${tile.cost}</span>`;
           }
         }
 
         const tokensHtml = playersHere.map(p =>
-          `<span class="w-3.5 h-3.5 rounded-full ${p.colorClass} border border-white inline-flex items-center justify-center text-[8px] font-black text-white">${state.mode === 3 ? '顧' : 'P' + (p.id + 1)}</span>`
+          `<span class="w-4 h-4 rounded-full ${p.colorClass} border border-white inline-flex items-center justify-center text-[9px] font-black text-white token-bounce" title="${p.name}">${p.avatar}</span>`
         ).join('');
 
         const displayName = (state.mode === 3 && tile.cName) ? tile.cName : tile.name;
         const domainShort = tile.type === 'control' ? domains[tile.domain].name : '';
 
         el.innerHTML = `
-          <div>
+          <div class="tile-watermark">${tile.icon}</div>
+          <div class="relative z-10">
             ${topBar}
             <div class="flex items-center justify-between gap-0.5">
-              <span class="text-xs md:text-sm leading-none">${tile.icon}</span>
+              <span class="text-sm md:text-base leading-none drop-shadow">${tile.icon}</span>
               ${badgeTag}
             </div>
             <div class="text-[9px] md:text-[10px] font-bold text-slate-100 leading-tight mt-0.5 line-clamp-2">
               ${tile.code ? `<span class="text-slate-400 font-normal">${tile.code}</span> ` : ''}${displayName}
             </div>
           </div>
-          <div class="flex items-center justify-between mt-0.5">
+          <div class="relative z-10 flex items-center justify-between mt-0.5">
             <span class="text-[8px] text-slate-400 truncate">${domainShort}</span>
             <div class="flex gap-0.5">${tokensHtml}</div>
           </div>
@@ -751,60 +1165,68 @@
       const deployedCount = Object.keys(state.controls).length;
 
       const statusHeader = state.mode === 3
-        ? `<span>輔導週期：<strong class="text-white">第 ${state.round} / ${state.maxRounds} 回合</strong></span>
-           <span>已落實：<strong class="text-emerald-400">${adoptedCount}</strong> / 紙本：<strong class="text-amber-300">${paperCount}</strong>（共 ${totalControls} 項）</span>`
-        : `<span>稽核週期進度：<strong class="text-white">第 ${state.round} / ${state.maxRounds} 回合</strong></span>
-           <span>已部署項目：<strong class="text-sky-400">${deployedCount} / ${totalControls}</strong></span>`;
+        ? `<span>📅 輔導週期：<strong class="text-white">第 ${state.round} / ${state.maxRounds} 回合</strong></span>
+           <span>🏰 已落實：<strong class="text-emerald-400">${adoptedCount}</strong> / 📄 紙本：<strong class="text-amber-300">${paperCount}</strong>（共 ${totalControls} 項）</span>`
+        : `<span>📅 稽核週期進度：<strong class="text-white">第 ${state.round} / ${state.maxRounds} 回合</strong></span>
+           <span>🏗️ 已部署項目：<strong class="text-sky-400">${deployedCount} / ${totalControls}</strong></span>`;
 
       const rollLabel = state.mode === 3
         ? (p.skipTurns > 0 ? '⏳ 本回合救火報告中（點擊跳過）' : '🎲 擲骰子推進顧問行程 (1~6步)')
         : (p.skipTurns > 0 ? '⏳ 本回合應變隔離中（點擊跳過）' : '🎲 擲骰子推進工作 (1~6步)');
 
       const roundPct = Math.round((state.round / state.maxRounds) * 100);
-      const stageLabel = roundPct <= 35 ? '第一階段：盤點與制度架構建立期'
-                       : roundPct <= 70 ? '第二階段：流程落實與演練強化期'
-                       : '第三階段：高壓內稽與外部驗證衝刺期';
+      const stageLabel = roundPct <= 35 ? '🌱 第一階段：盤點與制度架構建立期'
+                       : roundPct <= 70 ? '⚙️ 第二階段：流程落實與演練強化期'
+                       : '🏆 第三階段：高壓內稽與外部驗證衝刺期';
 
       const domKeys = ['d1', 'd2', 'd3', 'd4'];
       const legendHtml = domKeys.map(k => {
         const cnt = tiles.filter(t => t.type === 'control' && t.domain === k).length;
-        return `<div class="flex items-center justify-center gap-1.5 bg-slate-900/70 py-1.5 px-1 rounded-lg truncate">
+        return `<div class="flex items-center justify-center gap-1.5 bg-slate-900/80 border border-slate-800 py-1.5 px-1 rounded-lg truncate">
           <span class="w-2.5 h-2.5 rounded-full ${domains[k].bar} shrink-0"></span>
           <span class="truncate">${domains[k].name} (${cnt})</span>
         </div>`;
       }).join('');
 
       hub.innerHTML = `
-        <div class="flex flex-wrap items-center justify-between gap-2 text-xs md:text-sm text-slate-400 border-b border-slate-800 pb-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs md:text-sm text-slate-400 border-b border-slate-800/90 pb-3">
           ${statusHeader}
         </div>
 
-        <div class="my-auto py-4 flex flex-col items-center justify-center">
-          <div class="flex items-center gap-2 mb-3">
+        <div class="my-auto py-3 flex flex-col items-center justify-center">
+          <div class="flex flex-wrap items-center justify-center gap-2 mb-3">
             <span class="text-[11px] px-3 py-1 rounded-full font-bold ${std.pillClass}">${std.icon} ${std.shortName}</span>
-            <span class="text-[11px] px-3 py-1 rounded-full bg-slate-800/90 border border-slate-700 text-slate-300">📅 ${stageLabel}</span>
+            <span class="text-[11px] px-3 py-1 rounded-full bg-slate-800/90 border border-slate-700 text-slate-300">${stageLabel}</span>
           </div>
 
-          <div class="text-xs text-slate-400 mb-1">${state.mode === 3 ? '顧問輔導專案進行中' : '目前行動輪次'}</div>
-          <div class="text-xl md:text-2xl font-black ${p.badgeColor} mb-4">${p.name}</div>
+          <div class="flex items-center gap-2.5 mb-3">
+            <span class="w-9 h-9 rounded-full ${p.colorClass} border-2 border-white flex items-center justify-center text-lg shadow-lg">${p.avatar}</span>
+            <div class="text-left">
+              <div class="text-[10px] text-slate-400">${state.mode === 3 ? '顧問輔導專案進行中' : '目前行動輪次'}</div>
+              <div class="text-lg md:text-xl font-black ${p.badgeColor} leading-tight">${p.name}</div>
+            </div>
+          </div>
 
-          <div class="flex items-center gap-4 mb-5">
-            <div id="dice-display" class="w-20 h-20 rounded-2xl bg-slate-800 border-2 border-sky-400/60 flex items-center justify-center text-4xl font-black text-white shadow-inner">
-              🎲
+          <div class="flex items-center gap-4 mb-4">
+            <div id="dice-display" class="p-1.5 rounded-2xl bg-slate-900/90 border border-sky-400/40 shadow-xl flex items-center justify-center">
+              ${renderDiceSvg(state.lastDice, false)}
             </div>
           </div>
 
           <button id="roll-btn" onclick="handleRoll()" ${state.busy || state.gameOver ? 'disabled' : ''}
-            class="px-8 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed font-black text-white shadow-lg transition transform active:scale-95 text-sm md:text-base">
+            class="px-8 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed font-black text-white shadow-lg shadow-sky-950/60 transition transform active:scale-95 text-sm md:text-base">
             ${rollLabel}
           </button>
 
-          <p class="text-[11px] text-slate-400 mt-4 max-w-md">
-            💡 提示：滑鼠移至任意棋盤格可檢視完整條款說明；可隨時點擊右上角「切換標準 / 模式」體驗其他 ISO 標準。
-          </p>
+          <div class="flex items-center gap-3 text-[11px] text-slate-400 mt-3">
+            <span>建築等級圖例：</span>
+            <span>🏠 Lv.1 基礎</span>
+            <span>🏢 Lv.2 成熟</span>
+            <span>🏰 Lv.3 標杆</span>
+          </div>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-[11px] text-slate-300 pt-3 border-t border-slate-800">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-[11px] text-slate-300 pt-3 border-t border-slate-800/90">
           ${legendHtml}
         </div>
       `;
@@ -824,47 +1246,47 @@
         const score = (c.reputation * 15) + (c.fee * 5) + (c.clientStability * 8) + (adoptedLevels * 100);
 
         container.innerHTML = `
-          <div class="bg-slate-900 border border-emerald-500/50 rounded-xl p-4 shadow-lg shadow-emerald-950/30">
+          <div class="bg-slate-900/95 border border-emerald-500/50 rounded-xl p-4 shadow-lg shadow-emerald-950/30">
             <div class="flex items-center justify-between mb-2">
               <div class="flex items-center gap-2">
-                <span class="w-3.5 h-3.5 rounded-full token-p2 inline-block"></span>
+                <span class="w-7 h-7 rounded-full token-p2 border border-white inline-flex items-center justify-center text-sm">💼</span>
                 <span class="font-bold text-sm text-white">外部顧問 (${std.code})</span>
               </div>
-              <span class="text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30 font-bold">顧問積分 ${score}</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30 font-bold">🏆 積分 ${score}</span>
             </div>
-            <div class="grid grid-cols-3 gap-2 text-center bg-slate-950/60 rounded-lg p-2.5 border border-slate-800/80">
+            <div class="grid grid-cols-3 gap-2 text-center bg-slate-950/70 rounded-lg p-2.5 border border-slate-800/80">
               <div>
-                <div class="text-[10px] text-slate-400">專業口碑</div>
+                <div class="text-[10px] text-slate-400">⭐ 專業口碑</div>
                 <div class="text-sm font-black ${c.reputation <= 35 ? 'text-rose-400' : 'text-emerald-400'}">${c.reputation} / 100</div>
               </div>
               <div>
-                <div class="text-[10px] text-slate-400">剩餘人天</div>
+                <div class="text-[10px] text-slate-400">⏱️ 剩餘人天</div>
                 <div class="text-sm font-black ${c.hours <= 6 ? 'text-rose-400' : 'text-sky-400'}">${c.hours} 人天</div>
               </div>
               <div>
-                <div class="text-[10px] text-slate-400">累計顧問費</div>
+                <div class="text-[10px] text-slate-400">💰 累計顧問費</div>
                 <div class="text-sm font-black text-amber-300">$${c.fee}萬</div>
               </div>
             </div>
           </div>
 
-          <div class="bg-slate-900 border border-slate-700/80 rounded-xl p-4">
+          <div class="bg-slate-900/95 border border-slate-700/80 rounded-xl p-4">
             <div class="flex items-center justify-between mb-1.5">
               <span class="text-xs font-bold text-slate-300">🏢 輔導客戶狀態</span>
-              <span class="text-[11px] text-slate-400">${c.clientName}</span>
+              <span class="text-[11px] font-bold text-sky-300">${c.clientName}</span>
             </div>
             <p class="text-[11px] text-slate-400 mb-3 leading-relaxed">${c.clientDesc}</p>
-            <div class="grid grid-cols-3 gap-2 text-center bg-slate-950/60 rounded-lg p-2.5 border border-slate-800/80">
+            <div class="grid grid-cols-3 gap-2 text-center bg-slate-950/70 rounded-lg p-2.5 border border-slate-800/80">
               <div>
-                <div class="text-[10px] text-slate-400">配合意願</div>
+                <div class="text-[10px] text-slate-400">🤝 配合意願</div>
                 <div class="text-sm font-black ${c.clientWill < 40 ? 'text-rose-400' : c.clientWill >= 70 ? 'text-emerald-400' : 'text-amber-300'}">${c.clientWill}%</div>
               </div>
               <div>
-                <div class="text-[10px] text-slate-400">客戶穩定度</div>
+                <div class="text-[10px] text-slate-400">💓 客戶穩定度</div>
                 <div class="text-sm font-black ${c.clientStability <= 35 ? 'text-rose-400' : 'text-sky-400'}">${c.clientStability} / 100</div>
               </div>
               <div>
-                <div class="text-[10px] text-slate-400">落實 / 已提</div>
+                <div class="text-[10px] text-slate-400">🏰 落實 / 已提</div>
                 <div class="text-sm font-black text-slate-200">${adoptedCount} / ${advisedCount} <span class="text-[10px] font-normal text-slate-500">(${totalControls})</span></div>
               </div>
             </div>
@@ -880,25 +1302,25 @@
         const score = p.budget + (p.stability * 12) + (totalLevels * 140);
 
         return `
-          <div class="bg-slate-900 border ${active ? 'border-sky-400/70 shadow-lg shadow-sky-950/50' : 'border-slate-800'} rounded-xl p-4 transition">
+          <div class="bg-slate-900/95 border ${active ? 'border-sky-400/70 shadow-lg shadow-sky-950/50' : 'border-slate-800'} rounded-xl p-4 transition">
             <div class="flex items-center justify-between mb-2">
               <div class="flex items-center gap-2">
-                <span class="w-3.5 h-3.5 rounded-full ${p.colorClass} inline-block"></span>
+                <span class="w-7 h-7 rounded-full ${p.colorClass} border border-white inline-flex items-center justify-center text-sm">${p.avatar}</span>
                 <span class="font-bold text-sm text-white">${p.name}</span>
               </div>
-              <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300">綜合評分 ${score}</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-bold">🏆 ${score} 分</span>
             </div>
-            <div class="grid grid-cols-3 gap-2 text-center bg-slate-950/60 rounded-lg p-2.5 border border-slate-800/80">
+            <div class="grid grid-cols-3 gap-2 text-center bg-slate-950/70 rounded-lg p-2.5 border border-slate-800/80">
               <div>
-                <div class="text-[10px] text-slate-400">治理預算</div>
+                <div class="text-[10px] text-slate-400">💰 治理預算</div>
                 <div class="text-sm font-black text-emerald-400">$${p.budget}萬</div>
               </div>
               <div>
-                <div class="text-[10px] text-slate-400">營運穩定度</div>
+                <div class="text-[10px] text-slate-400">💓 營運穩定度</div>
                 <div class="text-sm font-black ${p.stability <= 35 ? 'text-rose-400' : 'text-sky-400'}">${p.stability} / 100</div>
               </div>
               <div>
-                <div class="text-[10px] text-slate-400">已建置項目</div>
+                <div class="text-[10px] text-slate-400">🏰 已建置項目</div>
                 <div class="text-sm font-black text-amber-300">${ownedCount}項 (Lv.${totalLevels})</div>
               </div>
             </div>
@@ -907,12 +1329,14 @@
       }).join('');
     }
 
+    // ==================== 四維度動態 SVG 雷達圖與進度條 ====================
     function renderMaturity() {
       const std = getStd();
       const tiles = std.tiles;
       const domains = std.domains;
       const totalControls = tiles.filter(t => t.type === 'control').length;
       const bars = document.getElementById('domain-bars');
+      const radarBox = document.getElementById('radar-box');
       const keys = ['d1', 'd2', 'd3', 'd4'];
 
       const totalMax = totalControls * 3;
@@ -923,6 +1347,7 @@
 
       document.getElementById('overall-maturity').textContent = `${Math.round((currentSum / totalMax) * 100)}% (${currentSum}/${totalMax}級)`;
 
+      const ratios = [];
       bars.innerHTML = keys.map(k => {
         const domainTiles = tiles.filter(t => t.type === 'control' && t.domain === k);
         const maxLv = domainTiles.length * 3;
@@ -932,12 +1357,14 @@
           if (state.mode === 3) return acc + (ctrl.adopted ? ctrl.level : 0);
           return acc + ctrl.level;
         }, 0);
-        const pct = Math.round((curLv / maxLv) * 100);
+        const ratio = maxLv > 0 ? curLv / maxLv : 0;
+        ratios.push(ratio);
+        const pct = Math.round(ratio * 100);
         return `
           <div>
             <div class="flex justify-between text-[11px] mb-1">
-              <span class="text-slate-300">${domains[k].name}</span>
-              <span class="text-slate-400">${curLv}/${maxLv} (${pct}%)</span>
+              <span class="text-slate-300 truncate pr-1">${domains[k].name}</span>
+              <span class="text-slate-400 shrink-0">${pct}%</span>
             </div>
             <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
               <div class="h-full ${domains[k].bar} transition-all duration-300" style="width: ${pct}%"></div>
@@ -945,6 +1372,46 @@
           </div>
         `;
       }).join('');
+
+      // 繪製 4 軸雷達圖 (上: d1, 右: d2, 下: d3, 左: d4)
+      const cx = 65, cy = 65, maxR = 46;
+      const r1 = Math.max(4, ratios[0] * maxR);
+      const r2 = Math.max(4, ratios[1] * maxR);
+      const r3 = Math.max(4, ratios[2] * maxR);
+      const r4 = Math.max(4, ratios[3] * maxR);
+
+      const p1 = `${cx},${cy - r1}`;
+      const p2 = `${cx + r2},${cy}`;
+      const p3 = `${cx},${cy + r3}`;
+      const p4 = `${cx - r4},${cy}`;
+
+      const radarColors = {
+        '27001': '#38bdf8',
+        '27701': '#2dd4bf',
+        '20000': '#fbbf24',
+        '22301': '#fb923c',
+        '42001': '#a78bfa'
+      };
+      const strokeColor = radarColors[state.standardKey] || '#38bdf8';
+
+      radarBox.innerHTML = `
+        <svg class="w-32 h-32" viewBox="0 0 130 130">
+          <polygon points="${cx},${cy-maxR} ${cx+maxR},${cy} ${cx},${cy+maxR} ${cx-maxR},${cy}" fill="none" stroke="#334155" stroke-width="1"/>
+          <polygon points="${cx},${cy-maxR*0.66} ${cx+maxR*0.66},${cy} ${cx},${cy+maxR*0.66} ${cx-maxR*0.66},${cy}" fill="none" stroke="#1e293b" stroke-width="1"/>
+          <polygon points="${cx},${cy-maxR*0.33} ${cx+maxR*0.33},${cy} ${cx},${cy+maxR*0.33} ${cx-maxR*0.33},${cy}" fill="none" stroke="#1e293b" stroke-width="1"/>
+          <line x1="${cx}" y1="${cy-maxR}" x2="${cx}" y2="${cy+maxR}" stroke="#334155" stroke-width="1"/>
+          <line x1="${cx-maxR}" y1="${cy}" x2="${cx+maxR}" y2="${cy}" stroke="#334155" stroke-width="1"/>
+          <polygon points="${p1} ${p2} ${p3} ${p4}" fill="${strokeColor}" fill-opacity="0.28" stroke="${strokeColor}" stroke-width="2"/>
+          <circle cx="${cx}" cy="${cy - r1}" r="3" fill="${strokeColor}"/>
+          <circle cx="${cx + r2}" cy="${cy}" r="3" fill="${strokeColor}"/>
+          <circle cx="${cx}" cy="${cy + r3}" r="3" fill="${strokeColor}"/>
+          <circle cx="${cx - r4}" cy="${cy}" r="3" fill="${strokeColor}"/>
+          <text x="${cx}" y="12" text-anchor="middle" fill="#94a3b8" font-size="9" font-weight="bold">領域1</text>
+          <text x="122" y="${cy+3}" text-anchor="end" fill="#94a3b8" font-size="9" font-weight="bold">領域2</text>
+          <text x="${cx}" y="125" text-anchor="middle" fill="#94a3b8" font-size="9" font-weight="bold">領域3</text>
+          <text x="8" y="${cy+3}" text-anchor="start" fill="#94a3b8" font-size="9" font-weight="bold">領域4</text>
+        </svg>
+      `;
     }
 
     function handleRoll() {
@@ -964,45 +1431,58 @@
       let ticks = 0;
       const diceEl = document.getElementById('dice-display');
       const timer = setInterval(() => {
-        diceEl.textContent = Math.floor(Math.random() * 6) + 1;
+        const tmp = Math.floor(Math.random() * 6) + 1;
+        diceEl.innerHTML = renderDiceSvg(tmp, true);
         ticks++;
         if (ticks >= 8) {
           clearInterval(timer);
           const finalRoll = Math.floor(Math.random() * 6) + 1;
-          diceEl.textContent = finalRoll;
-          movePlayer(p, finalRoll);
+          state.lastDice = finalRoll;
+          diceEl.innerHTML = renderDiceSvg(finalRoll, false);
+          movePlayerStepByStep(p, finalRoll);
         }
       }, 55);
     }
 
-    function movePlayer(player, steps) {
+    // 逐格跳躍移動動畫
+    function movePlayerStepByStep(player, steps) {
       const std = getStd();
       const tiles = std.tiles;
-      const oldPos = player.pos;
-      const newPos = (oldPos + steps) % tiles.length;
+      let remaining = steps;
+      let passedStart = false;
 
-      if (oldPos + steps >= tiles.length) {
-        if (state.mode === 3) {
-          state.consultant.hours += 14;
-          state.consultant.fee += 45;
-          addLog(`💰 跨越 36 格年度循環！顧問工時 <strong>+14 人天</strong>，請領合約進度款 <strong>+$45萬</strong>！`, 'good');
-        } else {
-          player.budget += 450;
-          addLog(`💰 <strong>${player.name}</strong> 跨越 36 格年度循環，獲得年度治理預算 <strong>+$450萬</strong>！`, 'good');
+      const stepTimer = setInterval(() => {
+        const nextPos = (player.pos + 1) % tiles.length;
+        if (nextPos === 0) passedStart = true;
+        player.pos = nextPos;
+        renderBoard();
+        remaining--;
+
+        if (remaining <= 0) {
+          clearInterval(stepTimer);
+          if (passedStart) {
+            if (state.mode === 3) {
+              state.consultant.hours += 14;
+              state.consultant.fee += 45;
+              addLog(`💰 跨越 36 格年度循環！顧問工時 <strong>+14 人天</strong>，請領合約進度款 <strong>+$45萬</strong>！`, 'good');
+            } else {
+              player.budget += 450;
+              addLog(`💰 <strong>${player.name}</strong> 跨越 36 格年度循環，獲得年度治理預算 <strong>+$450萬</strong>！`, 'good');
+            }
+          }
+          renderAll();
+          const tile = tiles[player.pos];
+          const titleName = (state.mode === 3 && tile.cName) ? tile.cName : tile.name;
+          addLog(`🎲 <strong>${player.name}</strong> 擲出 <strong>${steps}</strong> 點，抵達【${tile.icon} ${titleName}】。`);
+          setTimeout(() => resolveTile(player, tile), 240);
         }
-      }
-
-      player.pos = newPos;
-      renderAll();
-
-      const tile = tiles[newPos];
-      const titleName = (state.mode === 3 && tile.cName) ? tile.cName : tile.name;
-      addLog(`🎲 <strong>${player.name}</strong> 擲出 <strong>${steps}</strong> 點，抵達【${tile.icon} ${titleName}】。`);
-      setTimeout(() => resolveTile(player, tile), 220);
+      }, 110);
     }
 
-    function showModal(badgeClass, title, bodyHtml, actions) {
+    function showModal(tileType, icon, badgeClass, title, bodyHtml, actions) {
       const modal = document.getElementById('action-modal');
+      document.getElementById('modal-banner-art').innerHTML = getModalIllustration(tileType, icon);
+
       const badgeEl = document.getElementById('modal-badge');
       const std = getStd();
       badgeEl.className = `inline-block px-2.5 py-0.5 rounded-full text-xs font-bold mb-2 border ${badgeClass}`;
@@ -1018,7 +1498,7 @@
       actions.forEach(act => {
         const b = document.createElement('button');
         b.className = act.primary
-          ? 'w-full py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-sm transition text-left md:text-center'
+          ? 'w-full py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-sm transition text-left md:text-center shadow-lg'
           : 'w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-sm transition text-left md:text-center';
         b.textContent = act.label;
         b.onclick = () => {
@@ -1047,6 +1527,7 @@
       if (tile.type === 'start') {
         player.stability = Math.min(100, player.stability + 6);
         showModal(
+          'start', tile.icon,
           'bg-emerald-500/20 text-emerald-300',
           `🚀 ${tile.name}`,
           `<p>${tile.desc}</p><p class="text-emerald-300 font-bold">額外獎勵：營運穩定度 +6 點！</p>`,
@@ -1058,6 +1539,7 @@
         handleIncidentTile(player, tile);
       } else if (tile.type === 'governance') {
         showModal(
+          'governance', tile.icon,
           'bg-sky-500/20 text-sky-300',
           `📊 ${tile.name}`,
           `<p>${tile.desc}</p><p>請選擇本次管理審查會議的重點提案：</p>`,
@@ -1087,6 +1569,7 @@
         player.stability = Math.min(100, player.stability + 5);
         addLog(`💎 <strong>${player.name}</strong> 獲得專案補助款，預算 <strong>+$320萬</strong>！`, 'good');
         showModal(
+          'grant', tile.icon,
           'bg-emerald-500/20 text-emerald-300',
           `💎 ${tile.name}`,
           `<p>${tile.desc}</p><p class="text-emerald-400 font-bold">預算 +$320萬、穩定度 +5 點。</p>`,
@@ -1097,6 +1580,7 @@
         player.budget = Math.max(0, player.budget - 100);
         addLog(`☣️ <strong>${player.name}</strong> 進入【${tile.name}】，緊急應變支出 $100萬，下回合暫停移動一次。`, 'bad');
         showModal(
+          'quarantine', tile.icon,
           'bg-amber-500/20 text-amber-300',
           `☣️ ${tile.name}`,
           `<p>${tile.desc}</p><p class="text-amber-300">緊急處理支出 <strong>-$100萬</strong>，且下回合必須留守處理報告（暫停移動一次）。</p>`,
@@ -1110,6 +1594,7 @@
           player.stability = Math.min(100, player.stability + 8);
           addLog(`🔍 <strong>${player.name}</strong> 內部稽核表現優異（已建置 ${count}/${target} 項），獎勵 +$160萬！`, 'good');
           showModal(
+            'audit', tile.icon,
             'bg-emerald-500/20 text-emerald-300',
             `🔍 ${tile.name} 通過`,
             `<p>目前已有 <strong>${count} 項</strong>控制／流程運作中（達標門檻 ${target} 項），獲得獎勵預算 +$160萬、穩定度 +8。</p>`,
@@ -1120,6 +1605,7 @@
           player.stability = Math.max(0, player.stability - 8);
           addLog(`🔍 <strong>${player.name}</strong> 內稽開立矯正單（僅 ${count}/${target} 項），矯正花費 $110萬。`, 'bad');
           showModal(
+            'audit', tile.icon,
             'bg-amber-500/20 text-amber-300',
             `🔍 ${tile.name} 開立缺失`,
             `<p>目前僅建置 <strong>${count} 項</strong>（建議門檻 ${target} 項），矯正措施花費 -$110萬、穩定度 -8。</p>`,
@@ -1134,6 +1620,7 @@
           player.stability = Math.min(100, player.stability + 15);
           addLog(`🏆 <strong>${player.name}</strong> 順利通過【${tile.name}】（成熟度 ${totalLv}/${targetLv} 級），獎勵 +$320萬！`, 'good');
           showModal(
+            'cert_audit', tile.icon,
             'bg-emerald-500/20 text-emerald-300',
             `🏆 ${tile.name} 順利通過`,
             `<p>累計制度成熟度達 <strong>${totalLv} 級</strong>（達標 ${targetLv} 級），獲得預算 +$320萬、穩定度 +15。</p>`,
@@ -1143,6 +1630,7 @@
           player.stability = Math.max(0, player.stability - 14);
           addLog(`⚠️ <strong>${player.name}</strong> 外部稽核開立缺失（目前 ${totalLv}/${targetLv} 級），穩定度 -14。`, 'bad');
           showModal(
+            'cert_audit', tile.icon,
             'bg-rose-500/20 text-rose-300',
             `⚠️ ${tile.name} 限期改善`,
             `<p>累計成熟度僅 <strong>${totalLv} 級</strong>（需達 ${targetLv} 級），高階主管高度關切，營運穩定度 -14 點。</p>`,
@@ -1162,13 +1650,13 @@
         const actions = [];
         if (canAfford) {
           actions.push({
-            label: `✅ 核准預算建置 Lv.1（花費 $${tile.cost}萬，穩定度 +5）`,
+            label: `🏠 核准預算建置 Lv.1（花費 $${tile.cost}萬，穩定度 +5）`,
             primary: true,
             onClick: () => {
               player.budget -= tile.cost;
               player.stability = Math.min(100, player.stability + 5);
               state.controls[tile.id] = { owner: player.id, level: 1, adopted: true };
-              addLog(`🛡️ <strong>${player.name}</strong> 建置了 <strong>${tile.code} ${tile.name} (Lv.1)</strong>！`, 'good');
+              addLog(`🛡️ <strong>${player.name}</strong> 建置了 <strong>${tile.code} ${tile.name} (🏠Lv.1)</strong>！`, 'good');
               endTurn();
             }
           });
@@ -1180,6 +1668,7 @@
         });
 
         showModal(
+          'control', tile.icon,
           dom.badge,
           `${tile.icon} ${tile.code} ${tile.name}`,
           `<p>${tile.desc}</p>
@@ -1197,16 +1686,17 @@
         if (existing.level < 3) {
           const upgradeCost = Math.round(tile.cost * 0.9);
           const canUpgrade = player.budget >= upgradeCost;
+          const nextBldg = getLevelBuildingGraphic(existing.level + 1, true);
           const actions = [];
           if (canUpgrade) {
             actions.push({
-              label: `⬆️ 強化成熟度至 Lv.${existing.level + 1}（花費 $${upgradeCost}萬，穩定度 +7）`,
+              label: `${nextBldg} 強化成熟度至 Lv.${existing.level + 1}（花費 $${upgradeCost}萬，穩定度 +7）`,
               primary: true,
               onClick: () => {
                 player.budget -= upgradeCost;
                 player.stability = Math.min(100, player.stability + 7);
                 existing.level++;
-                addLog(`⬆️ <strong>${player.name}</strong> 將 <strong>${tile.code} ${tile.name}</strong> 升級至 <strong>Lv.${existing.level}</strong>！`, 'good');
+                addLog(`⬆️ <strong>${player.name}</strong> 將 <strong>${tile.code} ${tile.name}</strong> 升級至 <strong>${nextBldg}Lv.${existing.level}</strong>！`, 'good');
                 endTurn();
               }
             });
@@ -1214,19 +1704,21 @@
           actions.push({ label: '維持目前等級即可', primary: false, onClick: endTurn });
 
           showModal(
+            'control', tile.icon,
             dom.badge,
-            `${tile.icon} ${tile.code} ${tile.name}（目前 Lv.${existing.level}）`,
-            `<p>此項目已運作中，持續投入資源可提升自動化與稽核證據完整度。</p>
+            `${tile.icon} ${tile.code} ${tile.name}（目前 ${getLevelBuildingGraphic(existing.level)}Lv.${existing.level}）`,
+            `<p>此項目已運作中，持續投入資源可升級建築防禦並提升稽核證據完整度。</p>
              <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-               升級費用：<span class="text-emerald-400 font-bold">$${upgradeCost}萬</span>（最高 Lv.3）
+               升級費用：<span class="text-emerald-400 font-bold">$${upgradeCost}萬</span>（最高 🏰Lv.3）
              </div>`,
             actions
           );
         } else {
           player.stability = Math.min(100, player.stability + 4);
           showModal(
+            'control', tile.icon,
             dom.badge,
-            `${tile.icon} ${tile.code} ${tile.name}（已達最高 Lv.3）`,
+            `${tile.icon} ${tile.code} ${tile.name}（已達最高 🏰Lv.3）`,
             `<p>此控制／流程已完全成熟並常態化運作，營運穩定度 +4 點。</p>`,
             [{ label: '繼續前進', primary: true, onClick: endTurn }]
           );
@@ -1238,6 +1730,7 @@
         state.players[existing.owner].budget += fee;
         addLog(`🤝 <strong>${player.name}</strong> 借調 <strong>${ownerName}</strong> 的 <strong>${tile.code}</strong> 資源，分攤成本 $${fee}萬。`, 'warn');
         showModal(
+          'control', tile.icon,
           dom.badge,
           `${tile.icon} ${tile.code} ${tile.name}（由 ${ownerName} 主導）`,
           `<p>跨部門支援與稽核紀錄調閱，分攤協作成本 <strong>$${fee}萬</strong> 給 ${ownerName}。</p>`,
@@ -1256,7 +1749,7 @@
         if (state.controls[cid]) {
           defenseScore += state.controls[cid].level;
           const t = std.tiles.find(x => x.id === cid);
-          activeDefenses.push(`${t.code} ${t.name} (Lv.${state.controls[cid].level})`);
+          activeDefenses.push(`${t.code} ${t.name} (${getLevelBuildingGraphic(state.controls[cid].level)}Lv.${state.controls[cid].level})`);
         }
       });
 
@@ -1286,6 +1779,7 @@
         : `<div class="text-xs text-slate-400">目前尚未建置任何對應防禦項目。</div>`;
 
       showModal(
+        'incident', tile.icon,
         'bg-rose-500/20 text-rose-300',
         `${tile.icon} ${tile.name}`,
         `<p>${tile.desc}</p>${defenseListHtml}${resultBanner}`,
@@ -1303,6 +1797,7 @@
         c.clientWill = Math.min(100, c.clientWill + 5);
         addLog(`🚀 召開階段輔導啟動會，顧問工時 <strong>+5 人天</strong>，客戶配合意願提升至 <strong>${c.clientWill}%</strong>！`, 'good');
         showModal(
+          'start', tile.icon,
           'bg-emerald-500/20 text-emerald-300',
           `🚀 ${tile.cName || tile.name}`,
           `<p>${tile.cDesc}</p><p class="text-sky-300 font-bold">獲得 +5 顧問人天｜客戶配合意願 +5%。</p>`,
@@ -1344,10 +1839,11 @@
           });
 
           const statusBanner = isFollowUp
-            ? `<div class="p-2.5 rounded-lg bg-amber-950/60 border border-amber-500/40 text-amber-200 text-xs">⚠️ 目前狀態：<strong>僅有紙本文件</strong>，客戶尚未真正落實執行！</div>`
+            ? `<div class="p-2.5 rounded-lg bg-amber-950/60 border border-amber-500/40 text-amber-200 text-xs">⚠️ 目前狀態：<strong>📄 僅有紙本文件</strong>，客戶尚未真正落實執行！</div>`
             : '';
 
           showModal(
+            'control', tile.icon,
             dom.badge,
             `${tile.icon} ${tile.code} ${tile.name}`,
             `<p>${tile.desc}</p>
@@ -1365,10 +1861,11 @@
         } else if (existing.level < 3) {
           const canUpgrade = c.hours >= 2;
           const upProb = Math.max(18, adoptProb - 8);
+          const nextBldg = getLevelBuildingGraphic(existing.level + 1, true);
           const actions = [];
           if (canUpgrade) {
             actions.push({
-              label: `⬆️ 輔導進階自動化與成熟度提升至 Lv.${existing.level + 1}（耗時 2 人天｜成功率 ${upProb}%）`,
+              label: `${nextBldg} 輔導進階自動化與成熟度提升至 Lv.${existing.level + 1}（耗時 2 人天｜成功率 ${upProb}%）`,
               primary: true,
               onClick: () => {
                 c.hours -= 2;
@@ -1376,7 +1873,7 @@
                   existing.level++;
                   c.reputation = Math.min(100, c.reputation + 5);
                   c.clientStability = Math.min(100, c.clientStability + 5);
-                  addLog(`🎉 客戶採納進階建議，<strong>${tile.code} ${tile.name}</strong> 升級至 <strong>Lv.${existing.level}</strong>！（口碑 +5）`, 'good');
+                  addLog(`🎉 客戶採納進階建議，<strong>${tile.code} ${tile.name}</strong> 升級至 <strong>${nextBldg}Lv.${existing.level}</strong>！（口碑 +5）`, 'good');
                 } else {
                   addLog(`😅 客戶覺得 <strong>${tile.code}</strong> 目前夠用就好，暫不投入進階預算。`, 'warn');
                 }
@@ -1387,16 +1884,18 @@
           actions.push({ label: '維持目前運作等級即可', primary: false, onClick: endTurn });
 
           showModal(
+            'control', tile.icon,
             dom.badge,
-            `${tile.icon} ${tile.code} ${tile.name}（客戶已落實 Lv.${existing.level}）`,
+            `${tile.icon} ${tile.code} ${tile.name}（客戶已落實 ${getLevelBuildingGraphic(existing.level)}Lv.${existing.level}）`,
             `<p>客戶已落實基本要求，是否投入顧問工時輔導進階強化？</p>`,
             actions
           );
         } else {
           c.reputation = Math.min(100, c.reputation + 2);
           showModal(
+            'control', tile.icon,
             dom.badge,
-            `${tile.icon} ${tile.code} ${tile.name}（已達標杆 Lv.3）`,
+            `${tile.icon} ${tile.code} ${tile.name}（已達標杆 🏰Lv.3）`,
             `<p>客戶此項目已成為標杆範例，顧問口碑 +2 點！</p>`,
             [{ label: '繼續輔導', primary: true, onClick: endTurn }]
           );
@@ -1412,7 +1911,7 @@
           const t = std.tiles.find(x => x.id === cid);
           if (ctrl && ctrl.adopted) {
             adoptedScore += ctrl.level;
-            adoptedList.push(`${t.code} ${t.name} (Lv.${ctrl.level})`);
+            adoptedList.push(`${t.code} ${t.name} (${getLevelBuildingGraphic(ctrl.level)}Lv.${ctrl.level})`);
           } else if (ctrl && ctrl.advised) {
             advisedOnlyList.push(`${t.code} ${t.name}`);
           }
@@ -1442,6 +1941,7 @@
         }
 
         showModal(
+          'incident', tile.icon,
           'bg-rose-500/20 text-rose-300',
           `${tile.icon} ${tile.name}`,
           `<p>${tile.cDesc || tile.desc}</p>
@@ -1452,6 +1952,7 @@
         );
       } else if (tile.type === 'governance') {
         showModal(
+          'governance', tile.icon,
           'bg-emerald-500/20 text-emerald-300',
           `📊 ${tile.cName || tile.name}`,
           `<p>${tile.cDesc}</p><p>請選擇你在總經理面前的簡報策略：</p>`,
@@ -1484,6 +1985,7 @@
         c.reputation = Math.min(100, c.reputation + 4);
         addLog(`💎 客戶追加二期擴充合約！顧問費 <strong>+$60萬</strong>、可用工時 <strong>+6 人天</strong>！`, 'good');
         showModal(
+          'grant', tile.icon,
           'bg-emerald-500/20 text-emerald-300',
           `💎 ${tile.cName || tile.name}`,
           `<p>${tile.cDesc}</p><p class="text-emerald-400 font-bold">顧問費 +$60萬、工時 +6 人天、口碑 +4。</p>`,
@@ -1495,6 +1997,7 @@
         c.reputation = Math.min(100, c.reputation + 3);
         addLog(`☣️ 進場緊急救火支援，消耗 2 人天（下回合寫調查報告暫停移動一次），但患難見真情口碑 +3！`, 'warn');
         showModal(
+          'quarantine', tile.icon,
           'bg-amber-500/20 text-amber-300',
           `☣️ ${tile.cName || tile.name}`,
           `<p>${tile.cDesc}</p><p class="text-amber-300">消耗 <strong>2 人天</strong> 協助緊急應變，下回合需撰寫矯正預防報告（暫停移動一次），口碑 +3。</p>`,
@@ -1509,6 +2012,7 @@
           c.reputation = Math.min(100, c.reputation + 8);
           addLog(`🔍 期中內稽順利過關（已落實 ${adoptedCount}/${target} 項），客戶肯定顧問指導（口碑 +8）！`, 'good');
           showModal(
+            'audit', tile.icon,
             'bg-emerald-500/20 text-emerald-300',
             `🔍 ${tile.cName || tile.name} 順利過關`,
             `<p>客戶已落實 <strong>${adoptedCount} 項</strong>制度與控制（門檻 ${target} 項），內稽表現優異，顧問口碑 +8！</p>`,
@@ -1518,6 +2022,7 @@
           c.clientWill = Math.min(100, c.clientWill + 12);
           addLog(`🔍 內稽開出一堆缺失（僅落實 ${adoptedCount} 項、紙本交差 ${paperCount} 項）！客戶終於發現抄範本行不通，配合意願 +12%！`, 'warn');
           showModal(
+            'audit', tile.icon,
             'bg-amber-500/20 text-amber-300',
             `🔍 ${tile.cName || tile.name} 抓出紙本漏洞`,
             `<p>內稽抽查發現客戶有 <strong>${paperCount} 項</strong>「只寫文件沒執行」！主導稽核員開立矯正單後，客戶高層終於願意配合改善（配合意願 <strong>+12%</strong>）。</p>`,
@@ -1533,6 +2038,7 @@
           c.fee += 80;
           addLog(`🏆 客戶順利通過【${tile.cName || tile.name}】（落實等級 ${adoptedLevels}/${targetLv} 級）！驗收尾款入帳 +$80萬、口碑 +15！`, 'good');
           showModal(
+            'cert_audit', tile.icon,
             'bg-emerald-500/20 text-emerald-300',
             `🏆 ${tile.cName || tile.name} 零主要缺失通過`,
             `<p>累計落實成熟度達 <strong>${adoptedLevels} 級</strong>（達標 ${targetLv} 級），順利通過外部驗證！驗收尾款 <strong>+$80萬</strong>、顧問口碑 <strong>+15</strong>！</p>`,
@@ -1543,6 +2049,7 @@
           c.clientWill = Math.min(100, c.clientWill + 15);
           addLog(`⚠️ 外部驗證開立主要缺失（僅 ${adoptedLevels}/${targetLv} 級）！驗收尾款暫緩、口碑 -8，客戶急請顧問加班補救（配合意願 +15%）。`, 'bad');
           showModal(
+            'cert_audit', tile.icon,
             'bg-rose-500/20 text-rose-300',
             `⚠️ ${tile.cName || tile.name} 開立主要缺失`,
             `<p>累計落實成熟度僅 <strong>${adoptedLevels} 級</strong>（需達 ${targetLv} 級），驗證機構要求 60 天內提交矯正證據！口碑 -8，但客戶配合意願提升 +15%。</p>`,
@@ -1562,7 +2069,7 @@
         c.reputation = Math.min(100, c.reputation + (isWorkshop ? 6 : 4));
         c.clientStability = Math.min(100, c.clientStability + 6);
         c.clientWill = Math.min(100, c.clientWill + 3);
-        addLog(`✅ 顧問耗時 ${daysUsed} 人天輔導 <strong>${tile.code} ${tile.name}</strong>，客戶正式採納並落實 (Lv.1)！（口碑 +${isWorkshop ? 6 : 4}）`, 'good');
+        addLog(`✅ 顧問耗時 ${daysUsed} 人天輔導 <strong>${tile.code} ${tile.name}</strong>，客戶正式採納並落實 (🏠Lv.1)！（口碑 +${isWorkshop ? 6 : 4}）`, 'good');
       } else {
         state.controls[tile.id] = { owner: 0, level: 0, adopted: false, advised: true };
         c.reputation = Math.min(100, c.reputation + 1);
@@ -1603,6 +2110,7 @@
       if (state.round > state.maxRounds) {
         const std = getStd();
         if (state.mode === 3) {
+          const c = state.consultant;
           const adoptedCount = Object.values(state.controls).filter(x => x.adopted).length;
           const adoptedLevels = Object.values(state.controls).filter(x => x.adopted).reduce((s, x) => s + x.level, 0);
           const score = (c.reputation * 15) + (c.fee * 5) + (c.clientStability * 8) + (adoptedLevels * 100);
@@ -1629,6 +2137,7 @@
       renderAll();
       addLog(`🏁 遊戲結算：${summaryHtml.replace(/<br\/>/g, ' ')}`, 'info');
       showModal(
+        'cert_audit', '🏆',
         'bg-sky-500/20 text-sky-300',
         '🏁 年度治理與稽核結算',
         `<div class="space-y-2 leading-relaxed">${summaryHtml}</div>`,
@@ -1647,15 +2156,15 @@
         let status = '';
         if (state.mode === 3) {
           if (ctrl && ctrl.adopted) {
-            status = `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">已落實 Lv.${ctrl.level}</span>`;
+            status = `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">${getLevelBuildingGraphic(ctrl.level)} 已落實 Lv.${ctrl.level}</span>`;
           } else if (ctrl && ctrl.advised) {
-            status = `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">僅有建議書</span>`;
+            status = `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">📄 僅有建議書</span>`;
           } else {
             status = `<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-400">尚未輔導</span>`;
           }
         } else {
           status = ctrl
-            ? `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">已部署 Lv.${ctrl.level}</span>`
+            ? `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">${getLevelBuildingGraphic(ctrl.level)} 已部署 Lv.${ctrl.level}</span>`
             : `<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-400">未建置</span>`;
         }
         return `
